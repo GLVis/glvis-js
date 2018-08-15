@@ -4,6 +4,8 @@ Using [Emscripten](https://github.com/kripken/emscripten) GLVis can be built as 
 A pre-built JavaScript library is included at *glvis-widget/js/lib/libglvis.js* but because of its size it
 is stored using git-lfs; please see the [git-lfs instructions](https://git-lfs.github.com/) for more info.
 
+You will need to use the *upstream/modern-ogl-dev* glvis branch for now.
+
 ## Installing GlvisWidget
 
 See *glvis-widget/README.md* for more info.
