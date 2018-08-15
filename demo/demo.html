@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<meta charset="UTF-8"> 
+<html>
+<head>
+    <script src="libglvis.js"></script>
+</head>
+
+<body>
+    <div align="center" style="padding-top:10pm;">
+        <div style="white-space:pre;display:inline-block;height:480px;width:40ch;border:4px solid #ccc;overflow:auto;font-family:monospace;">
++------------------------------------+
+| Keys                               |
++------------------------------------+
+| a -  Displays/Hides the axes       |
+| A -  Turns antialiasing on/off     |
+| c -  Toggle colorbar and caption   |
+| C -  Change the main plot caption  |
+| e -  Displays/Hides the elements   |
+| E -  Toggle the elements in the CP |
+| f -  Smooth/Flat/discont. shading  |
+| g -  Toggle background             |
+| h -  Displays help menu            |
+| i -  Toggle cutting plane          |
+| j -  Turn on/off perspective       |
+| k/K  Adjust the transparency level |
+| ,/<  Adjust color transparency     |
+| l -  Turns on/off the light        |
+| L -  Toggle logarithmic scale      |
+| m -  Displays/Hides the mesh       |
+| M -  Toggle the mesh in the CP     |
+| o/O  (De)refine elem, disc shading |
+| p/P  Cycle through color palettes  |
+| q -  Quits                         |
+| r -  Reset the plot to 3D view     |
+| R -  Reset the plot to 2D view     |
+| s -  Turn on/off unit cube scaling |
+| S -  Take snapshot/Record a movie  |
+| t -  Cycle materials and lights    |
+| \ -  Set light source position     |
+| u/U  Move the level surface        |
+| v/V  Add/Delete a level surface    |
+| w/W  Move bdr elements up/down     |
+| x/X  Rotate clipping plane (phi)   |
+| y/Y  Rotate clipping plane (theta) |
+| z/Z  Translate clipping plane      |
+| Ctrl+p - Print to a PDF file       |
++------------------------------------+
+| Function keys                      |
++------------------------------------+
+| F1 - X window info and keystrokes  |
+| F2 - Update colors, etc.           |
+| F3/F4 - Shrink/Zoom bdr elements   |
+| F5 - Set level lines               |
+| F6 - Palette options               |
+| F7 - Manually set min/max value    |
+| F8 - List of subdomains to show    |
+| F9/F10 - Walk through subdomains   |
+| F11/F12 - Shrink/Zoom subdomains   |
++------------------------------------+
+| Keypad                             |
++------------------------------------+
+| 1-9  Small rotation, reset with 5  |
+| *,/  Scale up/down                 |
+| +/-  Change z-scaling              |
+| . -  Start/stop spinning           |
+| 0/Enter - Spinning speed and dir.  |
++------------------------------------+
+| Mouse                              |
++------------------------------------+
+| left   btn    - Rotation           |
+| middle btn    - Translation        |
+| right  btn    - Scaling            |
+| left  + Alt   - Tilt               |
+| left  + Shift - Spinning           |
+| right + Shift - Change light pos.  |
+| left  + Ctrl  - Spherical rotation |
+| middle+ Ctrl  - Object translation |
+| right + Ctrl  - Object scaling     |
+| left  + Ctrl + Shift - z-Spinning  |
++------------------------------------+
+        </div>
+        <div style="display:inline-block" id="div-wrapper" tabindex="0">
+            <canvas style="border:4px solid #ccc" id="canvas" width="640" height="480" oncontextmenu="return false;">Your browser doesn't support HTML canvas=[</canvas>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        var div_wrapper_name = 'div-wrapper'
+        var div_wrapper = document.getElementById(div_wrapper_name);
+        var canvas = document.getElementById('canvas');
+        canvas.addEventListener('click', function(e) {
+            div_wrapper.focus();
+            return true;
+        });
+
+        var default_data = `fem2d_gf_data
+
+MFEM mesh v1.0
+
+dimension
+2
+
+elements
+1
+1 3 0 1 2 3
+
+boundary
+4
+1 1 1 0
+1 1 2 1
+1 1 3 2
+1 1 0 3
+
+vertices
+4
+
+nodes
+FiniteElementSpace
+FiniteElementCollection: Quadratic
+VDim: 2
+Ordering: 0
+
+0
+1
+1
+0.1
+0.5
+0.9
+0.5
+0
+0.45
+0
+0
+1
+0.9
+-0.05
+0.5
+1
+0.5
+0.55
+
+FiniteElementSpace
+FiniteElementCollection: Quadratic
+VDim: 1
+Ordering: 0
+
+0
+0
+0
+0
+0
+0
+0
+0
+1`
+
+        function displayData(data_str) {
+            var g = new Glvis().then(function() {
+                g.setKeyboardListeningElementId(div_wrapper_name);
+                g.canvas = canvas;
+                var data_type = data_str.substr(0, data_str.indexOf('\n'));
+                var data = data_str.substr(data_str.indexOf('\n') + 1);
+                g.startVisualization(data, data_type);
+
+                function iterVis(timestamp) {
+                    g.iterVisualization();
+                    window.requestAnimationFrame(iterVis);
+                }
+                window.requestAnimationFrame(iterVis);
+            });
+        }
+
+        function readGlvisStream(e) {
+
+            var reader = new FileReader();
+            var filename = e.target.files[0];
+            reader.onload = function(e) {
+                displayData(e.target.result)
+            }
+            reader.readAsText(filename);
+        }
+
+        displayData(default_data);
+    </script>
+
+    <div align="center">
+
+        <input type="file" onchange="readGlvisStream(event)">
+    </div>
+</body>
+</html>
