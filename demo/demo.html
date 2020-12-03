@@ -155,12 +155,12 @@ Ordering: 0
 1`
 
         function displayData(data_str) {
-            var g = new Glvis().then(function() {
+            glvis().then(function(g) {
                 g.setKeyboardListeningElementId(div_wrapper_name);
                 g.canvas = canvas;
                 var data_type = data_str.substr(0, data_str.indexOf('\n'));
                 var data = data_str.substr(data_str.indexOf('\n') + 1);
-                g.startVisualization(data, data_type);
+                g.startVisualization(data, data_type, canvas.width, canvas.height);
 
                 function iterVis(timestamp) {
                     g.iterVisualization();
@@ -171,7 +171,6 @@ Ordering: 0
         }
 
         function readGlvisStream(e) {
-
             var reader = new FileReader();
             var filename = e.target.files[0];
             reader.onload = function(e) {

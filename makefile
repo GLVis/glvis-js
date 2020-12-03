@@ -15,18 +15,22 @@ GLM_ROOT  ?= $(abspath ./glm)
 EMCC 			?= emcc
 
 MFEM_BUILD_DIR = $(abspath ./build)
-LIB_MFEM 			 = $(MFEM_BUILD_DIR)/libmfem.a
+LIB_MFEM 			 = $(MFEM_BUILD_DIR)/libmfem2.a
 LIB_GLVIS_JS 	 = $(GLVIS_DIR)/libglvis.js
 
-.PHONY: clean
+.PHONY: clean libmfem libglvis
 
 all: $(LIB_GLVIS_JS)
 
 $(LIB_MFEM):
-	$(MAKE) -C $(MFEM_DIR) MFEM_CXX=$(EMCC) MFEM_TIMER_TYPE=0 MFEM_CXXFLAGS='--std=c++11 -O3' BUILD_DIR=$(MFEM_BUILD_DIR) serial
+	$(MAKE) -C $(MFEM_DIR) MFEM_CXX=$(EMCC) MFEM_TIMER_TYPE=0 MFEM_CXXFLAGS='--std=c++11 -O3' BUILD_DIR=$(MFEM_BUILD_DIR) AR=emar ARFLAGS=rcs serial
 
 $(LIB_GLVIS_JS): $(LIB_MFEM)
 	$(MAKE) -C $(GLVIS_DIR) GLM_DIR=$(GLM_ROOT) MFEM_DIR=$(MFEM_BUILD_DIR) js
+
+libmfem: $(LIB_MFEM)
+
+libglvis: $(LIB_GLVIS_JS)
 
 clean:
 	test -d $(MFEM_BUILD_DUR) && rm -rf $(MFEM_BUILD_DIR)
