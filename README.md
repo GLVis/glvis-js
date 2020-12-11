@@ -1,35 +1,32 @@
-# GLVis JavaScript Library and Jupyter Widget
+# GLVis JavaScript Library
 
-Using [Emscripten](https://github.com/kripken/emscripten) GLVis can be built as a Javascript library.
-A pre-built JavaScript library is included at *glvis-widget/js/lib/libglvis.js* but because of its size it
+Using [emscripten](https://emscripten.org/index.html) GLVis can be built as a Javascript library.
+
+A pre-built JavaScript library is included at *js/glvis.js* but because of its size it
 is stored using git-lfs; please see the [git-lfs instructions](https://git-lfs.github.com/) for more info.
 
-You will need to use the *upstream/modern-ogl-dev* glvis branch for now.
+## Building *glvis.js*
 
-## Installing GlvisWidget
+1) Install [emscripten](https://emscripten.org/docs/getting_started/downloads.html)
 
-See *glvis-widget/README.md* for more info.
+2) Get a copy of *OpenSans.ttf* and put it at the root of this directory
+
+3) Build:
 
 ```bash
-$ cd glvis-widget
-$ pip install .
-$ jupyter nbextension enable --py --sys-prefix glvis_widget
+> make -j
+> cp ../glvis/lib/libglvis.js js/glvis.js
 ```
 
-## Building *libglvis.js*
-
-In order to build *libglvis.js* you'll need to install Emscripten and either
-clone the glm submodule or have glm installed already. Emscripten handles
-SDL2 and GLEW but if you have another installation in your path the link
+NOTE: emscripten handles SDL2 and GLEW but if you have another installation in your path the link
 might fail.
-
-```
-$ make
-$ cp ../glvis/lib/libglvis.js .
-```
-
 
 ## Known Issues
 
-* The Library only supports glvis stream data
-* Reloading data results in warns in the console
+* The Library only supports GLVis stream data
+* Reloading data results in warnings in the console
+
+## Updating *glvis.js*
+
+After building just copy the new *glvis.js* into the *js* directory.
+Please add the output of `make versions` to the commit body.

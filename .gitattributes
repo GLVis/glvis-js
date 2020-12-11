@@ -1,1 +1,1 @@
-glvis-widget/js/lib/libglvis.js filter=lfs diff=lfs merge=lfs -text
+js/glvis.js filter=lfs diff=lfs merge=lfs -text

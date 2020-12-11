@@ -1,12 +1,3 @@
-*.egg-info/
-.ipynb_checkpoints/
-dist/
-build/
-*.py[cod]
-node_modules/
-
-# Compiled javascript
-glvis_jupyter/static/
-
-# OS X
 .DS_Store
+OpenSans.ttf
+build

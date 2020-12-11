@@ -12,10 +12,11 @@
 MFEM_DIR  ?= ../mfem
 GLVIS_DIR ?= ../glvis
 GLM_ROOT  ?= $(abspath ./glm)
-EMCC 			?= emcc
+EMCXX     ?= em++
+EMAR      ?= emar
 
 MFEM_BUILD_DIR = $(abspath ./build)
-LIB_MFEM 			 = $(MFEM_BUILD_DIR)/libmfem2.a
+LIB_MFEM 			 = $(MFEM_BUILD_DIR)/libmfem.a
 LIB_GLVIS_JS 	 = $(GLVIS_DIR)/libglvis.js
 
 .PHONY: clean libmfem libglvis
@@ -23,7 +24,9 @@ LIB_GLVIS_JS 	 = $(GLVIS_DIR)/libglvis.js
 all: $(LIB_GLVIS_JS)
 
 $(LIB_MFEM):
-	$(MAKE) -C $(MFEM_DIR) MFEM_CXX=$(EMCC) MFEM_TIMER_TYPE=0 MFEM_CXXFLAGS='--std=c++11 -O3' BUILD_DIR=$(MFEM_BUILD_DIR) AR=emar ARFLAGS=rcs serial
+	# ranlib causes problems
+	$(MAKE) -C $(MFEM_DIR) CXX=$(EMCXX) MFEM_TIMER_TYPE=0 BUILD_DIR=$(MFEM_BUILD_DIR) serial \
+		AR=$(EMAR) ARFLAGS=rcs RANLIB=echo
 
 $(LIB_GLVIS_JS): $(LIB_MFEM)
 	$(MAKE) -C $(GLVIS_DIR) GLM_DIR=$(GLM_ROOT) MFEM_DIR=$(MFEM_BUILD_DIR) js
@@ -31,6 +34,11 @@ $(LIB_GLVIS_JS): $(LIB_MFEM)
 libmfem: $(LIB_MFEM)
 
 libglvis: $(LIB_GLVIS_JS)
+
+versions:
+	@echo "emscripten: $(shell $(EMCXX) --version | head -n 1 | grep -o "[0-9]\+\.[0-9]\+\.[0-9]\+")"
+	@echo "mfem:       $(shell cd $(MFEM_DIR) && git rev-parse HEAD)"
+	@echo "glvis:      $(shell cd $(GLVIS_DIR) && git rev-parse HEAD)"
 
 clean:
 	test -d $(MFEM_BUILD_DUR) && rm -rf $(MFEM_BUILD_DIR)
