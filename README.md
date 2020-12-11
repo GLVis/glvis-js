@@ -21,12 +21,14 @@ is stored using git-lfs; please see the [git-lfs instructions](https://git-lfs.g
 NOTE: emscripten handles SDL2 and GLEW but if you have another installation in your path the link
 might fail.
 
+## Updating *glvis.js*
+
+1) After building copy the new *glvis.js* into the *js* directory.
+
+2) Please add the output of `make versions` to the commit body.
+
 ## Known Issues
 
 * The Library only supports GLVis stream data
+
 * Reloading data results in warnings in the console
-
-## Updating *glvis.js*
-
-After building just copy the new *glvis.js* into the *js* directory.
-Please add the output of `make versions` to the commit body.
