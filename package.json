@@ -1,5 +1,5 @@
 {
-  "name": "glvis-js",
+  "name": "glvis",
   "version": "0.1.0",
   "description": "A lightweight WebGL tool for accurate and flexible finite element visualization",
   "license": "LGPL-2.1",

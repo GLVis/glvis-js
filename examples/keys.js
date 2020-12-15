@@ -68,4 +68,4 @@ keys_str = `
 | middle+ Ctrl  - Object translation |
 | right + Ctrl  - Object scaling     |
 | left  + Ctrl + Shift - z-Spinning  |
-+------------------------------------+`
++------------------------------------+`;

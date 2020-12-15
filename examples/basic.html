@@ -1,35 +1,53 @@
 <!DOCTYPE html>
-<meta charset="UTF-8"> 
+<meta charset="UTF-8" />
 <html>
-<head>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js"></script>
-  <script src="./keys.js"></script>
-  <script src="./example_stream.js"></script>
-</head>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js"></script>
+    <script src="./keys.js"></script>
+    <script src="./example_stream.js"></script>
+  </head>
 
-<body>
-  <div align="center" style="padding-top:10pm;">
-    <div style="white-space:pre;display:inline-block;height:480px;width:40ch;border:4px solid
-      #ccc;overflow:auto;font-family:monospace;" id='keys-div'></div>
-    <div style="display:inline-block;border:4px solid #ccc" id="glvis-div" tabindex="0"></div>
-  </div>
+  <body>
+    <div align="center" style="padding-top: 10pm">
+      <div
+        style="
+          white-space: pre;
+          display: inline-block;
+          height: 480px;
+          width: 40ch;
+          border: 4px solid #ccc;
+          overflow: auto;
+          font-family: monospace;
+        "
+        id="keys-div"
+      ></div>
+      <div
+        style="display: inline-block; border: 4px solid #ccc"
+        id="glvis-div"
+        tabindex="0"
+      ></div>
+    </div>
 
-  <script type="text/javascript">
-    var div_id = 'glvis-div';
-    var canvas = undefined;
-    var glvis = undefined;
-    require(['../src/index.js'], function(mod) {
-      glvis = mod;
-      document.getElementById('keys-div').innerHTML = keys_str;
-      div_id = 'glvis-div';
-      canvas = glvis.setupCanvas(div_id, 640, 480);
-      console.log(canvas);
-      glvis.displayStream(div_id, canvas.id, example_stream);
-    });
-  </script>
+    <script type="text/javascript">
+      var div_id = "glvis-div";
+      var canvas = undefined;
+      var glvis = undefined;
+      require(["../src/index.js"], function (mod) {
+        glvis = mod;
+        document.getElementById("keys-div").innerHTML = keys_str;
+        div_id = "glvis-div";
+        canvas = glvis.setupCanvas(div_id, 640, 480);
+        console.log(canvas);
+        glvis.displayStream(div_id, canvas.id, example_stream);
+      });
+    </script>
 
-  <div align="center">
-    <input type="file" id="load_stream" onchange="glvis.loadStream(event, div_id, canvas.id)">
-  </div>
-</body>
+    <div align="center">
+      <input
+        type="file"
+        id="load_stream"
+        onchange="glvis.loadStream(event, div_id, canvas.id)"
+      />
+    </div>
+  </body>
 </html>
