@@ -73,7 +73,7 @@
     return canvas;
   }
 
-  var mod = {
+  return {
     setupCanvas: setupCanvas,
     displayStream: displayStream,
     loadStream: loadStream,
@@ -83,6 +83,4 @@
       console.log("hi from GLVis!");
     },
   };
-
-  return mod;
 });
