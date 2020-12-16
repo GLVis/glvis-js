@@ -34,6 +34,7 @@ keys_str = `
 | x/X  Rotate clipping plane (phi)   |
 | y/Y  Rotate clipping plane (theta) |
 | z/Z  Translate clipping plane      |
+| Ctrl+o - Element ordering curve    |
 | Ctrl+p - Print to a PDF file       |
 +------------------------------------+
 | Function keys                      |
