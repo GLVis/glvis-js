@@ -15,11 +15,11 @@
     root["glvis"] = factory(root["glvis"]);
   }
 })(this, function (glvis) {
-  function display(div_id, canvas_id, data_type, data_str) {
+  function display(div, canvas, data_type, data_str) {
     glvis().then(
       function (g) {
-        g.setKeyboardListeningElementId(div_id);
-        g.canvas = document.getElementById(canvas_id);
+        g.setKeyboardListeningElementId(div.id);
+        g.canvas = canvas;
         g.startVisualization(
           data_str,
           data_type,
@@ -39,30 +39,33 @@
     );
   }
 
-  function displayStream(div_id, canvas_id, stream) {
+  function displayStream(div, canvas, stream) {
     var index = stream.indexOf("\n");
     var data_type = stream.substr(0, index);
     var data_str = stream.substr(index + 1);
-    display(div_id, canvas_id, data_type, data_str);
+    display(div, canvas, data_type, data_str);
   }
 
-  function loadStream(e, div_id, canvas_id) {
+  function loadStream(e, div, canvas) {
     var reader = new FileReader();
     var filename = e.target.files[0];
     reader.onload = function (e) {
       console.log("loading " + filename);
-      displayStream(div_id, canvas_id, e.target.result);
+      displayStream(divd, canvas, e.target.result);
     };
     reader.readAsText(filename);
   }
 
-  function setupCanvas(div_id, width, height) {
-    var div = document.getElementById(div_id);
+  function setupCanvas(div, width = 640, height = 480) {
     var canvas = document.createElement("canvas");
     canvas.id = "glvis-canvas";
     canvas.width = width;
     canvas.height = height;
-    canvas.oncontextmenu = "return false;";
+    // doesn't work anymore?
+    // canvas.oncontextmenu = "return false;";
+    canvas.oncontextmenu = function (e) {
+      e.preventDefault();
+    };
     canvas.innerHTML = "Your browser doesn't support HTML canvas";
     canvas.addEventListener("click", function () {
       div.focus();

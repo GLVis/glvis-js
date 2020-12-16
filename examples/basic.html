@@ -31,16 +31,16 @@
 
     <script type="text/javascript">
       document.getElementById("keys-div").innerHTML = keys_str;
-      var div_id = "glvis-div";
-      var canvas = glvis.setupCanvas(div_id, 640, 480);
-      glvis.displayStream(div_id, canvas.id, example_stream);
+      var div = document.getElementById("glvis-div");
+      var canvas = glvis.setupCanvas(div, 640, 480);
+      glvis.displayStream(div, canvas, example_stream);
     </script>
 
     <div align="center">
       <input
         type="file"
         id="load_stream"
-        onchange="glvis.loadStream(event, div_id, canvas.id)"
+        onchange="glvis.loadStream(event, div, canvas)"
       />
     </div>
   </body>
