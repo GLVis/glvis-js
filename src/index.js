@@ -12,8 +12,7 @@
     console.warn("glvis: untested module load");
     exports["someLibName"] = factory(require("./glvis"));
   } else {
-    console.warn("glvis: untested module load");
-    root["someLibName"] = factory(root["_"]);
+    root["glvis"] = factory(root["glvis"]);
   }
 })(this, function (glvis) {
   function display(div_id, canvas_id, data_type, data_str) {

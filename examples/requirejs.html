@@ -2,8 +2,7 @@
 <meta charset="UTF-8" />
 <html>
   <head>
-    <script src="../src/glvis.js"></script>
-    <script src="../src/index.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js"></script>
     <script src="./keys.js"></script>
     <script src="./example_stream.js"></script>
   </head>
@@ -32,8 +31,13 @@
     <script type="text/javascript">
       document.getElementById("keys-div").innerHTML = keys_str;
       var div_id = "glvis-div";
-      var canvas = glvis.setupCanvas(div_id, 640, 480);
-      glvis.displayStream(div_id, canvas.id, example_stream);
+      var canvas = undefined;
+      var glvis = undefined;
+      require(["../src/index.js"], function (mod) {
+        glvis = mod;
+        canvas = glvis.setupCanvas(div_id, 640, 480);
+        glvis.displayStream(div_id, canvas.id, example_stream);
+      });
     </script>
 
     <div align="center">
