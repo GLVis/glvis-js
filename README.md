@@ -1,9 +1,24 @@
 # GLVis JavaScript Library
 
-Using [emscripten](https://emscripten.org/index.html) GLVis can be built as a Javascript library.
+Using [emscripten](https://emscripten.org/index.html) GLVis can be built as a JavaScript library.
+
+## Using a pre-built version of the _glvis.js_ library
 
 A pre-built JavaScript library is included at _js/glvis.js_ but because of its size it
-is stored using git-lfs; please see the [git-lfs instructions](https://git-lfs.github.com/) for more info.
+is stored using Git's Large File Storage, [git-lfs](https://git-lfs.github.com/).
+
+To use the pre-built library, e.g. with the examples in the `examples/` directory, you need
+first to enable `git-lfs` on your system, see the instructions on the [git-lfs page](https://git-lfs.github.com/).
+
+For example, a simple run with the pre-built library can be executed on a Mac from scratch with:
+
+```
+brew install git-lfs
+git lfs install
+git clone git@github.com:GLVis/glvis-js.git
+cd glvis-js/examples
+open basic.html
+```
 
 ## Building _glvis.js_
 
