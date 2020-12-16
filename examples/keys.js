@@ -12,6 +12,7 @@ keys_str = `
 | g -  Toggle background             |
 | h -  Displays help menu            |
 | i -  Toggle cutting plane          |
+| I -  Toggle cutting plane algorithm|
 | j -  Turn on/off perspective       |
 | k/K  Adjust the transparency level |
 | ,/<  Adjust color transparency     |
