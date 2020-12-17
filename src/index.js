@@ -51,7 +51,7 @@
     var filename = e.target.files[0];
     reader.onload = function (e) {
       console.log("loading " + filename);
-      displayStream(divd, canvas, e.target.result);
+      displayStream(div, canvas, e.target.result);
     };
     reader.readAsText(filename);
   }
