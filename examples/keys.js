@@ -28,13 +28,13 @@ keys_str = `
 | s -  Turn on/off unit cube scaling |
 | S -  Take snapshot/Record a movie  |
 | t -  Cycle materials and lights    |
-| \ -  Set light source position     |
 | u/U  Move the level surface        |
 | v/V  Add/Delete a level surface    |
 | w/W  Move bdr elements up/down     |
 | x/X  Rotate clipping plane (phi)   |
 | y/Y  Rotate clipping plane (theta) |
 | z/Z  Translate clipping plane      |
+| \\ -  Set light source position     |
 | Ctrl+o - Element ordering curve    |
 | Ctrl+p - Print to a PDF file       |
 +------------------------------------+
