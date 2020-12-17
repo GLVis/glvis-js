@@ -14,22 +14,23 @@ GLVIS_DIR ?= ../glvis
 GLM_ROOT  ?= $(abspath ./glm)
 EMCXX     ?= em++
 EMAR      ?= emar
+NPX       ?= npx
 
 MFEM_BUILD_DIR = $(abspath ./build)
 LIB_MFEM 			 = $(MFEM_BUILD_DIR)/libmfem.a
 LIB_GLVIS_JS 	 = $(GLVIS_DIR)/libglvis.js
 
-.PHONY: clean libmfem libglvis
+.PHONY: clean style versions libmfem libglvis
 
 all: $(LIB_GLVIS_JS)
 
 $(LIB_MFEM):
 	# ranlib causes problems
-	$(MAKE) -C $(MFEM_DIR) CXX=$(EMCXX) MFEM_TIMER_TYPE=0 BUILD_DIR=$(MFEM_BUILD_DIR) serial \
+	@$(MAKE) -C $(MFEM_DIR) CXX=$(EMCXX) MFEM_TIMER_TYPE=0 BUILD_DIR=$(MFEM_BUILD_DIR) serial \
 		AR=$(EMAR) ARFLAGS=rcs RANLIB=echo
 
 $(LIB_GLVIS_JS): $(LIB_MFEM)
-	$(MAKE) -C $(GLVIS_DIR) GLM_DIR=$(GLM_ROOT) MFEM_DIR=$(MFEM_BUILD_DIR) js
+	@$(MAKE) -C $(GLVIS_DIR) GLM_DIR=$(GLM_ROOT) MFEM_DIR=$(MFEM_BUILD_DIR) js
 
 libmfem: $(LIB_MFEM)
 
@@ -40,6 +41,9 @@ versions:
 	@echo "mfem:       $(shell cd $(MFEM_DIR) && git rev-parse HEAD)"
 	@echo "glvis:      $(shell cd $(GLVIS_DIR) && git rev-parse HEAD)"
 
+style:
+	@which $(NPX) > /dev/null && $(NPX) prettier -w . || echo "fatal: $(NPX) isn't available, please install npm."
+
 clean:
-	test -d $(MFEM_BUILD_DUR) && rm -rf $(MFEM_BUILD_DIR)
-	$(MAKE) -C $(GLVIS_DIR) clean
+	@test -d $(MFEM_BUILD_DUR) && rm -rf $(MFEM_BUILD_DIR)
+	@$(MAKE) -C $(GLVIS_DIR) clean
