@@ -18,9 +18,9 @@ NPX       ?= npx
 
 MFEM_BUILD_DIR = $(abspath ./build)
 LIB_MFEM 			 = $(MFEM_BUILD_DIR)/libmfem.a
-LIB_GLVIS_JS 	 = $(GLVIS_DIR)/libglvis.js
+LIB_GLVIS_JS 	 = $(GLVIS_DIR)/lib/libglvis.js
 
-.PHONY: clean style versions libmfem libglvis
+.PHONY: clean style versions libmfem libglvis install
 
 all: $(LIB_GLVIS_JS)
 
@@ -35,6 +35,9 @@ $(LIB_GLVIS_JS): $(LIB_MFEM)
 libmfem: $(LIB_MFEM)
 
 libglvis: $(LIB_GLVIS_JS)
+
+install: $(LIB_GLVIS_JS)
+	@cp $(LIB_GLVIS_JS) src/glvis.js
 
 versions:
 	@echo "emscripten: $(shell $(EMCXX) --version | head -n 1 | grep -o "[0-9]\+\.[0-9]\+\.[0-9]\+")"

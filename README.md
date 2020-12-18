@@ -30,6 +30,12 @@ open basic.html
 git clone --recurse-submodules git@github.com:GLVis/glvis-js.git
 ```
 
+if you've already cloned you can pull submodules with:
+
+```
+git submodule update --init --recursive
+```
+
 3. Get a copy of _OpenSans.ttf_ and put it in the root directory. For example
 
 ```
