@@ -30,17 +30,17 @@ open basic.html
 git clone --recurse-submodules git@github.com:GLVis/glvis-js.git
 ```
 
-if you've already cloned you can pull submodules with:
+If you've already cloned you can pull submodules with:
 
 ```
 git submodule update --init --recursive
 ```
 
-3. Get a copy of _OpenSans.ttf_ and put it in the root directory. For example
+3. Get a copy of _OpenSans.ttf_ and put it in the GLVis root directory. For example
 
 ```
 cd glvis-js
-curl -s -o OpenSans.ttf https://github.com/google/fonts/blob/master/apache/opensans/OpenSans-Regular.ttf
+curl -s -o ../glvis/OpenSans.ttf https://raw.githubusercontent.com/google/fonts/master/apache/opensans/OpenSans-Regular.ttf
 ```
 
 4. Build:

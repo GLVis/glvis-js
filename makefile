@@ -17,8 +17,8 @@ EMAR      ?= emar
 NPX       ?= npx
 
 MFEM_BUILD_DIR = $(abspath ./build)
-LIB_MFEM 			 = $(MFEM_BUILD_DIR)/libmfem.a
-LIB_GLVIS_JS 	 = $(GLVIS_DIR)/lib/libglvis.js
+LIB_MFEM       = $(MFEM_BUILD_DIR)/libmfem.a
+LIB_GLVIS_JS   = $(GLVIS_DIR)/lib/libglvis.js
 
 .PHONY: clean style versions libmfem libglvis install
 
@@ -45,7 +45,7 @@ versions:
 	@echo "glvis:      $(shell cd $(GLVIS_DIR) && git rev-parse HEAD)"
 
 style:
-	@which $(NPX) > /dev/null && $(NPX) prettier -w . || echo "fatal: $(NPX) isn't available, please install npm."
+	@which $(NPX) > /dev/null && $(NPX) prettier -w src/ examples/ || echo "fatal: $(NPX) isn't available, please install npm."
 
 clean:
 	@test -d $(MFEM_BUILD_DUR) && rm -rf $(MFEM_BUILD_DIR)
