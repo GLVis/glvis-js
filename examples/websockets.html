@@ -7,7 +7,11 @@
     <script src="../src/index.js"></script>
     <script src="./keys.js"></script>
     <script src="./example_stream.js"></script>
-    <link rel="icon" type="image/png" href="https://glvis.org/img/favicon.ico">
+    <link
+      rel="icon"
+      type="image/png"
+      href="https://glvis.org/img/favicon.ico"
+    />
   </head>
 
   <body>
@@ -32,22 +36,25 @@
     </div>
 
     <script type="text/javascript">
-      const ws = new WebSocket('ws://localhost:8080');
-      ws.addEventListener('open', function (event) { console.log('socket opened'); });
-      ws.addEventListener('close', function (event) { console.log('socket closed'); });
+      const ws = new WebSocket("ws://localhost:8080");
+      ws.addEventListener("open", function (event) {
+        console.log("socket opened");
+      });
+      ws.addEventListener("close", function (event) {
+        console.log("socket closed");
+      });
 
       document.getElementById("keys-div").innerHTML = keys_str;
       var div = document.getElementById("glvis-div");
       var canvas = glvis.setupCanvas(div, 640, 480);
       glvis.displayStream(div, canvas, example_stream);
 
-
-      var que = async.queue(async function(task, callback) {
+      var que = async.queue(async function (task, callback) {
         glvis.displayStream(div, canvas, task);
-        await new Promise(r => setTimeout(r, 1000));
+        await new Promise((r) => setTimeout(r, 1000));
       });
 
-      ws.addEventListener('message', function (event) {
+      ws.addEventListener("message", function (event) {
         console.log("got msg");
         que.push(event.data);
       });
@@ -59,10 +66,7 @@
         id="load_stream"
         onchange="glvis.loadStream(event, div, canvas)"
       />
-      <input
-        type="button"
-        onchange="connect()"
-      >
+      <input type="button" onchange="connect()" />
     </div>
   </body>
 </html>
