@@ -51,7 +51,7 @@
 
       var que = async.queue(async function (task, callback) {
         glvis.displayStream(div, canvas, task);
-        await new Promise((r) => setTimeout(r, 1000));
+        await new Promise((r) => setTimeout(r, 500));
       });
 
       ws.addEventListener("message", function (event) {
@@ -66,7 +66,6 @@
         id="load_stream"
         onchange="glvis.loadStream(event, div, canvas)"
       />
-      <input type="button" onchange="connect()" />
     </div>
   </body>
 </html>
