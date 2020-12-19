@@ -20,6 +20,26 @@ cd glvis-js/examples
 open basic.html
 ```
 
+### Streaming from MFEM
+
+The _examples/websockets.html_ webpage can be used for inline visualization from MFEM with the
+`m2w.py` script. `m2w.py` forwards MFEM visualization messages to the webpage using websockets.
+
+Example usages:
+
+1. `cd glvis-js && ./m2w.py`
+
+  - must be run first!
+  - assumes default MFEM port of `19916`
+
+2. Open (or reload) _examples/websockets.html_
+
+  - assumes default websocket port of `8080`
+
+3. `cd mfem/examples && ./ex1` or `cd mfem/examples && ./ex9 -vs 20`
+
+4. `ctrl-c` to stop `m2w.py`
+
 ## Building _glvis.js_
 
 1. Install [Emscripten](https://emscripten.org/docs/getting_started/downloads.html)
@@ -63,4 +83,10 @@ might fail.
 
 - The Library only supports GLVis stream data
 
-- Reloading data results in warnings in the console
+- Lots of console warnings
+
+- "Updating" data results in a totally new visualization
+
+  - keys are not preserved
+  - unnecessary computation
+  - memory leaks can lead to OOM in the JS runtime
