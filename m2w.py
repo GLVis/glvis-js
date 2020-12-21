@@ -31,7 +31,8 @@ async def ws_handler(queue, websocket, path):
         print(f"sending {msg[0:min(len(msg), 20)]}...")
         try:
             await websocket.send(msg)
-        except websockets.exceptions.ConnectionClosedError as e:
+        except (websockets.exceptions.ConnectionClosedOK,
+                websockets.exceptions.ConnectionClosedError) as e:
             # if there is only one message we can requeue it, otherwise
             # drop it
             if queue.empty():
