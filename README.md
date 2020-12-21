@@ -29,12 +29,13 @@ Example usages:
 
 1. `cd glvis-js && ./m2w.py`
 
-  - must be run first!
-  - assumes default MFEM port of `19916`
+   - requires Python 3.7+
+   - assumes default MFEM port of `19916`
 
 2. Open (or reload) _examples/websockets.html_
 
-  - assumes default websocket port of `8080`
+   - click on the Connect button
+   - default host and websocket port is `localhost:8080`
 
 3. `cd mfem/examples && ./ex1` or `cd mfem/examples && ./ex9 -vs 20`
 
