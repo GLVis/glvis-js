@@ -47,29 +47,29 @@ Example usages:
 
 2. Clone included submodules
 
-```
-git clone --recurse-submodules git@github.com:GLVis/glvis-js.git
-```
+    ```
+    git clone --recurse-submodules git@github.com:GLVis/glvis-js.git
+    ```
 
-If you've already cloned you can pull submodules with:
+   If you've already cloned you can pull submodules with:
 
-```
-git submodule update --init --recursive
-```
+   ```
+   git submodule update --init --recursive
+   ```
 
 3. Get a copy of _OpenSans.ttf_ and put it in the GLVis root directory. For example
 
-```
-cd glvis-js
-curl -s -o ../glvis/OpenSans.ttf https://raw.githubusercontent.com/google/fonts/master/apache/opensans/OpenSans-Regular.ttf
-```
+   ```
+   cd glvis-js
+   curl -s -o ../glvis/OpenSans.ttf https://raw.githubusercontent.com/google/fonts/master/apache/opensans/OpenSans-Regular.ttf
+   ```
 
 4. Build:
 
-```
-make -j
-cp ../glvis/lib/libglvis.js src/glvis.js
-```
+   ```
+   make -j
+   cp ../glvis/lib/libglvis.js src/glvis.js
+   ```
 
 NOTE: Emscripten handles SDL2 and GLEW but if you have another installation in your path the link
 might fail.
