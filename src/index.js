@@ -3,84 +3,129 @@
 (function webpackUniversalModuleDefinition(root, factory) {
   // node
   if (typeof exports === "object" && typeof module === "object") {
+    console.log("mod type 1");
     module.exports = factory(require("./glvis"));
   }
-  // browser
+  // requirejs?
   else if (typeof define === "function" && define.amd) {
+    console.log("mod type 2");
     define(["./glvis"], factory);
-  } else if (typeof exports === "object") {
+  }
+  // unknown
+  else if (typeof exports === "object") {
     console.warn("glvis: untested module load");
     exports["someLibName"] = factory(require("./glvis"));
-  } else {
+  }
+  // browser global
+  else {
     root["glvis"] = factory(root["glvis"]);
   }
-})(this, function (glvis) {
-  function display(div, canvas, data_type, data_str) {
-    glvis().then(
-      function (g) {
-        g.setKeyboardListeningElementId(div.id);
-        g.canvas = canvas;
+})(this, function (emglvis) {
+  class State {
+    constructor(div, width = 640, height = 480, canvas = undefined) {
+      if (div === undefined) {
+        throw "div cannot be undefined";
+      }
+      this.width_ = width;
+      this.height_ = height;
+      this.div_ = div;
+      this.canvas_ = canvas;
+      this.emglv_ = emglvis();
+      this.emsetup_ = false;
+      this.setupCanvas();
+    }
+
+    setSize(width, height) {
+      this.width_ = width;
+      this.height_ = height;
+      if (this.canvas_ !== undefined) {
+        this.canvas_.width = width;
+        this.canvas_.height = height;
+      }
+    }
+
+    setupCanvas() {
+      if (this.canvas_ === undefined) {
+        this.canvas_ = document.createElement("canvas");
+        this.canvas_.id = "glvis-canvas";
+      }
+      this.canvas_.width = this.width_;
+      this.canvas_.height = this.height_;
+      this.canvas_.innerHTML = "Your browser doesn't support HTML canvas";
+
+      this.canvas_.oncontextmenu = function (e) {
+        e.preventDefault();
+      };
+      var that = this;
+      this.canvas_.addEventListener("click", function () {
+        that.div_.focus();
+        return true;
+      });
+
+      this.div_.append(this.canvas_);
+    }
+
+    // only to be called from glvis.then
+    _setupEmGlvis(g) {
+      if (this.emsetup_) {
+        return;
+      }
+      g.setKeyboardListeningElementId(this.div_.id);
+      g.canvas = this.canvas_;
+    }
+
+    // only to be called from glvis.then
+    _startVis(g) {
+      if (this.emsetup_) {
+        return;
+      }
+      console.log("starting visualization loop");
+      function iterVis(timestamp) {
+        g.iterVisualization();
+        window.requestAnimationFrame(iterVis);
+      }
+      window.requestAnimationFrame(iterVis);
+    }
+
+    display(data_type, data_str) {
+      var that = this;
+      this.emglv_.then(function (g) {
+        that._setupEmGlvis(g);
+
         g.startVisualization(
           data_str,
           data_type,
-          g.canvas.width,
-          g.canvas.height
+          that.canvas_.width,
+          that.canvas_.height
         );
 
-        function iterVis(timestamp) {
-          g.iterVisualization();
-          window.requestAnimationFrame(iterVis);
-        }
-        window.requestAnimationFrame(iterVis);
-      },
-      function (err) {
-        console.log(err);
-      }
-    );
+        that._startVis(g);
+        that.emsetup_ = true;
+      });
+    }
+
+    displayStream(stream) {
+      const index = stream.indexOf("\n");
+      const data_type = stream.substr(0, index);
+      const data_str = stream.substr(index + 1);
+      this.display(data_type, data_str);
+    }
   }
 
-  function displayStream(div, canvas, stream) {
-    var index = stream.indexOf("\n");
-    var data_type = stream.substr(0, index);
-    var data_str = stream.substr(index + 1);
-    display(div, canvas, data_type, data_str);
-  }
-
-  function loadStream(e, div, canvas) {
+  function loadStream(e, state) {
     var reader = new FileReader();
     var filename = e.target.files[0];
     reader.onload = function (e) {
       console.log("loading " + filename);
-      displayStream(div, canvas, e.target.result);
+      state.displayStream(e.target.result);
     };
     reader.readAsText(filename);
   }
 
-  function setupCanvas(div, width = 640, height = 480) {
-    var canvas = document.createElement("canvas");
-    canvas.id = "glvis-canvas";
-    canvas.width = width;
-    canvas.height = height;
-    // doesn't work anymore?
-    // canvas.oncontextmenu = "return false;";
-    canvas.oncontextmenu = function (e) {
-      e.preventDefault();
-    };
-    canvas.innerHTML = "Your browser doesn't support HTML canvas";
-    canvas.addEventListener("click", function () {
-      div.focus();
-      return true;
-    });
-    div.append(canvas);
-    return canvas;
-  }
-
   return {
-    setupCanvas: setupCanvas,
-    displayStream: displayStream,
     loadStream: loadStream,
-    display: display,
-    glvis: glvis,
+    emglvis: glvis,
+    State: State,
     info: function () {
       console.log("hi from GLVis!");
     },

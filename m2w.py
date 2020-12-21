@@ -29,7 +29,14 @@ async def ws_handler(queue, websocket, path):
     while True:
         msg = await queue.get()
         print(f"sending {msg[0:min(len(msg), 20)]}...")
-        await websocket.send(msg)
+        try:
+            await websocket.send(msg)
+        except websockets.exceptions.ConnectionClosedError as e:
+            # if there is only one message we can requeue it, otherwise
+            # drop it
+            if queue.empty():
+                queue.put_nowait(msg)
+            break
     print("websocked client disconnected")
 
 
@@ -43,7 +50,6 @@ async def mfem_handler(queue, reader, writer, timeout=1, block_size=1024):
             if not block: break
             idx = block.rfind(b"solution")
             if (idx != -1 and msg) or idx > 0:
-                print(f"found delimiter at {idx}")
                 msg += block[:idx]
                 queue.put_nowait(msg.decode())
                 msg = block[idx:]

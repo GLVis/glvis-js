@@ -36,21 +36,10 @@
     <script type="text/javascript">
       document.getElementById("keys-div").innerHTML = keys_str;
       var div = document.getElementById("glvis-div");
-      var canvas = undefined;
-      var glvis = undefined;
-      require(["../src/index.js"], function (mod) {
-        glvis = mod;
-        canvas = glvis.setupCanvas(div, 640, 480);
-        glvis.displayStream(div, canvas, example_stream);
+      require(["../src/index.js"], function (glvis) {
+        var glv = new glvis.State(div);
+        glv.displayStream(example_stream);
       });
     </script>
-
-    <div align="center">
-      <input
-        type="file"
-        id="load_stream"
-        onchange="glvis.loadStream(event, div, canvas)"
-      />
-    </div>
   </body>
 </html>

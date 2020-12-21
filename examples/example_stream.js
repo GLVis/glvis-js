@@ -1,4 +1,4 @@
-var example_stream = `fem2d_gf_data
+const example_stream = `fem2d_gf_data
 
 MFEM mesh v1.0
 

@@ -37,15 +37,15 @@
     <script type="text/javascript">
       document.getElementById("keys-div").innerHTML = keys_str;
       var div = document.getElementById("glvis-div");
-      var canvas = glvis.setupCanvas(div, 640, 480);
-      glvis.displayStream(div, canvas, example_stream);
+      var glv = new glvis.State(div);
+      glv.displayStream(example_stream);
     </script>
 
     <div align="center">
       <input
         type="file"
         id="load_stream"
-        onchange="glvis.loadStream(event, div, canvas)"
+        onchange="glvis.loadStream(event, glv)"
       />
     </div>
   </body>

@@ -36,36 +36,58 @@
     </div>
 
     <script type="text/javascript">
-      const ws = new WebSocket("ws://localhost:8080");
-      ws.addEventListener("open", function (event) {
-        console.log("socket opened");
-      });
-      ws.addEventListener("close", function (event) {
-        console.log("socket closed");
-      });
-
-      document.getElementById("keys-div").innerHTML = keys_str;
-      var div = document.getElementById("glvis-div");
-      var canvas = glvis.setupCanvas(div, 640, 480);
-      glvis.displayStream(div, canvas, example_stream);
-
-      var que = async.queue(async function (task, callback) {
-        glvis.displayStream(div, canvas, task);
+      var ws = undefined;
+      var que = async.queue(async function (msg) {
+        glv.displayStream(msg);
         await new Promise((r) => setTimeout(r, 500));
       });
 
-      ws.addEventListener("message", function (event) {
-        console.log("got msg");
-        que.push(event.data);
-      });
+      function connect() {
+        if (ws !== undefined && ws.readyState == 1) {
+          ws.close();
+          return;
+        }
+
+        const host = document.getElementById("host-text").value;
+        const port = document.getElementById("port-text").value;
+        var btn = document.getElementById("conn-btn");
+
+        const addr = `ws:\/\/${host}:${port}`;
+        console.log(`trying to connect to ${addr}`);
+        ws = new WebSocket(addr);
+
+        ws.addEventListener("open", function (event) {
+          var url = event.target.url;
+          console.log(`connected to ${url}`);
+          btn.innerHTML = "Disconnect";
+        });
+        ws.addEventListener("close", function (event) {
+          console.log("disconnected");
+          btn.innerHTML = "Connect";
+        });
+        ws.addEventListener("message", function (event) {
+          console.log(`got message from ${event.origin}`);
+          que.push(event.data);
+        });
+      }
+
+      document.getElementById("keys-div").innerHTML = keys_str;
+      var div = document.getElementById("glvis-div");
+      var glv = new glvis.State(div);
+      glv.displayStream(example_stream);
     </script>
 
     <div align="center">
       <input
         type="file"
         id="load_stream"
-        onchange="glvis.loadStream(event, div, canvas)"
+        onchange="glvis.loadStream(event, glv)"
       />
+    </div>
+    <div align="center">
+      <input type="text" id="host-text" value="localhost" />
+      <input type="text" id="port-text" value="8080" />
+      <button type="button" id="conn-btn" onclick="connect()">Connect</button>
     </div>
   </body>
 </html>
