@@ -1,3 +1,14 @@
+// Copyright (c) 2010-2020, Lawrence Livermore National Security, LLC. Produced
+// at the Lawrence Livermore National Laboratory. All Rights reserved. See files
+// LICENSE and NOTICE for details. LLNL-CODE-443271.
+//
+// This file is part of the GLVis visualization tool and library. For more
+// information and source code availability see https://glvis.org.
+//
+// GLVis is free software; you can redistribute it and/or modify it under the
+// terms of the BSD-3 license. We welcome feedback and contributions, see file
+// CONTRIBUTING.md for details.
+
 // got this from the webpack docs
 // https://webpack.js.org/configuration/output/
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -36,6 +47,7 @@
     }
 
     setSize(width, height) {
+      // TODO: emglv_.resizeWindow
       this.width_ = width;
       this.height_ = height;
       if (this.canvas_ !== undefined) {
@@ -109,6 +121,13 @@
       const data_type = stream.substr(0, index);
       const data_str = stream.substr(index + 1);
       this.display(data_type, data_str);
+    }
+
+    sendKey(key) {
+      if (this.canvas_ !== undefined) {
+        var e = new KeyboardEvent('keypress', {bubbles:true, charCode:key.charCodeAt(0)});
+        this.canvas_.dispatchEvent(e);
+      }
     }
   }
 
