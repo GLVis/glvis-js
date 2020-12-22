@@ -47,12 +47,15 @@
     }
 
     setSize(width, height) {
-      // TODO: emglv_.resizeWindow
       this.width_ = width;
       this.height_ = height;
       if (this.canvas_ !== undefined) {
         this.canvas_.width = width;
         this.canvas_.height = height;
+        this.emglv_.then(function (g) {
+          g.resizeWindow(width, height);
+          g.sendExposeEvent();
+        });
       }
     }
 
@@ -64,6 +67,7 @@
       this.canvas_.width = this.width_;
       this.canvas_.height = this.height_;
       this.canvas_.innerHTML = "Your browser doesn't support HTML canvas";
+      //this.canvas_.style = "outline: 0";
 
       this.canvas_.oncontextmenu = function (e) {
         e.preventDefault();
@@ -125,7 +129,10 @@
 
     sendKey(key) {
       if (this.canvas_ !== undefined) {
-        var e = new KeyboardEvent('keypress', {bubbles:true, charCode:key.charCodeAt(0)});
+        var e = new KeyboardEvent("keypress", {
+          bubbles: true,
+          charCode: key.charCodeAt(0),
+        });
         this.canvas_.dispatchEvent(e);
       }
     }
