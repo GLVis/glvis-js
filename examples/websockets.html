@@ -90,11 +90,54 @@
       <button type="button" id="conn-btn" onclick="connect()">Connect</button>
     </div>
 
+    <p>
     <div align="center">
       <button type="button" onclick="glv.sendKey('p')">&#x21DA</button>
       switch color palette
       <button type="button" onclick="glv.sendKey('P')">&#x21DB</button>
     </div>
 
+    <p>
+    <div align="center">
+      <button type="button" onclick="glv.sendKey('r')">Reset 3D View</button>
+    </div>
+
+    <p>
+    <div align="center">
+      Light:
+      <input type="radio" id="off" name="light" oninput="glv.sendKey('l')"><label for="off">Off</label>
+      <input type="radio" id="on" name="light" checked="checked" oninput="glv.sendKey('l')"><label for="on">On</label>
+    </div>
+
+    <p>
+    <div align="center">
+      Colorbar:
+      <input type="radio" id="off" name="colorbar" checked="checked" oninput="glv.sendKey('c')"><label for="off">Off</label>
+      <input type="radio" id="on" name="colorbar" oninput="glv.sendKey('c')"><label for="on">On</label>
+    </div>
+
+    <p>
+    <div align="center">
+      Perspective:
+      <input type="radio" id="off" name="perspective" oninput="glv.sendKey('j')"><label for="off">Off</label>
+      <input type="radio" id="on" name="perspective" checked="checked" oninput="glv.sendKey('j')"><label for="on">On</label>
+    </div>
+
+    <p>
+    <div align="center">
+      Axis:
+      <input type="radio" id="off" name="axis" checked="checked" oninput="glv.sendKey('a')"><label for="off">Off</label>
+      <input type="radio" id="on" name="axis" oninput="glv.sendKey('a')"><label for="on">On</label>
+      <input type="radio" id="min" name="axis" oninput="glv.sendKey('a')"><label for="min">Minimal</label>
+      <input type="radio" id="gr" name="axis" oninput="glv.sendKey('a')"><label for="gr">Gray</label>
+    </div>
+
+    <p>
+    <div align="center">
+      Mesh:
+      <input type="radio" id="off" name="mesh" checked="checked" oninput="glv.sendKey('m')"><label for="off">Off</label>
+      <input type="radio" id="on" name="mesh" oninput="glv.sendKey('m')"><label for="on">On</label>
+      <input type="radio" id="ll" name="mesh" oninput="glv.sendKey('m')"><label for="ll">Level Lines</label>
+    </div>
   </body>
 </html>
