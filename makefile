@@ -39,10 +39,16 @@ libglvis: $(LIB_GLVIS_JS)
 install: $(LIB_GLVIS_JS)
 	@cp $(LIB_GLVIS_JS) src/glvis.js
 
+versions: em=$(shell $(EMCXX) --version | head -n 1 | grep -o "[0-9]\+\.[0-9]\+\.[0-9]\+")
+versions: mfem=$(shell cd $(MFEM_DIR) && git describe --tag)
+versions: glvis=$(shell cd $(GLVIS_DIR) && git describe --tag)
+versions: js_target=src/version.js
 versions:
-	@echo "emscripten: $(shell $(EMCXX) --version | head -n 1 | grep -o "[0-9]\+\.[0-9]\+\.[0-9]\+")"
-	@echo "mfem:       $(shell cd $(MFEM_DIR) && git rev-parse HEAD)"
-	@echo "glvis:      $(shell cd $(GLVIS_DIR) && git rev-parse HEAD)"
+	@echo "emscripten: $(em)"
+	@echo "mfem:       $(mfem)"
+	@echo "glvis:      $(glvis)"
+	@echo "updating $(js_target)"
+	@echo "const versions = {\n  emscripten: \"$(em)\",\n  mfem: \"$(mfem)\",\n  glvis: \"$(glvis)\"\n};" > $(js_target)
 
 style:
 	@which $(NPX) > /dev/null && $(NPX) prettier -w src/ examples/ || echo "fatal: $(NPX) isn't available, please install npm."

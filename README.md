@@ -91,3 +91,11 @@ might fail.
   - keys are not preserved
   - unnecessary computation
   - memory leaks can lead to OOM in the JS runtime
+
+- Fullscreen events captured by the Emscripten Module don't do what we want
+
+  - Setting a noop with `emscripten_set_fullscreenchange_callback` doesn't seem to do it
+  - `_JSEvents_requestFullscreen` in _glvis.js_ causes resize problems
+    - Either it covers our controls or fails when the console is open
+    - adding a `return 0;` at the beginning fixes things but we'd like to avoid modifying _glvis.js_
+      longterm

@@ -6,7 +6,7 @@
   position: fixed; /* Stay in place */
   z-index: 1; /* Stay on top */
   top: 0; /* Stay at the top */
-  left: 0;
+  right: 0;
   background-color: #fdf6e3;
   overflow-x: hidden; /* Disable horizontal scroll */
   padding-top: 60px; /* Place content 60px from the top */
@@ -31,9 +31,10 @@
 .sidenav .closebtn {
   position: absolute;
   top: 0;
-  right: 25px;
-  font-size: 36px;
-  margin-left: 50px;
+  left: 0;
+  font-size: 50px;
+  margin-left: -20px;
+  margin-top: -5px;
 }
 
 /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
@@ -46,27 +47,30 @@
   }
 }
 
-/* https://stackoverflow.com/questions/25959129/aligning-rotated-buttons-easily */
-.rotate {
+.vertical {
   position: absolute;
-  top: 0;
-  left: 38px;
-  height: 40px;
-  width: 100vh;
   background: #268bd2;
-  transform: rotate(90deg);
-  transform-origin: left top;
+  padding: 10px;
+  border-radius: 5px 5px 0 0;
+  float: right;
+  right: 40px;
+  -moz-transform: rotate(270deg); /* FF3.5+ */
+  -o-transform: rotate(270deg); /* Opera 10.5 */
+  -webkit-transform: rotate(-90deg); /* Saf3.1+, Chrome */
+  -moz-transform-origin: right top;
+  -o-transform-origin: right top;
+  -webkit-transform-origin: right top;
 }
 
-.rotate span {
+.vertical span {
   display: inline;
   float: left;
+  padding-left: 10px;
+  padding-right: 10px;
   color: #fff;
-  padding: 10px;
-  padding-left: 20px;
 }
 
-.rotate span:hover {
+.vertical span:hover {
   color: #586e75;
 }
 
@@ -96,4 +100,31 @@ div:focus {
 }
 canvas:focus {
   outline: 0;
+}
+
+/* https://www.w3schools.com/howto/howto_css_icon_buttons.asp */
+/* Style buttons */
+.icon-btn {
+  background-color: #dcdcdc;
+  border: none; /* Remove borders */
+  color: white; /* White text */
+  padding: 8px 12px;
+  font-size: 20px;
+  cursor: pointer; /* Mouse pointer on hover */
+  border-radius: 50%;
+  opacity: 0.5;
+}
+
+/* Darker background on mouse-over */
+.icon-btn:hover {
+  background-color: #808080;
+}
+
+#main {
+  transition: margin-right 0.5s;
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  margin: 0px;
+  border: 0;
 }
