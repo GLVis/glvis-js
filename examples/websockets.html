@@ -27,7 +27,11 @@
     </div>
 
     <div style="position: absolute; right: 4px; bottom: 4px">
-      <button id="toggle-fullscreen" class="icon-btn">
+      <button
+        id="toggle-fullscreen"
+        class="icon-btn"
+        onclick="toggleFullscreen()"
+      >
         <i class="fas fa-expand-alt"></i>
       </button>
     </div>
@@ -260,10 +264,13 @@
       >
       <span onclick="openNav('ctrl-side-nav')">Control</span>
       <span onclick="openNav('about-side-nav')">About</span>
+      <span onclick="updateWindowSize()">Resize</span>
     </div>
 
     <script type="text/javascript">
+      document.getElementById("keys-div").innerHTML = keys_str;
       var main_div = document.getElementById("main");
+
       // delay control
       // TODO: doesn't work
       /*
@@ -324,33 +331,31 @@
       }
 
       // glvis-js setup
-      document.getElementById("keys-div").innerHTML = keys_str;
-      var glv = new glvis.State(main_div);
+      var glv = new glvis.State(main_div, 1, 1);
       glv.displayStream(example_stream);
 
       function updateWindowSize() {
-        glv.setSize(1, 1);
-        const w = document.documentElement.clientWidth | window.innerWidth;
-        const h = document.documentElement.clientHeight | window.innerHeight;
-        console.log(w, h);
-        glv.setSize(w - 10, h - 10);
+        // It seems like the page isn't always ready for a resize
+        // right when the event is triggered. Instead wait a little.
+        // TODO: understand this better
+        setTimeout(function () {
+          glv.setSize(1, 1);
+          const [w, h] = windowDim();
+          console.log(`update to ${w} x ${h}`);
+          glv.setSize(w - 10, h - 10);
+        }, 100);
       }
 
-      window.onresize = updateWindowSize;
-      updateWindowSize();
-
-      document.getElementById("toggle-fullscreen").onclick = function () {
-        if (document.fullscreenEnabled) {
-          var elem = document.documentElement;
-          if (document.fullscreenElement === null) {
-            openFullscreen(elem);
-          } else {
-            closeFullscreen(elem);
-          }
-        } else {
-          console.warn("full screen not allowed");
-        }
-      };
+      window.addEventListener("load", () => {
+        updateWindowSize();
+      });
+      window.addEventListener("resize", () => {
+        updateWindowSize();
+      });
+      // TODO: we may not need this
+      document.addEventListener("fullscreenchange", () => {
+        updateWindowSize();
+      });
     </script>
   </body>
 </html>

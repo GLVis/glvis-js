@@ -48,7 +48,7 @@ versions:
 	@echo "mfem:       $(mfem)"
 	@echo "glvis:      $(glvis)"
 	@echo "updating $(js_target)"
-	@echo "const versions = {\n  emscripten: \"$(em)\",\n  mfem: \"$(mfem)\",\n  glvis: \"$(glvis)\"\n};" > $(js_target)
+	@echo "const versions = {\n  emscripten: \"$(em)\",\n  mfem: \"$(mfem)\",\n  glvis: \"$(glvis)\",\n};" > $(js_target)
 
 style:
 	@which $(NPX) > /dev/null && $(NPX) prettier -w src/ examples/ || echo "fatal: $(NPX) isn't available, please install npm."
