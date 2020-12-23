@@ -42,7 +42,7 @@ install: $(LIB_GLVIS_JS)
 versions: em=$(shell $(EMCXX) --version | head -n 1 | grep -o "[0-9]\+\.[0-9]\+\.[0-9]\+")
 versions: mfem=$(shell cd $(MFEM_DIR) && git describe --tag)
 versions: glvis=$(shell cd $(GLVIS_DIR) && git describe --tag)
-versions: js_target=src/version.js
+versions: js_target=src/versions.js
 versions:
 	@echo "emscripten: $(em)"
 	@echo "mfem:       $(mfem)"
