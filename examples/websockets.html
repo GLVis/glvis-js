@@ -379,7 +379,14 @@
 
       // glvis-js setup
       var glv = new glvis.State(main_div, 1, 1);
-      glv.displayStream(example_stream);
+      var stream = new URLSearchParams(document.location.search).get("stream");
+      if (stream) {
+        console.log(`loading stream from ${stream}`);
+        glv.loadUrl(stream);
+      } else {
+        console.log("using example stream");
+        glv.displayStream(example_stream);
+      }
 
       var uws_timeout_handle;
       function updateWindowSize() {
