@@ -264,31 +264,31 @@
         onclick="closeNav('examples-side-nav')"
         >&times;</a
       >
-      <a onclick="glv.loadUrl('../data/ex1.saved')">ex1</a>
-      <a onclick="glv.loadUrl('../data/ex2.saved')">ex2</a>
-      <a onclick="glv.loadUrl('../data/ex27.saved')">ex27</a>
-      <a onclick="glv.loadUrl('../data/ex3.saved')">ex3</a>
-      <a onclick="glv.loadUrl('../data/ex5.saved')">ex5</a>
-      <a onclick="glv.loadUrl('../data/ex9.saved')">ex9</a>
-      <a onclick="glv.loadUrl('../data/klein-bottle.saved')">klein bottle</a>
-      <a onclick="glv.loadUrl('../data/mesh-explorer.saved')">mesh explorer</a>
+      <a onclick="glv.loadUrl('../data/ex1.saved')">Example 1</a>
+      <a onclick="glv.loadUrl('../data/ex2.saved')">Example 2</a>
+      <a onclick="glv.loadUrl('../data/ex3.saved')">Example 3</a>
+      <a onclick="glv.loadUrl('../data/ex5.saved')">Example 5</a>
+      <a onclick="glv.loadUrl('../data/ex9.saved')">Example 9</a>
+      <a onclick="glv.loadUrl('../data/ex27.saved')">Example 27</a>
+      <a onclick="glv.loadUrl('../data/klein-bottle.saved')">Klein Bottle</a>
+      <a onclick="glv.loadUrl('../data/mesh-explorer.saved')">Mesh Explorer</a>
       <a onclick="glv.loadUrl('../data/minimal-surface.saved')"
-        >minimal surface</a
+        >Minimal Surface</a
       >
-      <a onclick="glv.loadUrl('../data/modius-strip.saved')">mobius strip</a>
-      <a onclick="glv.loadUrl('../data/navier.saved')">navier</a>
-      <a onclick="glv.loadUrl('../data/quad.saved')">quad (default)</a>
-      <a onclick="glv.loadUrl('../data/shaper.saved')">shaper</a>
-      <a onclick="glv.loadUrl('../data/snake.saved')">snake</a>
+      <a onclick="glv.loadUrl('../data/modius-strip.saved')">Mobius Strip</a>
+      <a onclick="glv.loadUrl('../data/navier.saved')">Navier</a>
+      <a onclick="glv.loadUrl('../data/quad.saved')">Quad (default)</a>
+      <a onclick="glv.loadUrl('../data/shaper.saved')">Shaper</a>
+      <a onclick="glv.loadUrl('../data/snake.saved')">Snake</a>
     </div>
 
     <div id="side-menu" class="vertical">
-      <span onclick="openNav('setup-side-nav')">Setup</span>
-      <span onclick="openNav('examples-side-nav')">Examples</span>
-      <span onclick="openNav('help-side-nav', '40ch')">Help</span>
-      <span onclick="openNav('ctrl-side-nav')">Control</span>
       <span onclick="openNav('about-side-nav')">About</span>
       <span onclick="updateWindowSize()">Redraw</span>
+      <span onclick="openNav('ctrl-side-nav')">Control</span>
+      <span onclick="openNav('setup-side-nav')">Setup</span>
+      <span onclick="openNav('help-side-nav', '40ch')">Help</span>
+      <span onclick="openNav('examples-side-nav')">Examples</span>
     </div>
 
     <script type="text/javascript">
@@ -323,7 +323,7 @@
       // delay control
       // TODO: doesn't work
       /*
-      var delay_slider = document.getElementById("delay-range");  
+      var delay_slider = document.getElementById("delay-range");
       var delay_value_div = document.getElementById("delay-value");
       function update_delay_value() {
         delay_slider.value = delay_slider.value;
