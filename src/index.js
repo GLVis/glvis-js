@@ -155,13 +155,17 @@
           if (resp.ok) {
             return resp.text();
           }
-          throw `${url} doesn't exist`;
+          // TODO: once we have a more user-friendly log location use that
+          // instead
+          //throw `${url} doesn't exist`;
+          alert(`${url} doesn't exist`);
         })
         .then(function (data) {
           if (data != "") {
             that.displayStream(data);
           } else {
-            console.error(`${url} returned empty string`);
+            alert(`${url} has no content`);
+            //console.error(`${url} returned empty string`);
           }
         })
         .catch((error) => console.error(error));
