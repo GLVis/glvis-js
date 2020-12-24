@@ -36,7 +36,11 @@ function toggleFullscreen() {
 }
 
 function windowDim() {
-  const w = window.innerWidth;
-  const h = window.innerHeight;
+  const cw = document.documentElement.clientWidth;
+  const iw = window.innerWidth;
+  const w = cw & iw ? Math.min(cw, iw) : cw | iw;
+  const ch = document.documentElement.clientHeight;
+  const ih = window.innerHeight;
+  const h = ch & ih ? Math.min(ch, ih) : ch | ih;
   return [w, h];
 }

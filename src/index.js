@@ -50,8 +50,14 @@
       this.width_ = width;
       this.height_ = height;
       if (this.canvas_ !== undefined) {
-        this.canvas_.width = width;
-        this.canvas_.height = height;
+        const pixel_ratio = window.devicePixelRatio || 1;
+        this.canvas_.style.width = width + "px";
+        this.canvas_.style.height = `${height}px`;
+        this.canvas_.width = Math.floor(width * pixel_ratio);
+        this.canvas_.height = Math.floor(height * pixel_ratio);
+        console.log(
+          `dpr=${pixel_ratio} new canvas sizes: style.width=${this.canvas_.style.width}, style.height=${this.canvas_.style.height}, width=${this.canvas_.width}, height=${this.canvas_.height}`
+        );
         this.emglv_.then(function (g) {
           g.resizeWindow(width, height);
           g.sendExposeEvent();
@@ -87,6 +93,8 @@
         return;
       }
       g.setKeyboardListeningElementId(this.div_.id);
+      g.setCanvasId(this.canvas_.id);
+      //g.setupResizeEventCallback(this.canvas_.id);
       g.canvas = this.canvas_;
     }
 
@@ -96,6 +104,8 @@
         return;
       }
       console.log("starting visualization loop");
+      // needed again here... do we delete the SdlWindow somewhere in startVisualization?
+      g.setCanvasId(this.canvas_.id);
       function iterVis(timestamp) {
         g.iterVisualization();
         window.requestAnimationFrame(iterVis);
@@ -135,6 +145,26 @@
         });
         this.canvas_.dispatchEvent(e);
       }
+    }
+
+    loadUrl(url) {
+      var that = this;
+      fetch(url)
+        .then(function (resp) {
+          console.log(resp);
+          if (resp.ok) {
+            return resp.text();
+          }
+          throw `${url} doesn't exist`;
+        })
+        .then(function (data) {
+          if (data != "") {
+            that.displayStream(data);
+          } else {
+            console.error(`${url} returned empty string`);
+          }
+        })
+        .catch((error) => console.error(error));
     }
   }
 

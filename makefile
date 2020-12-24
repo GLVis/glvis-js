@@ -37,6 +37,8 @@ libmfem: $(LIB_MFEM)
 libglvis: $(LIB_GLVIS_JS)
 
 install: $(LIB_GLVIS_JS)
+	@echo "Updating glvis.js"
+	@$(MAKE) versions
 	@cp $(LIB_GLVIS_JS) src/glvis.js
 
 versions: em=$(shell $(EMCXX) --version | head -n 1 | grep -o "[0-9]\+\.[0-9]\+\.[0-9]\+")
@@ -44,6 +46,7 @@ versions: mfem=$(shell cd $(MFEM_DIR) && git describe --tag)
 versions: glvis=$(shell cd $(GLVIS_DIR) && git describe --tag)
 versions: js_target=src/versions.js
 versions:
+	@echo "Build Info:"
 	@echo "emscripten: $(em)"
 	@echo "mfem:       $(mfem)"
 	@echo "glvis:      $(glvis)"
@@ -52,6 +55,9 @@ versions:
 
 style:
 	@which $(NPX) > /dev/null && $(NPX) prettier -w src/ examples/ || echo "fatal: $(NPX) isn't available, please install npm."
+
+servelocal:
+	python3 -m http.server 8000 --bind 127.0.0.1
 
 clean:
 	@test -d $(MFEM_BUILD_DUR) && rm -rf $(MFEM_BUILD_DIR)

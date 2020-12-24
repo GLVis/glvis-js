@@ -26,11 +26,11 @@
       <div id="main" tabindex="0"></div>
     </div>
 
-    <div style="position: absolute; right: 4px; bottom: 4px">
+    <div id="expand-btn" style="position: absolute; right: 4px; bottom: 4px">
       <button
         id="toggle-fullscreen"
         class="icon-btn"
-        onclick="toggleFullscreen()"
+        onclick="pageToggleFullscreen()"
       >
         <i class="fas fa-expand-alt"></i>
       </button>
@@ -257,19 +257,64 @@
       <a href="https://github.com/glvis/glvis-js">GitHub</a>
     </div>
 
-    <div class="vertical">
-      <span class="side-button" onclick="openNav('setup-side-nav')">Setup</span>
-      <span class="side-button" onclick="openNav('help-side-nav', '40ch')"
-        >Help</span
+    <div id="examples-side-nav" class="sidenav">
+      <a
+        href="javascript:void(0)"
+        class="closebtn"
+        onclick="closeNav('examples-side-nav')"
+        >&times;</a
       >
+      <a onclick="glv.loadUrl('../data/ex2.saved')">ex2</a>
+      <a onclick="glv.loadUrl('../data/ex3.saved')">ex3</a>
+      <a onclick="glv.loadUrl('../data/ex5.saved')">ex5</a>
+      <a onclick="glv.loadUrl('../data/ex9.saved')">ex9</a>
+      <a onclick="glv.loadUrl('../data/ex27.saved')">ex27</a>
+      <a onclick="glv.loadUrl('../data/mesh-explorer.saved')">mesh explorer</a>
+      <a onclick="glv.loadUrl('../data/minimal-surface.saved')"
+        >minimal surface</a
+      >
+      <a onclick="glv.loadUrl('../data/modius-strip.saved')">mobius strip</a>
+      <a onclick="glv.loadUrl('../data/navier.saved')">navier</a>
+      <a onclick="glv.loadUrl('../data/quad.saved')">quad (default)</a>
+    </div>
+
+    <div id="side-menu" class="vertical">
+      <span onclick="openNav('setup-side-nav')">Setup</span>
+      <span onclick="openNav('examples-side-nav')">Examples</span>
+      <span onclick="openNav('help-side-nav', '40ch')">Help</span>
       <span onclick="openNav('ctrl-side-nav')">Control</span>
       <span onclick="openNav('about-side-nav')">About</span>
-      <span onclick="updateWindowSize()">Resize</span>
+      <span onclick="updateWindowSize()">Redraw</span>
     </div>
 
     <script type="text/javascript">
       document.getElementById("keys-div").innerHTML = keys_str;
       var main_div = document.getElementById("main");
+      var side_menu = document.getElementById("side-menu");
+      var expand_btn = document.getElementById("expand-btn");
+
+      function toggleSideMenu(show = true) {
+        if (show) {
+          side_menu.style.display = "block";
+          expand_btn.style.display = "block";
+        } else {
+          side_menu.style.display = "none";
+          expand_btn.style.display = "none";
+        }
+      }
+
+      function pageToggleFullscreen() {
+        if (document.fullscreenEnabled) {
+          var elem = document.documentElement;
+          if (document.fullscreenElement === null) {
+            openFullscreen(elem);
+          } else {
+            closeFullscreen(elem);
+          }
+        } else {
+          console.warn("full screen not allowed");
+        }
+      }
 
       // delay control
       // TODO: doesn't work
@@ -287,11 +332,9 @@
       // nav setup
       function openNav(id, width = "250px") {
         document.getElementById(id).style.width = width;
-        //main_div.style.marginRight = width;
       }
       function closeNav(id) {
         document.getElementById(id).style.width = "0";
-        //main_div.style.marginRight = "0";
       }
 
       // websocket setup
@@ -334,16 +377,19 @@
       var glv = new glvis.State(main_div, 1, 1);
       glv.displayStream(example_stream);
 
+      var uws_timeout_handle;
       function updateWindowSize() {
+        clearTimeout(uws_timeout_handle);
         // It seems like the page isn't always ready for a resize
         // right when the event is triggered. Instead wait a little.
         // TODO: understand this better
-        setTimeout(function () {
+        uws_timeout_handle = setTimeout(function () {
           glv.setSize(1, 1);
-          const [w, h] = windowDim();
-          console.log(`update to ${w} x ${h}`);
-          glv.setSize(w - 10, h - 10);
-        }, 100);
+          setTimeout(function () {
+            const [w, h] = windowDim();
+            glv.setSize(w - 10, h - 10);
+          }, 50);
+        }, 500);
       }
 
       window.addEventListener("load", () => {
@@ -354,7 +400,11 @@
       });
       // TODO: we may not need this
       document.addEventListener("fullscreenchange", () => {
-        updateWindowSize();
+        if (document.fullscreenElement === null) {
+          toggleSideMenu(true);
+        } else {
+          toggleSideMenu(false);
+        }
       });
     </script>
   </body>
