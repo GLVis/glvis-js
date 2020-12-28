@@ -112,6 +112,12 @@ canvas:focus {
   background-color: #808080;
 }
 
+#expand-btn {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+}
+
 #main {
   transition: margin-right 0.5s;
   position: absolute;
@@ -132,4 +138,30 @@ canvas:focus {
   .vertical span {
     font-size: 8px;
   }
+}
+
+#log-container {
+  padding-left: 2ch;
+  padding-right: 1ch;
+  padding-bottom: 10ch;
+}
+
+#log {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.log-warn {
+  color: orange;
+  font-weight: bold;
+}
+.log-error {
+  color: red;
+  font-weight: bold;
+}
+.log-debug {
+  color: green;
+}
+.log-info {
+  color: blue;
 }

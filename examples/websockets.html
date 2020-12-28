@@ -26,7 +26,7 @@
       <div id="main" tabindex="0"></div>
     </div>
 
-    <div id="expand-btn" style="position: absolute; right: 4px; bottom: 4px">
+    <div id="expand-btn">
       <button
         id="toggle-fullscreen"
         class="icon-btn"
@@ -284,9 +284,23 @@
       <a onclick="glv.loadUrl('../data/snake.saved')">Snake</a>
     </div>
 
+    <div id="log-side-nav" class="sidenav">
+      <a
+        href="javascript:void(0)"
+        class="closebtn"
+        onclick="closeNav('log-side-nav')"
+        >&times;</a
+      >
+
+      <div id="log-container">
+        <pre id="log"></pre>
+      </div>
+    </div>
+
     <div id="side-menu" class="vertical">
       <span onclick="openNav('about-side-nav')">About</span>
       <span onclick="updateWindowSize()">Redraw</span>
+      <span onclick="openNav('log-side-nav', '43ch')">Log</span>
       <span onclick="openNav('ctrl-side-nav')">Control</span>
       <span onclick="openNav('setup-side-nav')">Setup</span>
       <span onclick="openNav('help-side-nav', '40ch')">Help</span>
@@ -298,6 +312,8 @@
       var main_div = document.getElementById("main");
       var side_menu = document.getElementById("side-menu");
       var expand_btn = document.getElementById("expand-btn");
+
+      augmentLoggers("log", "log-side-nav");
 
       function toggleSideMenu(show = true) {
         if (show) {
@@ -385,9 +401,19 @@
       if (stream) {
         console.log(`loading stream from ${stream}`);
         glv.loadUrl(stream);
-      } else {
+      }
+      // use the example stream if available
+      else if (example_stream !== undefined) {
         console.log("using example stream");
         glv.displayStream(example_stream);
+      }
+      // try to load ../data/quad.saved
+      else {
+        var default_stream_url = "../data/quad.saved";
+        console.log(
+          `no example_stream defined, trying to use ${default_stream_url}`
+        );
+        glv.loadUrl(default_stream_url);
       }
 
       var uws_timeout_handle;

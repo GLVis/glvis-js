@@ -151,6 +151,7 @@
       var that = this;
       fetch(url)
         .then(function (resp) {
+          // TODO remove after this is confirmed working
           console.log(resp);
           if (resp.ok) {
             return resp.text();
