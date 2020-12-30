@@ -491,7 +491,6 @@
       var glv = new glvis.State(main_div, 1, 1);
 
       glv.registerNewStreamCallback(function (state) {
-        console.log("new stream");
         state.getHelpString().then(function (s) {
           document.getElementById("keys-div").innerHTML = s;
         });
