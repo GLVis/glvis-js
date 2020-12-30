@@ -6,7 +6,6 @@
     <script src="../src/glvis.js"></script>
     <script src="../src/index.js"></script>
     <script src="../src/helpers.js"></script>
-    <script src="./keys.js"></script>
     <script src="./example_stream.js"></script>
     <link
       rel="stylesheet"
@@ -123,33 +122,33 @@
         >&times;</a
       >
 
-      <div align="left" style="margin: 15px;">
+      <div align="left" style="margin: 15px">
         <b>Axis</b>&nbsp;
         <button type="button" onclick="glv.sendKey('a')">&nbsp;>&nbsp;</button>
       </div>
-      <div align="left" style="margin: 15px;">
+      <div align="left" style="margin: 15px">
         <b>Mesh</b>&nbsp;
         <button type="button" onclick="glv.sendKey('m')">&nbsp;>&nbsp;</button>
       </div>
-      <div align="left" style="margin: 15px;">
+      <div align="left" style="margin: 15px">
         <b>Elements</b>&nbsp;
         <button type="button" onclick="glv.sendKey('e')">&nbsp;>&nbsp;</button>
       </div>
-      <div align="left" style="margin: 15px;">
+      <div align="left" style="margin: 15px">
         <b>Resolution</b>&nbsp;
         <button type="button" onclick="glv.sendKey('o')">&nbsp;+&nbsp;</button>
       </div>
 
-      <hr>
+      <hr />
 
-      <div align="left" style="margin: 15px;">
+      <div align="left" style="margin: 15px">
         <b>Colormap</b>&nbsp;
         <!--&#x21DA-->
         <button type="button" onclick="glv.sendKey('p')">&nbsp;<&nbsp;</button>
         <!--&#x21DB-->
         <button type="button" onclick="glv.sendKey('P')">&nbsp;>&nbsp;</button>
       </div>
-      <div align="left" style="margin: 15px;">
+      <div align="left" style="margin: 15px">
         <b>Colorbar</b>
         <input
           type="radio"
@@ -165,11 +164,11 @@
           oninput="glv.sendKey('c')"
         /><label for="on">On</label>
       </div>
-      <div align="left" style="margin: 15px;">
+      <div align="left" style="margin: 15px">
         <b>Material</b>&nbsp;
         <button type="button" onclick="glv.sendKey('T')">&nbsp;>&nbsp;</button>
       </div>
-      <div align="left" style="margin: 15px;">
+      <div align="left" style="margin: 15px">
         <b>Background</b>
         <input
           type="radio"
@@ -185,7 +184,7 @@
           oninput="glv.sendKey('g')"
         /><label for="on">On</label>
       </div>
-      <div align="left" style="margin: 15px;">
+      <div align="left" style="margin: 15px">
         <b>Light</b>
         <input
           type="radio"
@@ -202,14 +201,14 @@
         /><label for="on">On</label>
       </div>
 
-      <hr>
+      <hr />
 
-      <div align="left" style="margin: 15px;">
+      <div align="left" style="margin: 15px">
         <b>Viewpoint</b>&nbsp;
         <button type="button" onclick="glv.sendKey('R')">&nbsp;2D&nbsp;</button>
         <button type="button" onclick="glv.sendKey('r')">&nbsp;3D&nbsp;</button>
       </div>
-      <div align="left" style="margin: 15px;">
+      <div align="left" style="margin: 15px">
         <b>Perspective</b>
         <input
           type="radio"
@@ -225,118 +224,118 @@
           oninput="glv.sendKey('j')"
         /><label for="on">On</label>
       </div>
-      <div align="left" style="margin: 15px;">
+      <div align="left" style="margin: 15px">
         <b>Zoom</b>&nbsp;
         <button type="button" onclick="glv.sendKey('*')">&nbsp;+&nbsp;</button>
         <button type="button" onclick="glv.sendKey('/')">&nbsp;-&nbsp;</button>
       </div>
-      <div align="left" style="margin: 15px;">
+      <div align="left" style="margin: 15px">
         <b>Stretch</b>&nbsp;
         <button type="button" onclick="glv.sendKey('+')">&nbsp;+&nbsp;</button>
         <button type="button" onclick="glv.sendKey('-')">&nbsp;-&nbsp;</button>
       </div>
       <p></p>
 
-      <hr>
+      <hr />
 
-      <div align="center" style="margin: 5px; line-height: 150%;">
-	<button type="button" onclick="glv.sendKey('!')">!</button>
-	<button type="button" onclick="glv.sendKey('"')">"</button>
+      <div align="center" style="margin: 5px; line-height: 150%">
+        <button type="button" onclick="glv.sendKey('!')">!</button>
+        <button type="button" onclick="glv.sendKey('&#34;')">"</button>
         <button type="button" onclick="glv.sendKey('#')">#</button>
-	<button type="button" onclick="glv.sendKey('$')">$</button>
-	<button type="button" onclick="glv.sendKey('%')">%</button>
-	<button type="button" onclick="glv.sendKey('&')">&</button>
-	<button type="button" onclick="glv.sendKey(''')">'</button>
-	<button type="button" onclick="glv.sendKey('(')">(</button>
-	<button type="button" onclick="glv.sendKey(')')">)</button>
-	<button type="button" onclick="glv.sendKey('*')">*</button>
-	<button type="button" onclick="glv.sendKey('+')">+</button>
-	<button type="button" onclick="glv.sendKey(',')">,</button>
-	<button type="button" onclick="glv.sendKey('-')">-</button>
-	<button type="button" onclick="glv.sendKey('.')">.</button>
-	<button type="button" onclick="glv.sendKey('/')">/</button>
-	<button type="button" onclick="glv.sendKey(':')">:</button>
-	<button type="button" onclick="glv.sendKey(';')">;</button>
-	<button type="button" onclick="glv.sendKey('<')"><</button>
+        <button type="button" onclick="glv.sendKey('$')">$</button>
+        <button type="button" onclick="glv.sendKey('%')">%</button>
+        <button type="button" onclick="glv.sendKey('&')">&</button>
+        <button type="button" onclick="glv.sendKey(''')">'</button>
+        <button type="button" onclick="glv.sendKey('(')">(</button>
+        <button type="button" onclick="glv.sendKey(')')">)</button>
+        <button type="button" onclick="glv.sendKey('*')">*</button>
+        <button type="button" onclick="glv.sendKey('+')">+</button>
+        <button type="button" onclick="glv.sendKey(',')">,</button>
+        <button type="button" onclick="glv.sendKey('-')">-</button>
+        <button type="button" onclick="glv.sendKey('.')">.</button>
+        <button type="button" onclick="glv.sendKey('/')">/</button>
+        <button type="button" onclick="glv.sendKey(':')">:</button>
+        <button type="button" onclick="glv.sendKey(';')">;</button>
+        <button type="button" onclick="glv.sendKey('<')"><</button>
         <button type="button" onclick="glv.sendKey('=')">=</button>
-	<button type="button" onclick="glv.sendKey('>')">></button>
-	<button type="button" onclick="glv.sendKey('?')">?</button>
-	<button type="button" onclick="glv.sendKey('@')">@</button>
-	<button type="button" onclick="glv.sendKey('[')">[</button>
-	<button type="button" onclick="glv.sendKey('\')">\</button>
-	<button type="button" onclick="glv.sendKey(']')">]</button>
-	<button type="button" onclick="glv.sendKey('^')">^</button>
-	<button type="button" onclick="glv.sendKey('_')">_</button>
-	<button type="button" onclick="glv.sendKey('`')">`</button>
-	<button type="button" onclick="glv.sendKey('{')">{</button>
-	<button type="button" onclick="glv.sendKey('|')">|</button>
-	<button type="button" onclick="glv.sendKey('}')">}</button>
-	<button type="button" onclick="glv.sendKey('~')">~</button>
+        <button type="button" onclick="glv.sendKey('>')">></button>
+        <button type="button" onclick="glv.sendKey('?')">?</button>
+        <button type="button" onclick="glv.sendKey('@')">@</button>
+        <button type="button" onclick="glv.sendKey('[')">[</button>
+        <button type="button" onclick="glv.sendKey('\')">\</button>
+        <button type="button" onclick="glv.sendKey(']')">]</button>
+        <button type="button" onclick="glv.sendKey('^')">^</button>
+        <button type="button" onclick="glv.sendKey('_')">_</button>
+        <button type="button" onclick="glv.sendKey('`')">`</button>
+        <button type="button" onclick="glv.sendKey('{')">{</button>
+        <button type="button" onclick="glv.sendKey('|')">|</button>
+        <button type="button" onclick="glv.sendKey('}')">}</button>
+        <button type="button" onclick="glv.sendKey('~')">~</button>
 
-	<button type="button" onclick="glv.sendKey('0')">0</button>
-	<button type="button" onclick="glv.sendKey('1')">1</button>
-	<button type="button" onclick="glv.sendKey('2')">2</button>
-	<button type="button" onclick="glv.sendKey('3')">3</button>
-	<button type="button" onclick="glv.sendKey('4')">4</button>
-	<button type="button" onclick="glv.sendKey('5')">5</button>
-	<button type="button" onclick="glv.sendKey('6')">6</button>
-	<button type="button" onclick="glv.sendKey('7')">7</button>
-	<button type="button" onclick="glv.sendKey('8')">8</button>
-	<button type="button" onclick="glv.sendKey('9')">9</button>
+        <button type="button" onclick="glv.sendKey('0')">0</button>
+        <button type="button" onclick="glv.sendKey('1')">1</button>
+        <button type="button" onclick="glv.sendKey('2')">2</button>
+        <button type="button" onclick="glv.sendKey('3')">3</button>
+        <button type="button" onclick="glv.sendKey('4')">4</button>
+        <button type="button" onclick="glv.sendKey('5')">5</button>
+        <button type="button" onclick="glv.sendKey('6')">6</button>
+        <button type="button" onclick="glv.sendKey('7')">7</button>
+        <button type="button" onclick="glv.sendKey('8')">8</button>
+        <button type="button" onclick="glv.sendKey('9')">9</button>
 
-	<button type="button" onclick="glv.sendKey('A')">A</button>
-	<button type="button" onclick="glv.sendKey('B')">B</button>
-	<button type="button" onclick="glv.sendKey('C')">C</button>
-	<button type="button" onclick="glv.sendKey('D')">D</button>
-	<button type="button" onclick="glv.sendKey('E')">E</button>
-	<button type="button" onclick="glv.sendKey('F')">F</button>
-	<button type="button" onclick="glv.sendKey('G')">G</button>
-	<button type="button" onclick="glv.sendKey('H')">H</button>
-	<button type="button" onclick="glv.sendKey('I')">I</button>
-	<button type="button" onclick="glv.sendKey('J')">J</button>
-	<button type="button" onclick="glv.sendKey('K')">K</button>
-	<button type="button" onclick="glv.sendKey('L')">L</button>
-	<button type="button" onclick="glv.sendKey('M')">M</button>
-	<button type="button" onclick="glv.sendKey('N')">N</button>
-	<button type="button" onclick="glv.sendKey('O')">O</button>
-	<button type="button" onclick="glv.sendKey('P')">P</button>
-	<button type="button" onclick="glv.sendKey('Q')">Q</button>
-	<button type="button" onclick="glv.sendKey('R')">R</button>
-	<button type="button" onclick="glv.sendKey('S')">S</button>
-	<button type="button" onclick="glv.sendKey('T')">T</button>
-	<button type="button" onclick="glv.sendKey('U')">U</button>
-	<button type="button" onclick="glv.sendKey('V')">V</button>
-	<button type="button" onclick="glv.sendKey('W')">W</button>
-	<button type="button" onclick="glv.sendKey('X')">X</button>
-	<button type="button" onclick="glv.sendKey('Y')">Y</button>
-	<button type="button" onclick="glv.sendKey('Z')">Z</button>
+        <button type="button" onclick="glv.sendKey('A')">A</button>
+        <button type="button" onclick="glv.sendKey('B')">B</button>
+        <button type="button" onclick="glv.sendKey('C')">C</button>
+        <button type="button" onclick="glv.sendKey('D')">D</button>
+        <button type="button" onclick="glv.sendKey('E')">E</button>
+        <button type="button" onclick="glv.sendKey('F')">F</button>
+        <button type="button" onclick="glv.sendKey('G')">G</button>
+        <button type="button" onclick="glv.sendKey('H')">H</button>
+        <button type="button" onclick="glv.sendKey('I')">I</button>
+        <button type="button" onclick="glv.sendKey('J')">J</button>
+        <button type="button" onclick="glv.sendKey('K')">K</button>
+        <button type="button" onclick="glv.sendKey('L')">L</button>
+        <button type="button" onclick="glv.sendKey('M')">M</button>
+        <button type="button" onclick="glv.sendKey('N')">N</button>
+        <button type="button" onclick="glv.sendKey('O')">O</button>
+        <button type="button" onclick="glv.sendKey('P')">P</button>
+        <button type="button" onclick="glv.sendKey('Q')">Q</button>
+        <button type="button" onclick="glv.sendKey('R')">R</button>
+        <button type="button" onclick="glv.sendKey('S')">S</button>
+        <button type="button" onclick="glv.sendKey('T')">T</button>
+        <button type="button" onclick="glv.sendKey('U')">U</button>
+        <button type="button" onclick="glv.sendKey('V')">V</button>
+        <button type="button" onclick="glv.sendKey('W')">W</button>
+        <button type="button" onclick="glv.sendKey('X')">X</button>
+        <button type="button" onclick="glv.sendKey('Y')">Y</button>
+        <button type="button" onclick="glv.sendKey('Z')">Z</button>
 
-	<button type="button" onclick="glv.sendKey('a')">a</button>
-	<button type="button" onclick="glv.sendKey('b')">b</button>
-	<button type="button" onclick="glv.sendKey('c')">c</button>
-	<button type="button" onclick="glv.sendKey('d')">d</button>
-	<button type="button" onclick="glv.sendKey('e')">e</button>
-	<button type="button" onclick="glv.sendKey('f')">f</button>
-	<button type="button" onclick="glv.sendKey('g')">g</button>
-	<button type="button" onclick="glv.sendKey('h')">h</button>
-	<button type="button" onclick="glv.sendKey('i')">i</button>
-	<button type="button" onclick="glv.sendKey('j')">j</button>
-	<button type="button" onclick="glv.sendKey('k')">k</button>
-	<button type="button" onclick="glv.sendKey('l')">l</button>
-	<button type="button" onclick="glv.sendKey('m')">m</button>
-	<button type="button" onclick="glv.sendKey('n')">n</button>
-	<button type="button" onclick="glv.sendKey('o')">o</button>
-	<button type="button" onclick="glv.sendKey('p')">p</button>
-	<button type="button" onclick="glv.sendKey('q')">q</button>
-	<button type="button" onclick="glv.sendKey('r')">r</button>
-	<button type="button" onclick="glv.sendKey('s')">s</button>
-	<button type="button" onclick="glv.sendKey('t')">t</button>
-	<button type="button" onclick="glv.sendKey('u')">u</button>
-	<button type="button" onclick="glv.sendKey('v')">v</button>
-	<button type="button" onclick="glv.sendKey('w')">w</button>
-	<button type="button" onclick="glv.sendKey('x')">x</button>
-	<button type="button" onclick="glv.sendKey('y')">y</button>
-	<button type="button" onclick="glv.sendKey('z')">z</button>
+        <button type="button" onclick="glv.sendKey('a')">a</button>
+        <button type="button" onclick="glv.sendKey('b')">b</button>
+        <button type="button" onclick="glv.sendKey('c')">c</button>
+        <button type="button" onclick="glv.sendKey('d')">d</button>
+        <button type="button" onclick="glv.sendKey('e')">e</button>
+        <button type="button" onclick="glv.sendKey('f')">f</button>
+        <button type="button" onclick="glv.sendKey('g')">g</button>
+        <button type="button" onclick="glv.sendKey('h')">h</button>
+        <button type="button" onclick="glv.sendKey('i')">i</button>
+        <button type="button" onclick="glv.sendKey('j')">j</button>
+        <button type="button" onclick="glv.sendKey('k')">k</button>
+        <button type="button" onclick="glv.sendKey('l')">l</button>
+        <button type="button" onclick="glv.sendKey('m')">m</button>
+        <button type="button" onclick="glv.sendKey('n')">n</button>
+        <button type="button" onclick="glv.sendKey('o')">o</button>
+        <button type="button" onclick="glv.sendKey('p')">p</button>
+        <button type="button" onclick="glv.sendKey('q')">q</button>
+        <button type="button" onclick="glv.sendKey('r')">r</button>
+        <button type="button" onclick="glv.sendKey('s')">s</button>
+        <button type="button" onclick="glv.sendKey('t')">t</button>
+        <button type="button" onclick="glv.sendKey('u')">u</button>
+        <button type="button" onclick="glv.sendKey('v')">v</button>
+        <button type="button" onclick="glv.sendKey('w')">w</button>
+        <button type="button" onclick="glv.sendKey('x')">x</button>
+        <button type="button" onclick="glv.sendKey('y')">y</button>
+        <button type="button" onclick="glv.sendKey('z')">z</button>
       </div>
     </div>
 
@@ -402,7 +401,6 @@
     </div>
 
     <script type="text/javascript">
-      document.getElementById("keys-div").innerHTML = keys_str;
       var main_div = document.getElementById("main");
       var side_menu = document.getElementById("side-menu");
       var expand_btn = document.getElementById("expand-btn");
@@ -491,6 +489,14 @@
 
       // glvis-js setup
       var glv = new glvis.State(main_div, 1, 1);
+
+      glv.registerNewStreamCallback(function (state) {
+        console.log("new stream");
+        state.getHelpString().then(function (s) {
+          document.getElementById("keys-div").innerHTML = s;
+        });
+      });
+
       var stream = new URLSearchParams(document.location.search).get("stream");
       if (stream) {
         console.log(`loading stream from ${stream}`);
@@ -508,6 +514,10 @@
           `no example_stream defined, trying to use ${default_stream_url}`
         );
         glv.loadUrl(default_stream_url);
+      }
+
+      if (is_touch_device()) {
+        glv.setTouchDevice(true);
       }
 
       var uws_timeout_handle;

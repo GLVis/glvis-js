@@ -44,6 +44,9 @@
       this.emglv_ = emglvis();
       this.emsetup_ = false;
       this.setupCanvas();
+      this.new_stream_callbacks = [];
+      // could also have an update_stream_callbacks
+      // this.update_stream_callbacks = [];
     }
 
     setSize(width, height) {
@@ -103,6 +106,7 @@
       if (this.emsetup_) {
         return;
       }
+      this.emsetup_ = true;
       console.log("starting visualization loop");
       // needed again here... do we delete the SdlWindow somewhere in startVisualization?
       g.setCanvasId(this.canvas_.id);
@@ -124,9 +128,9 @@
           that.canvas_.width,
           that.canvas_.height
         );
+        that.new_stream_callbacks.forEach((f) => f(that));
 
         that._startVis(g);
-        that.emsetup_ = true;
       });
     }
 
@@ -170,6 +174,20 @@
           }
         })
         .catch((error) => console.error(error));
+    }
+
+    setTouchDevice(status) {
+      // TODO TMS
+      //this.emglv_.then((g) => { g.setTouchDevice(status); });
+    }
+
+    async getHelpString() {
+      return await this.emglv_.then((g) => g.getHelpString());
+    }
+
+    // callbacks: f(State) -> void
+    registerNewStreamCallback(f) {
+      this.new_stream_callbacks.push(f);
     }
   }
 
