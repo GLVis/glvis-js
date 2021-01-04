@@ -37,46 +37,45 @@
       if (div === undefined) {
         throw "div cannot be undefined";
       }
-      this.width_ = width;
-      this.height_ = height;
       this.div_ = div;
       this.canvas_ = canvas;
       this.emglv_ = emglvis();
       this.emsetup_ = false;
-      this.setupCanvas();
+      this.setupCanvas(width, height);
       this.new_stream_callbacks = [];
       // could also have an update_stream_callbacks
       // this.update_stream_callbacks = [];
     }
 
-    setSize(width, height) {
-      this.width_ = width;
-      this.height_ = height;
-      if (this.canvas_ !== undefined) {
-        const pixel_ratio = window.devicePixelRatio || 1;
-        this.canvas_.style.width = width + "px";
-        this.canvas_.style.height = `${height}px`;
-        this.canvas_.width = Math.floor(width * pixel_ratio);
-        this.canvas_.height = Math.floor(height * pixel_ratio);
-        console.log(
-          `dpr=${pixel_ratio} new canvas sizes: style.width=${this.canvas_.style.width}, style.height=${this.canvas_.style.height}, width=${this.canvas_.width}, height=${this.canvas_.height}`
-        );
-        this.emglv_.then(function (g) {
-          g.resizeWindow(width, height);
-          g.sendExposeEvent();
-        });
-      }
+    setCanvasSize(width, height) {
+      const pixel_ratio = window.devicePixelRatio || 1;
+      this.canvas_.style.width = `${width}px`;
+      this.canvas_.style.height = `${height}px`;
+      this.canvas_.width = Math.floor(width * pixel_ratio);
+      this.canvas_.height = Math.floor(height * pixel_ratio);
+      console.log(
+        `dpr=${pixel_ratio} new canvas sizes: ` +
+          `style.width=${this.canvas_.style.width}, ` +
+          `style.height=${this.canvas_.style.height}, ` +
+          `width=${this.canvas_.width}, ` +
+          `height=${this.canvas_.height}`
+      );
     }
 
-    setupCanvas() {
+    async setSize(width, height) {
+      this.setCanvasSize(width, height);
+      var g = await this.emglv_;
+      g.resizeWindow(width, height);
+      g.sendExposeEvent();
+    }
+
+    setupCanvas(width, height) {
       if (this.canvas_ === undefined) {
         this.canvas_ = document.createElement("canvas");
         this.canvas_.id = "glvis-canvas";
       }
-      this.canvas_.width = this.width_;
-      this.canvas_.height = this.height_;
+      this.setCanvasSize(width, height);
       this.canvas_.innerHTML = "Your browser doesn't support HTML canvas";
-      //this.canvas_.style = "outline: 0";
 
       this.canvas_.oncontextmenu = function (e) {
         e.preventDefault();
@@ -90,18 +89,17 @@
       this.div_.append(this.canvas_);
     }
 
-    // only to be called from glvis.then
+    // only callable from resolved emglvis
     _setupEmGlvis(g) {
       if (this.emsetup_) {
         return;
       }
       g.setKeyboardListeningElementId(this.div_.id);
       g.setCanvasId(this.canvas_.id);
-      //g.setupResizeEventCallback(this.canvas_.id);
       g.canvas = this.canvas_;
     }
 
-    // only to be called from glvis.then
+    // only callable from resolved emglvis
     _startVis(g) {
       if (this.emsetup_) {
         return;
@@ -117,21 +115,17 @@
       window.requestAnimationFrame(iterVis);
     }
 
-    display(data_type, data_str) {
-      var that = this;
-      this.emglv_.then(function (g) {
-        that._setupEmGlvis(g);
-
-        g.startVisualization(
-          data_str,
-          data_type,
-          that.canvas_.width,
-          that.canvas_.height
-        );
-        that.new_stream_callbacks.forEach((f) => f(that));
-
-        that._startVis(g);
-      });
+    async display(data_type, data_str) {
+      var g = await this.emglv_;
+      this._setupEmGlvis(g);
+      g.startVisualization(
+        data_str,
+        data_type,
+        this.canvas_.width,
+        this.canvas_.height
+      );
+      this.new_stream_callbacks.forEach((f) => f(this));
+      this._startVis(g);
     }
 
     displayStream(stream) {
@@ -142,7 +136,7 @@
     }
 
     sendKey(key) {
-      if (this.canvas_ !== undefined) {
+      if (this.canvas_ === undefined) {
         var e = new KeyboardEvent("keypress", {
           bubbles: true,
           charCode: key.charCodeAt(0),
@@ -151,29 +145,30 @@
       }
     }
 
-    loadUrl(url) {
+    async loadUrl(url) {
+      var resp = await fetch(url);
+      if (!resp.ok) {
+        alert(`${url} doesn't exist`);
+        return;
+      }
+      var text = await resp.text();
+      if (text == "") {
+        alert(`${url} has no content`);
+        return;
+      }
+      console.log(`loading ${url}`);
+      this.displayStream(text);
+    }
+
+    loadStream(e) {
+      var reader = new FileReader();
+      var filename = e.target.files[0];
       var that = this;
-      fetch(url)
-        .then(function (resp) {
-          // TODO remove after this is confirmed working
-          console.log(resp);
-          if (resp.ok) {
-            return resp.text();
-          }
-          // TODO: once we have a more user-friendly log location use that
-          // instead
-          //throw `${url} doesn't exist`;
-          alert(`${url} doesn't exist`);
-        })
-        .then(function (data) {
-          if (data != "") {
-            that.displayStream(data);
-          } else {
-            alert(`${url} has no content`);
-            //console.error(`${url} returned empty string`);
-          }
-        })
-        .catch((error) => console.error(error));
+      reader.onload = function (e) {
+        console.log("loading " + filename);
+        that.displayStream(e.target.result);
+      };
+      reader.readAsText(filename);
     }
 
     setTouchDevice(status) {
@@ -182,7 +177,8 @@
     }
 
     async getHelpString() {
-      return await this.emglv_.then((g) => g.getHelpString());
+      var g = await this.emglv_;
+      return g.getHelpString();
     }
 
     // callbacks: f(State) -> void
@@ -191,18 +187,7 @@
     }
   }
 
-  function loadStream(e, state) {
-    var reader = new FileReader();
-    var filename = e.target.files[0];
-    reader.onload = function (e) {
-      console.log("loading " + filename);
-      state.displayStream(e.target.result);
-    };
-    reader.readAsText(filename);
-  }
-
   return {
-    loadStream: loadStream,
     emglvis: glvis,
     State: State,
     info: function () {
