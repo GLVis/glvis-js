@@ -137,7 +137,8 @@
 
     async updateStream(stream) {
       if (!this.emsetup_) {
-        return displayStream(stream);
+        this.displayStream(stream);
+        return;
       }
       const index = stream.indexOf("\n");
       const data_type = stream.substr(0, index);
@@ -145,7 +146,7 @@
       var g = await this.emglv_;
       if (g.updateVisualization(data_type, data_str) != 0) {
         console.log("unable to update stream, starting a new one");
-        return displayStream(stream);
+        this.display(data_type, data_str);
       }
     }
 
