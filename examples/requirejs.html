@@ -3,7 +3,6 @@
 <html>
   <head>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js"></script>
-    <script src="./keys.js"></script>
     <script src="./example_stream.js"></script>
     <link
       rel="icon"
@@ -34,10 +33,14 @@
     </div>
 
     <script type="text/javascript">
-      document.getElementById("keys-div").innerHTML = keys_str;
       var div = document.getElementById("glvis-div");
       require(["../src/index.js"], function (glvis) {
         var glv = new glvis.State(div);
+        glv.registerNewStreamCallback(function (state) {
+          state.getHelpString().then(function (s) {
+            document.getElementById("keys-div").innerHTML = s;
+          });
+        });
         glv.displayStream(example_stream);
       });
     </script>

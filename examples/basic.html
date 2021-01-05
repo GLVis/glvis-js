@@ -4,7 +4,6 @@
   <head>
     <script src="../src/glvis.js"></script>
     <script src="../src/index.js"></script>
-    <script src="./keys.js"></script>
     <script src="./example_stream.js"></script>
     <link
       rel="icon"
@@ -35,18 +34,18 @@
     </div>
 
     <script type="text/javascript">
-      document.getElementById("keys-div").innerHTML = keys_str;
       var div = document.getElementById("glvis-div");
       var glv = new glvis.State(div);
+      glv.registerNewStreamCallback(function (state) {
+        state.getHelpString().then(function (s) {
+          document.getElementById("keys-div").innerHTML = s;
+        });
+      });
       glv.displayStream(example_stream);
     </script>
 
     <div align="center">
-      <input
-        type="file"
-        id="load_stream"
-        onchange="glvis.loadStream(event, glv)"
-      />
+      <input type="file" id="load_stream" onchange="glv.loadStream(event)" />
     </div>
   </body>
 </html>

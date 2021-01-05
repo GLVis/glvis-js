@@ -2,6 +2,7 @@
 
 Using [Emscripten](https://emscripten.org/index.html) GLVis can be built as a JavaScript & WebAssembly library.
 
+
 ## Using a pre-built version of the _glvis.js_ library
 
 A pre-built JavaScript library is included at _src/glvis.js_ but because of its size it
@@ -41,6 +42,7 @@ Example usages:
 
 4. `ctrl-c` to stop `m2w.py`
 
+
 ## Building _glvis.js_
 
 1. Install [Emscripten](https://emscripten.org/docs/getting_started/downloads.html)
@@ -74,11 +76,35 @@ Example usages:
 NOTE: Emscripten handles SDL2 and GLEW but if you have another installation in your path the link
 might fail.
 
+
+## Serving to a device on your local network
+
+The `servewide` make target allows you to serve your local glvis-js to other devices on your
+network.
+
+For example, on a Mac:
+
+1. First, get your IP address:
+
+   ```shell
+   ipconfig getifaddr en0
+   ```
+
+2. Then, serve `glvis-js` to all devices in your local network:
+
+   ```shell
+   make servewide
+   ```
+
+3. Any device in your network can now connect to `{your IP address}:8000` to use the local version of `glvis-js`.
+
+
 ## Updating _glvis.js_
 
 1. After building copy the new _glvis.js_ into the _src_ directory.
 
 2. Please add the output of `make versions` to the commit body.
+
 
 ## Known issues and limitations
 
