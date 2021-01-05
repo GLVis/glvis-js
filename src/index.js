@@ -135,6 +135,20 @@
       this.display(data_type, data_str);
     }
 
+    async updateStream(stream) {
+      if (!this.emsetup_) {
+        return displayStream(stream);
+      }
+      const index = stream.indexOf("\n");
+      const data_type = stream.substr(0, index);
+      const data_str = stream.substr(index + 1);
+      var g = await this.emglv_;
+      if (g.updateVisualization(data_type, data_str) != 0) {
+        console.log("unable to update stream, starting a new one");
+        return displayStream(stream);
+      }
+    }
+
     sendKey(key) {
       if (this.canvas_ === undefined) {
         var e = new KeyboardEvent("keypress", {

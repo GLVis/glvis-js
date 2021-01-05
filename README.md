@@ -23,11 +23,11 @@ open basic.html
 ### Streaming from MFEM
 
 The _examples/websockets.html_ webpage can be used for inline visualization from MFEM with the
-`m2w.py` script. `m2w.py` forwards MFEM visualization messages to the webpage using websockets.
+`glvis-browser-server` script. `glvis-browser-server` forwards MFEM visualization messages to the webpage using websockets.
 
 Example usages:
 
-1. `cd glvis-js && ./m2w.py`
+1. `cd glvis-js && ./glvis-browser-server`
 
    - requires Python 3.7+
    - assumes default MFEM port of `19916`
@@ -39,7 +39,7 @@ Example usages:
 
 3. `cd mfem/examples && ./ex1` or `cd mfem/examples && ./ex9 -vs 20`
 
-4. `ctrl-c` to stop `m2w.py`
+4. `ctrl-c` to stop `glvis-browser-server`
 
 ## Building _glvis.js_
 

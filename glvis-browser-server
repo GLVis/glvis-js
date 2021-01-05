@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 
 #
-# m2w.py is an mfem to websocket forwarder to make it easier to use glvis-js as a viewer for inline
-# mfem visualization. m2w.py must be run before opening the web-client and mfem.
+# glvis-browser-server is an mfem to websocket forwarder to make it easier to use glvis-js as a
+# viewer for inline mfem visualization. m2w.py must be run before opening the web-client and mfem.
 #
-# m2w.py requires the websockets Python library (pip install websockets) and have been tested with
-# Python 3.7. Earlier versions may work.
+# glvis-browser-server requires the websockets Python library (pip install websockets) and have
+# been tested with Python 3.7. Earlier versions may work.
 #
 
 import argparse
@@ -13,7 +13,7 @@ import asyncio
 import logging
 import websockets
 
-logger = logging.getLogger('websockets.server')
+logger = logging.getLogger("websockets.server")
 logger.setLevel(logging.ERROR)
 logger.addHandler(logging.StreamHandler())
 
@@ -31,8 +31,10 @@ async def ws_handler(queue, websocket, path):
         print(f"sending {msg[0:min(len(msg), 20)]}...")
         try:
             await websocket.send(msg)
-        except (websockets.exceptions.ConnectionClosedOK,
-                websockets.exceptions.ConnectionClosedError) as e:
+        except (
+            websockets.exceptions.ConnectionClosedOK,
+            websockets.exceptions.ConnectionClosedError,
+        ):
             # if there is only one message we can requeue it, otherwise
             # drop it
             if queue.empty():
@@ -42,13 +44,19 @@ async def ws_handler(queue, websocket, path):
 
 
 async def mfem_handler(queue, reader, writer, timeout=1, block_size=1024):
-    print("mfem client connected")
+    peername = writer.get_extra_info("peername")
+    if peername is not None:
+        client, port = peername
+    else:
+        client, port = "unknown", 0
+    print(f"new mfem client: {client}@{port}")
     msg = b""
 
     while True:
         try:
             block = await asyncio.wait_for(reader.read(block_size), timeout)
-            if not block: break
+            if not block:
+                break
             idx = block.rfind(b"solution")
             if (idx != -1 and msg) or idx > 0:
                 msg += block[:idx]
@@ -61,8 +69,9 @@ async def mfem_handler(queue, reader, writer, timeout=1, block_size=1024):
                 queue.put_nowait(msg.decode())
                 msg = b""
 
-    if msg: queue.put_nowait(msg.decode())
-    print("mfem client disconnected")
+    if msg:
+        queue.put_nowait(msg.decode())
+    print(f"mfem client disconnected: {client}@{port}")
 
 
 async def create_mfem_server(queue):
@@ -70,7 +79,10 @@ async def create_mfem_server(queue):
 
     async def handler_wrap(reader, writer):
         await mfem_handler(queue, reader, writer)
-    server = await asyncio.create_task(asyncio.start_server(handler_wrap, host="localhost", port=args.port))
+
+    server = await asyncio.create_task(
+        asyncio.start_server(handler_wrap, host="localhost", port=args.port)
+    )
     await server.serve_forever()
     print("mfem server: complete")
 
@@ -82,9 +94,10 @@ async def main():
         await ws_handler(queue, websocket, path)
 
     ws_server = websockets.serve(ws_handler_wrap, "localhost", args.ws_port)
-    t2 = asyncio.create_task(create_mfem_server(queue))
+    mfem_server = asyncio.create_task(create_mfem_server(queue))
 
     await ws_server
-    await t2
+    await mfem_server
+
 
 asyncio.run(main())
