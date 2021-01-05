@@ -74,6 +74,25 @@ Example usages:
 NOTE: Emscripten handles SDL2 and GLEW but if you have another installation in your path the link
 might fail.
 
+## Serving to a device on your local network
+
+The `servewide` make target allows you to serve your local glvis-js to other devices on your
+network.
+
+For example, on a Mac:
+
+First get your ip address:
+```shell
+ipconfig getifaddr en0
+```
+
+Then serve to all devices:
+```shell
+make servewide
+```
+
+Now, on another device on your network, connect to `{your ip address}:8000` in your browesr.
+
 ## Updating _glvis.js_
 
 1. After building copy the new _glvis.js_ into the _src_ directory.
