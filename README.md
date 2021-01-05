@@ -84,20 +84,19 @@ network.
 
 For example, on a Mac:
 
-1, First get your IP address:
+1. First, get your IP address:
 
    ```shell
    ipconfig getifaddr en0
    ```
 
-2. Then serve to all devices:
+2. Then, serve `glvis-js` to all devices in your local network:
 
    ```shell
    make servewide
    ```
 
-3. Any device on your local network now can connect a browser to `{your IP address}:8000` to use
-   the local version of glvis-js.
+3. Any device in your network can now connect to `{your IP address}:8000` to use the local version of `glvis-js`.
 
 
 ## Updating _glvis.js_
