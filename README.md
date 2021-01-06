@@ -8,7 +8,8 @@ Using [Emscripten](https://emscripten.org/index.html) GLVis can be built as a Ja
 A pre-built JavaScript library is included at _src/glvis.js_ but because of its size it
 is stored using Git's Large File Storage, [git-lfs](https://git-lfs.github.com/).
 
-To use the pre-built library, e.g. with the examples in the `examples/` directory, you need
+To use the pre-built library, e.g. with the examples in the `examples/` directory, or with the full-featured
+web version of GLVis in the `live/` directory, you need
 first to enable `git-lfs` on your system, see the instructions on the [git-lfs page](https://git-lfs.github.com/).
 
 For example, a simple run with the pre-built library can be executed on a Mac from scratch with:
