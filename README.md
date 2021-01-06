@@ -60,7 +60,7 @@ might fail.
 
 ## Serving to a device on your local network
 
-The `servewide` make target allows you to serve your local glvis-js to other devices on your
+The `serve` make target allows you to serve your local glvis-js to other devices on your
 network.
 
 For example, on a Mac:
@@ -74,7 +74,7 @@ For example, on a Mac:
 2. Then, serve `glvis-js` to all devices in your local network:
 
    ```shell
-   make servewide
+   make serve
    ```
 
 3. Any device in your network can now connect to `{your IP address}:8000` to use the local version of `glvis-js`.

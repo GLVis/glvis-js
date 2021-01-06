@@ -56,7 +56,7 @@ versions:
 style:
 	@which $(NPX) > /dev/null && { $(NPX) prettier -w src/ live/ examples/ || exit 1; } || echo "fatal: $(NPX) isn't available, please install npm."
 
-servewide:
+serve:
 	python3 -m http.server 8000 --bind 0.0.0.0
 
 servelocal:

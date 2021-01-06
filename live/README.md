@@ -14,7 +14,7 @@ The web version of GLVis can also load local or remote streams by directly parsi
 in the format: `<site>/live?stream=<url>`.
 For example, https://glvis.org/live?stream=https://glvis.org/data/ex9.saved will fetch _ex9.saved_
 from glvis.org and render it instead of the normal _quad.saved_ on startup. The same can be done with
-data from an external site or if you're hosting locally after running [`make servewide`](../README.md#serving-to-a-device-on-your-local-network):
+data from an external site or if you're hosting locally after running [`make serve`](../README.md#serving-to-a-device-on-your-local-network):
 https://localhost:8000/live/stream=https://glvis.org/data/ex9.saved
 
 ## Loading streams from MFEM
