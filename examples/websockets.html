@@ -79,6 +79,10 @@
             >Connect</label
           >
         </div>
+
+        <div>
+          <label class="menu-button" type="button" id="pause-btn"></label>
+        </div>
       </div>
 
       <!-- delay slider-->
@@ -451,10 +455,35 @@
         document.getElementById(id).style.width = "0";
       }
 
+      // pause button for streams
+      var stream_paused = false;
+      var pause_button = document.getElementById("pause-btn");
+      function setToggleStreamPauseText() {
+        if (stream_paused) {
+          pause_button.innerHTML = "Resume";
+        } else {
+          pause_button.innerHTML = "Pause";
+        }
+      }
+
+      setToggleStreamPauseText();
+      pause_button.onclick = function () {
+        stream_paused = !stream_paused;
+        setToggleStreamPauseText();
+      };
+
       // websocket setup
       var ws = undefined;
       var que = async.queue(async function (msg) {
-        glv.displayStream(msg);
+        while (stream_paused) {
+          await new Promise((r) => setTimeout(r, 500));
+        }
+        await glv.updateStream(msg);
+        if (msg.endsWith("pause\n")) {
+          console.log("pausing");
+          stream_paused = true;
+          setToggleStreamPauseText();
+        }
         await new Promise((r) => setTimeout(r, 50));
       });
 
@@ -481,8 +510,7 @@
           console.log("disconnected");
           btn.innerHTML = "Connect";
         });
-        ws.addEventListener("message", function (event) {
-          console.log(`got message from ${event.origin}`);
+        ws.addEventListener("message", async function (event) {
           que.push(event.data);
         });
       }
