@@ -2,16 +2,16 @@
 
 Using [Emscripten](https://emscripten.org/index.html) GLVis can be built as a JavaScript & WebAssembly library.
 
-A full-featured web GLVis is available at https://glvis.org/live with documentation available [here](live/README.md). 
+A fully-featured web version of GLVis is available at https://glvis.org/live with documentation in [live/README.md](live/README.md).
 
 ## Using a pre-built version of the _glvis.js_ library
 
-A pre-built JavaScript library is included at _src/glvis.js_ but because of its size it
+A pre-built JavaScript library is included at _src/glvis.js_, but because of its size it
 is stored using Git's Large File Storage, [git-lfs](https://git-lfs.github.com/).
 
-To use the pre-built library, e.g. with the examples in the `examples/` directory, or with the full-featured
-web version of GLVis in the `live/` directory, you need
-first to enable `git-lfs` on your system, see the instructions on the [git-lfs page](https://git-lfs.github.com/).
+To use the pre-built library, e.g. with the examples in the `examples/` directory, or with the web version
+in the `live/` directory, you need first to enable `git-lfs` on your system, see the instructions on the
+[git-lfs page](https://git-lfs.github.com/).
 
 For example, a simple run with the pre-built library can be executed on a Mac from scratch with:
 
@@ -49,6 +49,7 @@ open basic.html
 4. Build:
 
    ```
+   rm ../glvis/lib/libglvis.js
    make -j
    cp ../glvis/lib/libglvis.js src/glvis.js
    ```
@@ -109,8 +110,8 @@ be installed for you when running `make style` if you don't already have it.
 ## TODO
 - Play/pause button
 - Spinner
-- Check why certain keys, such as 0, don’t work from the Control tab (but work in the vis area)
+- Check why certain keys, such as `0`--`9`, don’t work from the Control tab (but work in the vis area)
 - Prettify/update the CSS styling
 - Multiple output windows
-   - MFEM stream with multiple fields causes the visualizations to write over eachother
-- Improve the I/O e.g. corresponding to key F6
+   - MFEM stream with multiple fields causes the visualizations to write over each other
+- Improve the I/O e.g. corresponding to key `F6`
