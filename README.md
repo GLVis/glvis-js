@@ -105,3 +105,12 @@ be installed for you when running `make style` if you don't already have it.
     some existing behavior
 
 - Lots of console warnings
+
+## TODO
+- Play/pause button
+- Spinner
+- Check why certain keys, such as 0, don’t work from the Control tab (but work in the vis area)
+- Prettify/update the CSS styling
+- Multiple output windows
+   - MFEM stream with multiple fields causes the visualizations to write over eachother
+- Improve the I/O e.g. corresponding to key F6
