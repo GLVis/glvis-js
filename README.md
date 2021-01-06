@@ -23,7 +23,7 @@ open basic.html
 
 ### Streaming from MFEM
 
-The _examples/websockets.html_ webpage can be used for inline visualization from MFEM with the
+The _live/index.html_ webpage can be used for inline visualization from MFEM with the
 `glvis-browser-server` script. `glvis-browser-server` forwards MFEM visualization messages to the webpage using websockets.
 
 Example usages:
@@ -33,7 +33,7 @@ Example usages:
    - requires Python 3.7+
    - assumes default MFEM port of `19916`
 
-2. Open _examples/websockets.html_
+2. Open _live/index.html_
 
    - open the `Setup` menu and click the `Connect` button
    - default host and websocket port is `localhost:8080`
@@ -42,7 +42,7 @@ Example usages:
 
 3. `cd mfem/examples && ./ex9`
 
-4. `ctrl-c` to stop `glvis-browser-server`
+4. `Ctrl-c` to stop `glvis-browser-server`
 
 
 ## Building _glvis.js_
