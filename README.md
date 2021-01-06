@@ -2,6 +2,7 @@
 
 Using [Emscripten](https://emscripten.org/index.html) GLVis can be built as a JavaScript & WebAssembly library.
 
+A full-featured web GLVis is available at https://glvis.org/live with documentation available [here](live/README.md). 
 
 ## Using a pre-built version of the _glvis.js_ library
 
@@ -21,30 +22,6 @@ git clone git@github.com:GLVis/glvis-js.git
 cd glvis-js/examples
 open basic.html
 ```
-
-### Streaming from MFEM
-
-The _live/index.html_ webpage can be used for inline visualization from MFEM with the
-`glvis-browser-server` script. `glvis-browser-server` forwards MFEM visualization messages to the webpage using websockets.
-
-Example usages:
-
-1. `cd glvis-js && ./glvis-browser-server`
-
-   - requires Python 3.7+
-   - assumes default MFEM port of `19916`
-
-2. Open _live/index.html_
-
-   - open the `Setup` menu and click the `Connect` button
-   - default host and websocket port is `localhost:8080`
-   - there is a `Pause`/`Resume` button below the `Connect` button that can be used to pause the
-     stream or, in the case that a "pause" message was sent, resume the stream
-
-3. `cd mfem/examples && ./ex9`
-
-4. `Ctrl-c` to stop `glvis-browser-server`
-
 
 ## Building _glvis.js_
 
