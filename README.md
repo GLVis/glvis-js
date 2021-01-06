@@ -110,7 +110,7 @@ be installed for you when running `make style` if you don't already have it.
 ## TODO
 - Play/pause button
 - Spinner
-- Check why certain keys, such as `0`--`9`, don’t work from the Control tab (but work in the vis area)
+- Check why certain keys, such as `0`-`9`, don’t work from the Control tab (but work in the vis area)
 - Prettify/update the CSS styling
 - Multiple output windows
    - MFEM stream with multiple fields causes the visualizations to write over each other
