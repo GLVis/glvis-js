@@ -6,12 +6,12 @@
     <script src="../src/glvis.js"></script>
     <script src="../src/index.js"></script>
     <script src="../src/helpers.js"></script>
-    <script src="./example_stream.js"></script>
+    <script src="../examples/example_stream.js"></script>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
     />
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="../src/index.css" />
 
     <link
       rel="icon"
@@ -530,7 +530,7 @@
         glv.loadUrl(stream);
       }
       // use the example stream if available
-      else if (example_stream !== undefined) {
+      else if (typeof example_stream !== "undefined") {
         console.log("using example stream");
         glv.displayStream(example_stream);
       }
