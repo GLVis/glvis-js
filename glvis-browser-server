@@ -1,12 +1,25 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
+# Copyright (c) 2010-2020, Lawrence Livermore National Security, LLC. Produced
+# at the Lawrence Livermore National Laboratory. All Rights reserved. See files
+# LICENSE and NOTICE for details. LLNL-CODE-443271.
 #
-# glvis-browser-server is an mfem to websocket forwarder to make it easier to use glvis-js as a
-# viewer for inline mfem visualization. m2w.py must be run before opening the web-client and mfem.
+# This file is part of the GLVis visualization tool and library. For more
+# information and source code availability see https://glvis.org.
 #
-# glvis-browser-server requires the websockets Python library (pip install websockets) and have
-# been tested with Python 3.7. Earlier versions may work.
+# GLVis is free software; you can redistribute it and/or modify it under the
+# terms of the BSD-3 license. We welcome feedback and contributions, see file
+# CONTRIBUTING.md for details.
+
+# The glvis-browser-server script is an MFEM socket-to-websocket forwarder to
+# make it easier to use glvis-js as a viewer for inline MFEM visualization.
 #
+# The input is assumed to be on the default MFEM port of 19916, the default host
+# and websocket port is localhost:8080. The glvis-browser-server script must be
+# run before opening the web client or sending data to the MFEM socket.
+#
+# The script requires the websockets Python library (pip install websockets) and
+# have been tested with Python 3.7. Earlier versions may work.
 
 import argparse
 import asyncio
@@ -35,8 +48,7 @@ async def ws_handler(queue, websocket, path):
             websockets.exceptions.ConnectionClosedOK,
             websockets.exceptions.ConnectionClosedError,
         ):
-            # if there is only one message we can requeue it, otherwise
-            # drop it
+            # if there is only one message we can requeue it, otherwise drop it
             if queue.empty():
                 queue.put_nowait(msg)
             break
