@@ -479,6 +479,11 @@
           await new Promise((r) => setTimeout(r, 500));
         }
         await glv.updateStream(msg);
+        if (msg.endsWith("pause\n")) {
+          console.log("pausing");
+          stream_paused = true;
+          setToggleStreamPauseText();
+        }
         await new Promise((r) => setTimeout(r, 50));
       });
 
