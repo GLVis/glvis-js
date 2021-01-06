@@ -33,12 +33,14 @@ Example usages:
    - requires Python 3.7+
    - assumes default MFEM port of `19916`
 
-2. Open (or reload) _examples/websockets.html_
+2. Open _examples/websockets.html_
 
-   - click on the Connect button
+   - open the `Setup` menu and click the `Connect` button
    - default host and websocket port is `localhost:8080`
+   - there is a `Pause`/`Resume` button below the `Connect` button that can be used to pause the
+     stream or, in the case that a "pause" message was sent, resume the stream
 
-3. `cd mfem/examples && ./ex1` or `cd mfem/examples && ./ex9 -vs 20`
+3. `cd mfem/examples && ./ex9`
 
 4. `ctrl-c` to stop `glvis-browser-server`
 
@@ -99,24 +101,23 @@ For example, on a Mac:
 3. Any device in your network can now connect to `{your IP address}:8000` to use the local version of `glvis-js`.
 
 
-## Updating _glvis.js_
+## Contributing
 
-1. After building copy the new _glvis.js_ into the _src_ directory.
+Please run `make style` before pushing your changes. `make style` uses
+[`prettier`](https://prettier.io) and requires that you have
+[`npx`](https://www.npmjs.com/package/npx) in your path. `prettier` will
+be installed for you when running `make style` if you don't already have it.
+
+### Updating _glvis.js_
+
+1. Use `make install` to build and install a new `glvis.js` and `versions.js` to *src/*
 
 2. Please add the output of `make versions` to the commit body.
 
 
 ## Known issues and limitations
 
-- The Library only supports GLVis stream data
-
-- Lots of console warnings
-
-- "Updating" data results in a totally new visualization
-
-  - keys are not preserved
-  - unnecessary computation
-  - memory leaks can lead to OOM in the JS runtime
+- Opening new examples results in memory growth
 
 - Fullscreen events captured by the Emscripten Module are difficult to control
 
@@ -124,3 +125,5 @@ For example, on a Mac:
   - `_JSEvents_requestFullscreen` in _glvis.js_ takes over the whole screen
   - `_emscripten_set_canvas_element_size` and `__set_canvas_element_size` print errors and duplicate
     some existing behavior
+
+- Lots of console warnings
