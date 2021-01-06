@@ -31,7 +31,7 @@ Example usages:
 
 1. `cd glvis-js && ./glvis-browser-server`
 
-   - Requires Python 3.7+.
+   - Requires Python 3.6.1+ and [`websockets`](https://websockets.readthedocs.io/en/stable/index.html) (available via `pip`).
    - Assumes default MFEM port of `19916`.
 
 2. Visit https://glvis.org/live or open `glvis-js/live` in a browser
