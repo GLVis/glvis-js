@@ -2,7 +2,7 @@
   "name": "glvis",
   "version": "0.1.0",
   "description": "A lightweight WebGL tool for accurate and flexible finite element visualization",
-  "license": "BSD-3",
+  "license": "BSD-3-Clause",
   "main": "src/index.js",
   "author": "",
   "homepage": "https://glvis.org",

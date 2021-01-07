@@ -32,6 +32,15 @@
     root["glvis"] = factory(root["glvis"]);
   }
 })(this, function (emglvis) {
+  function rand_id() {
+    const arr = new Uint8Array(10);
+    window.crypto.getRandomValues(arr);
+    return arr.reduce(
+      (cur, next) => cur + next.toString(36).padStart(2, "0"),
+      ""
+    );
+  }
+
   class State {
     constructor(div, width = 640, height = 480, canvas = undefined) {
       if (div === undefined) {
@@ -72,7 +81,7 @@
     setupCanvas(width, height) {
       if (this.canvas_ === undefined) {
         this.canvas_ = document.createElement("canvas");
-        this.canvas_.id = "glvis-canvas";
+        this.canvas_.id = `glvis-canvas-${rand_id()}`;
       }
       this.setCanvasSize(width, height);
       this.canvas_.innerHTML = "Your browser doesn't support HTML canvas";
@@ -135,19 +144,23 @@
       this.display(data_type, data_str);
     }
 
-    async updateStream(stream) {
+    async update(data_type, data_str) {
       if (!this.emsetup_) {
-        this.displayStream(stream);
+        this.display(data_type, data_str);
         return;
       }
-      const index = stream.indexOf("\n");
-      const data_type = stream.substr(0, index);
-      const data_str = stream.substr(index + 1);
       var g = await this.emglv_;
       if (g.updateVisualization(data_type, data_str) != 0) {
         console.log("unable to update stream, starting a new one");
         this.display(data_type, data_str);
       }
+    }
+
+    async updateStream(stream) {
+      const index = stream.indexOf("\n");
+      const data_type = stream.substr(0, index);
+      const data_str = stream.substr(index + 1);
+      await this.update(data_type, data_str);
     }
 
     sendKey(key) {
@@ -201,10 +214,11 @@
   }
 
   return {
-    emglvis: glvis,
+    emglvis: emglvis,
     State: State,
     info: function () {
       console.log("hi from GLVis!");
     },
+    rand_id: rand_id,
   };
 });
