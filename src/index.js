@@ -151,13 +151,11 @@
     }
 
     sendKey(key) {
-      if (this.canvas_ !== undefined) {
-        var e = new KeyboardEvent("keypress", {
-          bubbles: true,
-          charCode: key.charCodeAt(0),
-        });
-        this.canvas_.dispatchEvent(e);
-      }
+      var e = new KeyboardEvent("keypress", {
+        bubbles: true,
+        charCode: key.charCodeAt(0),
+      });
+      this.canvas_.dispatchEvent(e);
     }
 
     async loadUrl(url) {
