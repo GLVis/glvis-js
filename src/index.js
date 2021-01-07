@@ -151,7 +151,7 @@
     }
 
     sendKey(key) {
-      if (this.canvas_ === undefined) {
+      if (this.canvas_ !== undefined) {
         var e = new KeyboardEvent("keypress", {
           bubbles: true,
           charCode: key.charCodeAt(0),
