@@ -1,0 +1,27 @@
+{
+  "name": "glvis",
+  "version": "0.1.0",
+  "description": "A lightweight WebGL tool for accurate and flexible finite element visualization",
+  "license": "BSD-3",
+  "main": "src/index.js",
+  "author": "",
+  "homepage": "https://glvis.org",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/glvis/glvis-js.git"
+  },
+  "keywords": [
+    "finite-elements",
+    "visualization",
+    "computational-science",
+    "data-vis",
+    "mfem"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "prettier": "2.2.1"
+  }
+}

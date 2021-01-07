@@ -2,8 +2,7 @@
 <meta charset="UTF-8" />
 <html>
   <head>
-    <script src="../src/glvis.js"></script>
-    <script src="../src/index.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js"></script>
     <script src="./example_stream.js"></script>
     <link
       rel="icon"
@@ -35,17 +34,15 @@
 
     <script type="text/javascript">
       var div = document.getElementById("glvis-div");
-      var glv = new glvis.State(div);
-      glv.registerNewStreamCallback(function (state) {
-        state.getHelpString().then(function (s) {
-          document.getElementById("keys-div").innerHTML = s;
+      require(["../src/index.js"], function (glvis) {
+        var glv = new glvis.State(div);
+        glv.registerNewStreamCallback(function (state) {
+          state.getHelpString().then(function (s) {
+            document.getElementById("keys-div").innerHTML = s;
+          });
         });
+        glv.displayStream(example_stream);
       });
-      glv.displayStream(example_stream);
     </script>
-
-    <div align="center">
-      <input type="file" id="load_stream" onchange="glv.loadStream(event)" />
-    </div>
   </body>
 </html>

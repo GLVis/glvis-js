@@ -1,0 +1,167 @@
+/* https://www.w3schools.com/howto/howto_js_sidenav.asp */
+/* The side navigation menu */
+.sidenav {
+  height: 100%; /* 100% Full-height */
+  width: 0; /* 0 width - change this with JavaScript */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Stay on top */
+  top: 0; /* Stay at the top */
+  right: 0;
+  background-color: #fdf6e3;
+  overflow-x: hidden; /* Disable horizontal scroll */
+  padding-top: 60px; /* Place content 60px from the top */
+  transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
+}
+
+/* The navigation menu links */
+.sidenav a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 18px;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
+}
+/* When you mouse over the navigation links, change their color */
+.sidenav a:hover {
+  color: #f1f1f1;
+}
+
+/* Position and style the close button (top right corner) */
+.sidenav .closebtn {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: 50px;
+  margin-left: -20px;
+  margin-top: -5px;
+}
+
+.vertical {
+  position: absolute;
+  background: #268bd2;
+  padding: 10px;
+  border-radius: 5px 5px 0 0;
+  float: right;
+  right: 40px;
+  display: block;
+  -moz-transform: rotate(270deg); /* FF3.5+ */
+  -o-transform: rotate(270deg); /* Opera 10.5 */
+  -webkit-transform: rotate(-90deg); /* Saf3.1+, Chrome */
+  -moz-transform-origin: right top;
+  -o-transform-origin: right top;
+  -webkit-transform-origin: right top;
+}
+
+.vertical span {
+  display: inline;
+  float: left;
+  padding-left: 10px;
+  padding-right: 10px;
+  font-size: 18;
+  color: #fff;
+}
+
+.vertical span:hover {
+  color: #586e75;
+}
+
+/* other */
+.menu-button {
+  display: inline-block;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 4px;
+  background-color: #657b83;
+  font-size: 16px;
+  color: #fff;
+}
+
+.menu-button:hover {
+  background-color: #586e75;
+}
+
+.menu-item: {
+  padding-top: 20px;
+  padding: 10px 5px 10px 5px;
+}
+
+/* TODO */
+div:focus {
+  outline: 0;
+}
+canvas:focus {
+  outline: 0;
+}
+
+/* https://www.w3schools.com/howto/howto_css_icon_buttons.asp */
+/* Style buttons */
+.icon-btn {
+  background-color: #dcdcdc;
+  border: none; /* Remove borders */
+  color: white; /* White text */
+  padding: 8px 12px;
+  font-size: 20px;
+  cursor: pointer; /* Mouse pointer on hover */
+  border-radius: 50%;
+  opacity: 0.5;
+}
+
+/* Darker background on mouse-over */
+.icon-btn:hover {
+  background-color: #808080;
+}
+
+#expand-btn {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+}
+
+#main {
+  transition: margin-right 0.5s;
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  margin: 0px;
+  border: 0;
+}
+
+/* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
+@media screen and (max-height: 450px) {
+  .sidenav {
+    padding-top: 15px;
+  }
+  .sidenav a {
+    font-size: 18px;
+  }
+  .vertical span {
+    font-size: 8px;
+  }
+}
+
+#log-container {
+  padding-left: 2ch;
+  padding-right: 1ch;
+  padding-bottom: 10ch;
+}
+
+#log {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.log-warn {
+  color: orange;
+  font-weight: bold;
+}
+.log-error {
+  color: red;
+  font-weight: bold;
+}
+.log-debug {
+  color: green;
+}
+.log-info {
+  color: blue;
+}
