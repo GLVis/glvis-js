@@ -94,6 +94,16 @@ be installed for you when running `make style` if you don't already have it.
 2. Please add the output of `make versions` to the commit body.
 
 
+## Releasing
+
+1. Update the version: `npm version <update_type>`
+   - `<update_type>` is one of `patch`, `minor`, or `major`
+
+2. `num publish`
+
+More info [here](https://docs.npmjs.com/updating-your-published-package-version-number).
+
+
 ## Known issues and limitations
 
 - Opening new examples results in memory growth
@@ -106,6 +116,7 @@ be installed for you when running `make style` if you don't already have it.
     some existing behavior
 
 - Lots of console warnings
+
 
 ## TODO
 - Play/pause button
