@@ -65,11 +65,17 @@ network.
 
 For example, on a Mac:
 
-1. First, get your IP address:
+1. First, get `your IP address`:
 
    ```shell
    ipconfig getifaddr en0
    ```
+
+   or alternatively your `hostname`:
+
+   ```shell
+   hostname -s
+   ````
 
 2. Then, serve `glvis-js` to all devices in your local network:
 
@@ -77,7 +83,7 @@ For example, on a Mac:
    make serve
    ```
 
-3. Any device in your network can now connect to `{your IP address}:8000` to use the local version of `glvis-js`.
+3. Any device in your network can now connect to `{your IP address}:8000` or `{hostname}:8000` to use the local version of `glvis-js`. On the local host, you can also use `localhost:8000`.
 
 
 ## Contributing

@@ -15,7 +15,7 @@ in the format: `<site>/live?stream=<url>`.
 For example, https://glvis.org/live?stream=https://glvis.org/data/ex9.saved will fetch _ex9.saved_
 from glvis.org and render it instead of the normal _quad.saved_ on startup. The same can be done with
 data from an external site or if you're hosting locally after running [`make serve`](../README.md#serving-to-a-device-on-your-local-network):
-https://localhost:8000/live/stream=https://glvis.org/data/ex9.saved
+https://localhost:8000/live?stream=https://glvis.org/data/ex9.saved
 
 ## Loading streams from MFEM
 
@@ -39,6 +39,7 @@ Example usages:
 3. Open the `Setup` menu and click the `Connect` button
 
    - Default host and websocket port are `localhost:8080`.
+   - You can also use `{hostname}:8080` if you are connecting from another device on your network.
    - There is a `Pause`/`Resume` button below the `Connect` button that can be used to pause the stream or,
      in the case that a "pause" message was sent, resume the stream.
    - Does not currently work in Safari from https://glvis.org/live (seems to require a secure websocket).

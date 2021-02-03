@@ -16,7 +16,7 @@
 #
 # The input is assumed to be on the default MFEM port of 19916, the default host
 # and websocket port is localhost:8080. The glvis-browser-server script must be
-# run before opening the web client or sending data to the MFEM socket.
+# run before sending data to the MFEM socket.
 #
 # The script requires the websockets Python library (pip install websockets) and
 # have been tested with Python 3.7. Earlier versions may work.
@@ -105,7 +105,7 @@ async def main():
     async def ws_handler_wrap(websocket, path):
         await ws_handler(queue, websocket, path)
 
-    ws_server = websockets.serve(ws_handler_wrap, "localhost", args.ws_port)
+    ws_server = websockets.serve(ws_handler_wrap, "0.0.0.0", args.ws_port)
     mfem_server = asyncio.create_task(create_mfem_server(queue))
 
     await ws_server
