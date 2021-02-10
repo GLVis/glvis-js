@@ -163,12 +163,24 @@
       await this.update(data_type, data_str);
     }
 
-    sendKey(key) {
-      var e = new KeyboardEvent("keypress", {
-        bubbles: true,
-        charCode: key.charCodeAt(0),
-      });
-      this.canvas_.dispatchEvent(e);
+    async sendKey(key, ctrl = false, shift = false, alt = false) {
+      var key_code = undefined;
+      if (typeof key === "string") {
+        key_code = key.charCodeAt(0);
+        console.log(`sending key '${key[0]}' (key_code=${key_code})`);
+      } else if (typeof key === "number") {
+        key_code = key;
+        console.log(`sending key_code=${key_code}`);
+      } else {
+        throw "unsupported type";
+      }
+      var g = await this.emglv_;
+      g.processKey(key_code, ctrl, shift, alt);
+    }
+
+    async sendKeyStr(keys) {
+      var g = await this.emglv_;
+      g.processKeys(keys);
     }
 
     async loadUrl(url) {
