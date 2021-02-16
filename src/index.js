@@ -137,11 +137,11 @@
       this._startVis(g);
     }
 
-    displayStream(stream) {
+    async displayStream(stream) {
       const index = stream.indexOf("\n");
       const data_type = stream.substr(0, index);
       const data_str = stream.substr(index + 1);
-      this.display(data_type, data_str);
+      await this.display(data_type, data_str);
     }
 
     async update(data_type, data_str) {
@@ -195,18 +195,13 @@
         return;
       }
       console.log(`loading ${url}`);
-      this.displayStream(text);
+      await this.displayStream(text);
     }
 
-    loadStream(e) {
-      var reader = new FileReader();
-      var filename = e.target.files[0];
-      var that = this;
-      reader.onload = function (e) {
-        console.log("loading " + filename);
-        that.displayStream(e.target.result);
-      };
-      reader.readAsText(filename);
+    async loadStream(e) {
+      const filename = e.target.files[0];
+      const data = await new Response(filename).text();
+      await this.displayStream(data);
     }
 
     setTouchDevice(status) {
