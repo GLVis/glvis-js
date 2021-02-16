@@ -105,7 +105,7 @@ be installed for you when running `make style` if you don't already have it.
 1. Update the version: `npm version <update_type>`
    - `<update_type>` is one of `patch`, `minor`, or `major`
 
-2. `num publish`
+2. `npm publish`
 
 More info [here](https://docs.npmjs.com/updating-your-published-package-version-number).
 
@@ -116,19 +116,16 @@ More info [here](https://docs.npmjs.com/updating-your-published-package-version-
 
 - Fullscreen events captured by the Emscripten Module are difficult to control
 
-  - Setting a noop with `emscripten_set_fullscreenchange_callback` doesn't seem to do it
   - `_JSEvents_requestFullscreen` in _glvis.js_ takes over the whole screen
-  - `_emscripten_set_canvas_element_size` and `__set_canvas_element_size` print errors and duplicate
-    some existing behavior
+    - For now we patch this to be a noop
+    - Setting a noop with `emscripten_set_fullscreenchange_callback` doesn't seem to do it
+  - `_emscripten_set_canvas_element_size` and `__set_canvas_element_size` print
+  errors and duplicate some existing behavior
 
 - Lots of console warnings
 
 
 ## TODO
-- Play/pause button
-- Spinner
-- Check why certain keys, such as `0`-`9`, don’t work from the Control tab (but work in the vis area)
-- Prettify/update the CSS styling
 - Multiple output windows
    - MFEM stream with multiple fields causes the visualizations to write over each other
 - Improve the I/O e.g. corresponding to key `F6`

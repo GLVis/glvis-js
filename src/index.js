@@ -137,11 +137,11 @@
       this._startVis(g);
     }
 
-    displayStream(stream) {
+    async displayStream(stream) {
       const index = stream.indexOf("\n");
       const data_type = stream.substr(0, index);
       const data_str = stream.substr(index + 1);
-      this.display(data_type, data_str);
+      await this.display(data_type, data_str);
     }
 
     async update(data_type, data_str) {
@@ -163,12 +163,24 @@
       await this.update(data_type, data_str);
     }
 
-    sendKey(key) {
-      var e = new KeyboardEvent("keypress", {
-        bubbles: true,
-        charCode: key.charCodeAt(0),
-      });
-      this.canvas_.dispatchEvent(e);
+    async sendKey(key, ctrl = false, shift = false, alt = false) {
+      var key_code = undefined;
+      if (typeof key === "string") {
+        key_code = key.charCodeAt(0);
+        console.log(`sending key '${key[0]}' (key_code=${key_code})`);
+      } else if (typeof key === "number") {
+        key_code = key;
+        console.log(`sending key_code=${key_code}`);
+      } else {
+        throw "unsupported type";
+      }
+      var g = await this.emglv_;
+      g.processKey(key_code, ctrl, shift, alt);
+    }
+
+    async sendKeyStr(keys) {
+      var g = await this.emglv_;
+      g.processKeys(keys);
     }
 
     async loadUrl(url) {
@@ -183,18 +195,13 @@
         return;
       }
       console.log(`loading ${url}`);
-      this.displayStream(text);
+      await this.displayStream(text);
     }
 
-    loadStream(e) {
-      var reader = new FileReader();
-      var filename = e.target.files[0];
-      var that = this;
-      reader.onload = function (e) {
-        console.log("loading " + filename);
-        that.displayStream(e.target.result);
-      };
-      reader.readAsText(filename);
+    async loadStream(e) {
+      const filename = e.target.files[0];
+      const data = await new Response(filename).text();
+      await this.displayStream(data);
     }
 
     setTouchDevice(status) {
