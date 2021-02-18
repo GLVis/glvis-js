@@ -13,7 +13,6 @@
   <script src="../src/glvis.js"></script>
   <script src="../src/index.js"></script>
   <script src="../src/helpers.js"></script>
-  <script src="../examples/example_stream.js"></script>
   <style>
     html {
       overflow: hidden !important;
@@ -544,6 +543,7 @@
       experimentalMode: false,
       logMode: false,
       streamDelay: 0,
+      defaultExample: 14,
       examples: [
         {
           name: "MFEM Example 1",
@@ -643,7 +643,7 @@
           this.glvIsInitializing = false;
         });
       } else {
-        this.glv.displayStream(example_stream).then(() => {
+        this.glv.loadUrl(this.examples[this.defaultExample].url).then(() => {
           this.glvIsInitializing = false;
         });
       }
