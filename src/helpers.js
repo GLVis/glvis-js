@@ -56,10 +56,7 @@ function windowDim() {
   return [w, h];
 }
 
-function augmentLoggers(log_id, log_cont_id) {
-  var log = document.getElementById(log_id);
-  var log_cont = document.getElementById(log_cont_id);
-
+function augmentLoggers(append) {
   function augmentLogger(name) {
     var out = console[name];
 
@@ -76,8 +73,7 @@ function augmentLoggers(log_id, log_cont_id) {
 
     console[name] = function (...arguments) {
       out(...arguments);
-      log.innerHTML += to_text(arguments) + "<br>";
-      log_cont.scrollTop = log_cont.scrollHeight; // - log_cont.clientHeight;
+      append(to_text(arguments) + "<br>");
     };
   }
 
