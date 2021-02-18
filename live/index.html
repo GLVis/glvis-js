@@ -509,7 +509,7 @@
   });
 
   var host = window.location.hostname;
-  if (host === "127.0.0.1") { host = "localhost" }
+  if (host === "127.0.0.1" || host === "glvis.org") { host = "localhost" }
   console.log(`host = ${host}`);
 
   const touch = matchMedia('(hover: none), (pointer: coarse)').matches;
