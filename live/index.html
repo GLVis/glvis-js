@@ -13,6 +13,7 @@
   <script src="../src/glvis.js"></script>
   <script src="../src/index.js"></script>
   <script src="../src/helpers.js"></script>
+  <script src="../examples/example_stream.js"></script>
   <style>
     html {
       overflow: hidden !important;
@@ -640,6 +641,10 @@
       if (stream) {
         console.log(`loading stream from ${stream}`);
         this.glv.loadUrl(stream).then(() => {
+          this.glvIsInitializing = false;
+        });
+      } else if (typeof(example_stream) !== "undefined") {
+        this.glv.displayStream(example_stream).then(() => {
           this.glvIsInitializing = false;
         });
       } else {
