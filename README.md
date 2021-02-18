@@ -129,3 +129,4 @@ More info [here](https://docs.npmjs.com/updating-your-published-package-version-
 - Multiple output windows
    - MFEM stream with multiple fields causes the visualizations to write over each other
 - Improve the I/O e.g. corresponding to key `F6`
+- Improve experience on mobile devices with touch interfaces
