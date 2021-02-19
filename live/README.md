@@ -1,14 +1,14 @@
 # Web version of GLVis
 
 The _index.html_ page in this directory contains a fully-featured web version of GLVis, also available at
-https://glvis.org/live. This versions enables GLVis capabilities on any machine with a modern browser, and
+https://glvis.org/live. This web version enables GLVis capabilities on any machine with a modern browser, and
 is also fully supported on mobile touch devices, such as tablets and phones.
 
 ## Interaction and help
 
-The web version of GLVis support virtually all features of the desktop client, including key commands, mouse interaction (with touch support on mobile).
+The web version of GLVis support virtually all features of the desktop client, including key commands, mouse interactions, socket connections, and adds touch support for mobile devices.
 
-Additional functionality is available via several buttons that appear when hovering at the top of the screen. This buttons are (from top left to top right):
+Additional functionality is available via several buttons that appear when hovering at the top of the screen. These buttons are (from top left to top right):
 
 - `Load local file`
 - `Connect to socket`
@@ -55,7 +55,7 @@ Example usages:
 
    - Default host and websocket port are `localhost:8080`.
    - You can also use `{hostname}:8080` if you are connecting from another device on your network.
-   - Press `space` (or double-tap on mobile.) to pause the stream or, in the case that a "pause" message was sent, resume the stream.
+   - Press `space` (or double-tap on mobile) to pause the stream or, in the case that a pause message was sent, resume the stream.
    - Does not currently work in Safari from https://glvis.org/live (seems to require a secure websocket).
 
 4. `cd mfem/examples && ./ex9` in a separate terminal
@@ -64,9 +64,9 @@ Example usages:
 
 ## Examples and visualization controls
 
-A number of pre-defined example streams are included in the https://glvis.org/live page. See the `Examples` button in upper right. These include the results of several MFEM examples and miniapps which are also linked from their corresponding images at https://mfem.org/examples.
+A number of pre-defined example streams are included in the https://glvis.org/live page. See the `Examples` button in the upper right. These include the results of several MFEM examples and miniapps which are also linked from their corresponding images at https://mfem.org/examples.
 
-Next to examples is the `Visualization controls` button that provides a mobile/touch-friendly interface to some of the most used GLVis key commands. Note the `Redraw` button at the bottom which can be useful to redraw the visualization scene.
+Next to `Examples` is the `Visualization controls` button that provides a touch-friendly interface to some of the most used GLVis key commands. Note the `Redraw` button at the bottom of the `Visualization controls` list, which can be useful to redraw the visualization scene.
 
 ## Fullscreen mode
 
