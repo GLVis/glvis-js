@@ -1,583 +1,1158 @@
 <!DOCTYPE html>
-<meta charset="UTF-8" />
 <html>
   <head>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/async/3.2.0/async.min.js"></script>
-    <script src="../src/glvis.js"></script>
-    <script src="../src/index.js"></script>
-    <script src="../src/helpers.js"></script>
-    <script src="../examples/example_stream.js"></script>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
-    />
-    <link rel="stylesheet" href="index.css" />
-
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>glvis</title>
     <link
       rel="icon"
       type="image/png"
       href="https://glvis.org/img/favicon.ico"
     />
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css"
+      rel="stylesheet"
+    />
+    <script src="../src/glvis.js"></script>
+    <script src="../src/index.js"></script>
+    <script src="../src/helpers.js"></script>
+    <script src="../examples/example_stream.js"></script>
+    <style>
+      html {
+        overflow: hidden !important;
+      }
+
+      .menu-indicator-space {
+        position: absolute;
+        min-height: 10%;
+        min-width: 100%;
+      }
+
+      .main-container {
+        position: relative;
+        height: 100%;
+      }
+
+      .glvis-window {
+        position: absolute;
+        margin: 0px;
+        border: 0;
+        top: 0;
+        left: 0;
+        height: 100%;
+      }
+
+      .glvis-window-loading {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-right: -50%;
+      }
+
+      .overlay-left {
+        position: absolute;
+        z-index: 9;
+        min-width: 200px;
+        min-height: 50px;
+        padding: 5px;
+      }
+
+      .overlay-middle {
+        position: absolute;
+        z-index: 9;
+        top: 10%;
+        left: 45%;
+        margin-right: -50%;
+      }
+
+      .overlay-right {
+        position: fixed;
+        right: 0px;
+        min-width: 100px;
+        min-height: 50px;
+        padding: 5px;
+        z-index: 9;
+      }
+
+      .overlay-button {
+        margin: 1px;
+      }
+
+      .control-container {
+        position: absolute;
+        overflow-x: hidden;
+        overflow-y: auto;
+        right: 0px;
+        top: 60px;
+        margin: 5px;
+        padding: 5px;
+        z-index: 9;
+      }
+
+      .help-container {
+        position: absolute;
+        padding: 0.5%;
+        margin: 0.5%;
+        top: 7%;
+        left: 0.5%;
+        height: 85%;
+        white-space: pre;
+        overflow: auto;
+        float: left;
+        font-family: monospace;
+        font-size: small;
+        min-width: 280px;
+      }
+
+      .fade-enter-active,
+      .fade-leave-active {
+        transition: opacity 1s;
+      }
+
+      .fade-enter,
+      .fade-leave-to {
+        opacity: 0;
+      }
+
+      .v-icon.outlined {
+        border: 1px solid currentColor;
+        border-radius: 50%;
+        height: 56px;
+        width: 56px;
+      }
+
+      .log-warn {
+        color: orange;
+        font-weight: bold;
+      }
+
+      .log-error {
+        color: red;
+        font-weight: bold;
+      }
+
+      .log-debug {
+        color: green;
+      }
+
+      .log-info {
+        color: blue;
+      }
+    </style>
   </head>
 
   <body>
-    <div align="center">
-      <div id="main" tabindex="0"></div>
+    <div id="app" ref="app">
+      <v-app>
+        <v-main>
+          <div class="main-container">
+            <div
+              class="menu-indicator-space"
+              @mouseover="menuActive = true"
+              @mouseout="if (!touchDevice) menuActive = false;"
+            ></div>
+            <transition name="fade">
+              <div v-show="menuActive" @mouseover="menuActive = true">
+                <!-- Buttons in top left -->
+                <div class="overlay-left">
+                  <v-tooltip transition="fade" bottom
+                    ><template v-slot:activator="{ on, attrs }">
+                      <input
+                        id="fileUpload"
+                        ref="fileUpload"
+                        type="file"
+                        hidden
+                        v-on:change="openLocalFile"
+                      />
+                      <v-btn
+                        class="overlay-button"
+                        small
+                        elevation="2"
+                        fab
+                        @click="selectLocalFile"
+                        v-bind="attrs"
+                        v-on="on"
+                      >
+                        <v-icon>mdi-folder-open</v-icon>
+                      </v-btn> </template
+                    ><span>Load local file</span>
+                  </v-tooltip>
+
+                  <!-- Websocket dialog -->
+                  <v-dialog v-model="websocketDialogActive" width="300">
+                    <template v-slot:activator="{ on: dialog, attrs }">
+                      <v-tooltip transition="fade" bottom>
+                        <template v-slot:activator="{ on: tooltip }">
+                          <v-btn
+                            class="overlay-button"
+                            small
+                            elevation="2"
+                            fab
+                            v-bind="attrs"
+                            v-on="{ ...tooltip, ...dialog }"
+                          >
+                            <v-icon>mdi-lan-connect</v-icon>
+                          </v-btn>
+                        </template>
+                        <span>Connect to socket</span>
+                      </v-tooltip>
+                    </template>
+                    <v-card>
+                      <v-card-title class="headline grey lighten-2">
+                        Connect to socket
+                      </v-card-title>
+                      <v-spacer></v-spacer>
+                      <v-card-text>
+                        <v-form ref="socketForm" lazy-validation>
+                          <v-text-field
+                            v-model="socketHost"
+                            label="Host"
+                            required
+                          ></v-text-field>
+                          <v-text-field
+                            v-model="socketPort"
+                            label="Port"
+                            required
+                          ></v-text-field>
+                          <v-btn @click="connectWebsocket">
+                            {{ connectWebsocketButtonLabel }}
+                          </v-btn>
+                        </v-form>
+                      </v-card-text>
+                    </v-card>
+                  </v-dialog>
+
+                  <v-tooltip v-if="logMode" transition="fade" bottom
+                    ><template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                        class="overlay-button"
+                        small
+                        elevation="2"
+                        fab
+                        @click="logWindowActive = true"
+                        v-bind="attrs"
+                        v-on="on"
+                      >
+                        <v-icon>mdi-script</v-icon>
+                      </v-btn> </template
+                    ><span>View log</span></v-tooltip
+                  >
+                  <v-tooltip transition="fade" bottom
+                    ><template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                        class="overlay-button"
+                        small
+                        elevation="2"
+                        fab
+                        @click="helpWindowActive = !helpWindowActive"
+                        v-bind="attrs"
+                        v-on="on"
+                      >
+                        <v-icon>mdi-help</v-icon>
+                      </v-btn> </template
+                    ><span>Help</span></v-tooltip
+                  >
+                </div>
+
+                <!-- Overlay middle -->
+                <div class="overlay-middle">
+                  <v-icon
+                    class="outlined"
+                    v-if="glvStreamIsPaused"
+                    @click="glvStreamIsPaused = false"
+                    large
+                    >mdi-pause
+                  </v-icon>
+                </div>
+
+                <!-- Buttons in top right -->
+                <div class="overlay-right">
+                  <!-- Examples dialog -->
+                  <v-dialog
+                    v-model="examplesDialogActive"
+                    scrollable
+                    width="275px"
+                  >
+                    <template v-slot:activator="{ on: dialog, attrs }">
+                      <v-tooltip transition="fade" bottom>
+                        <template v-slot:activator="{ on: tooltip }">
+                          <v-btn
+                            class="overlay-button"
+                            small
+                            elevation="2"
+                            fab
+                            v-bind="attrs"
+                            v-on="{ ...tooltip, ...dialog }"
+                          >
+                            <v-icon>mdi-shape</v-icon>
+                          </v-btn>
+                        </template>
+                        <span>Examples</span>
+                      </v-tooltip>
+                    </template>
+                    <v-card>
+                      <v-card-title class="headline grey lighten-2">
+                        Examples
+                      </v-card-title>
+                      <v-spacer></v-spacer>
+                      <v-card-text v-if="glvIsLoading" class="text-center">
+                        <v-progress-circular
+                          v-if="glvIsLoading"
+                          :size="70"
+                          :width="7"
+                          color="primary"
+                          indeterminate
+                        >
+                        </v-progress-circular>
+                      </v-card-text>
+                      <v-card-text v-else class="text-left">
+                        <v-container>
+                          <v-row v-for="example in examples">
+                            <v-col>
+                              <v-btn
+                                :key="example.name"
+                                color="default"
+                                class="overlay-button"
+                                small
+                                outlined
+                                text
+                                elevation="0"
+                                @click="loadUrl(example.url)"
+                              >
+                                <v-icon left>mdi-shape</v-icon>{{ example.name
+                                }}
+                              </v-btn>
+                            </v-col>
+                          </v-row>
+                        </v-container>
+                      </v-card-text>
+                    </v-card>
+                  </v-dialog>
+
+                  <v-tooltip transition="fade" bottom
+                    ><template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                        class="overlay-button"
+                        small
+                        elevation="2"
+                        fab
+                        @click="controlWindowActive = !controlWindowActive"
+                        v-bind="attrs"
+                        v-on="on"
+                      >
+                        <v-icon>mdi-settings</v-icon>
+                      </v-btn> </template
+                    ><span>Visualization controls</span></v-tooltip
+                  >
+                  <v-tooltip transition="fade" bottom
+                    ><template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                        class="overlay-button"
+                        small
+                        elevation="2"
+                        fab
+                        @click="toggleFullscreen"
+                        v-bind="attrs"
+                        v-on="on"
+                      >
+                        <v-icon>mdi-aspect-ratio</v-icon>
+                      </v-btn> </template
+                    ><span>Fullscreen mode</span></v-tooltip
+                  >
+                </div>
+              </div>
+            </transition>
+
+            <!-- Log window -->
+            <!-- prettier-ignore -->
+            <v-card id="log-window" v-if="logWindowActive" class="help-container" elevation="2">
+            <v-btn elevation="0" x-small fab @click="logWindowActive = false">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+            <div style="font-size: xx-small; width:70ch; max-width: 100%; overflow-x: hidden;">
+              <span v-html="logString"></span>
+            </div>
+          </v-card>
+
+            <!-- Help window -->
+            <!-- prettier-ignore -->
+            <v-card id="help-window" v-if="helpWindowActive" class="help-container" elevation="2">
+            <v-btn elevation="0" x-small fab @click="helpWindowActive = false">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>{{ helpString }}
+            <!-- -->
+            <template>
+              <v-footer padless outlined elevation=0 rounded>
+                <v-col class="text-center">Powered by <a href="https://glvis.org">GLVis</a><br>Contact us on <a
+                    href="https://github.com/glvis/glvis-js">GitHub</a>
+                </v-col>
+              </v-footer>
+            </template>
+          </v-card>
+
+            <!-- Visualization Vontrol window -->
+            <v-card
+              id="control-window"
+              v-if="controlWindowActive"
+              class="control-container"
+              elevation="2"
+            >
+              <v-btn
+                elevation="0"
+                x-small
+                fab
+                @click="controlWindowActive = false"
+              >
+                <v-icon>mdi-close</v-icon>
+              </v-btn>
+              <template>
+                <!-- Mesh section -->
+                <v-expansion-panels flat dense>
+                  <v-expansion-panel v-for="(item,i) in 1" :key="i">
+                    <v-expansion-panel-header> Mesh </v-expansion-panel-header>
+                    <v-expansion-panel-content>
+                      <v-row
+                        aling="center"
+                        justify="center"
+                        dense
+                        class="pa-md-2"
+                      >
+                        <v-btn
+                          small
+                          outlined
+                          elevation="0"
+                          @click="sendKey('a')"
+                        >
+                          <v-icon left>mdi-axis-arrow</v-icon>Axis
+                        </v-btn>
+                      </v-row>
+                      <v-row
+                        aling="center"
+                        justify="center"
+                        dense
+                        class="pa-md-2"
+                      >
+                        <v-btn
+                          small
+                          outlined
+                          elevation="0"
+                          @click="sendKey('m')"
+                        >
+                          <v-icon left>mdi-grid</v-icon>Mesh
+                        </v-btn>
+                      </v-row>
+                      <v-row
+                        aling="center"
+                        justify="center"
+                        dense
+                        class="pa-md-2"
+                      >
+                        <v-btn
+                          small
+                          outlined
+                          elevation="0"
+                          @click="sendKey('e')"
+                        >
+                          <v-icon left>mdi-checkerboard</v-icon>Elements
+                        </v-btn>
+                      </v-row>
+                      <v-row
+                        aling="center"
+                        justify="center"
+                        dense
+                        class="pa-md-2"
+                      >
+                        <v-btn
+                          small
+                          outlined
+                          elevation="0"
+                          @click="sendKey('o')"
+                        >
+                          <v-icon left>mdi-blur</v-icon>Resolution
+                        </v-btn>
+                      </v-row>
+                    </v-expansion-panel-content>
+                  </v-expansion-panel>
+                </v-expansion-panels>
+                <!-- Colors section -->
+                <v-expansion-panels flat dense>
+                  <v-expansion-panel v-for="(item,i) in 1" :key="i">
+                    <v-expansion-panel-header>
+                      Colors
+                    </v-expansion-panel-header>
+                    <v-expansion-panel-content>
+                      <v-row
+                        aling="center"
+                        justify="center"
+                        dense
+                        class="pa-md-2"
+                      >
+                        <v-btn
+                          small
+                          outlined
+                          elevation="0"
+                          @click="sendKey('p')"
+                        >
+                          Colormap
+                        </v-btn>
+                        &nbsp;&nbsp;
+                        <v-btn x-small fab elevation="0" @click="sendKey('P')">
+                          <v-icon center>mdi-arrow-left</v-icon>
+                        </v-btn>
+                        &nbsp;
+                        <v-btn x-small fab elevation="0" @click="sendKey('p')">
+                          <v-icon center>mdi-arrow-right</v-icon>
+                        </v-btn>
+                      </v-row>
+                      <v-row
+                        aling="center"
+                        justify="center"
+                        dense
+                        class="pa-md-2"
+                      >
+                        <v-btn
+                          small
+                          outlined
+                          elevation="0"
+                          @click="sendKey('T')"
+                        >
+                          <v-icon left>mdi-cisco-webex</v-icon>Material
+                        </v-btn>
+                      </v-row>
+                      <v-row
+                        aling="center"
+                        justify="center"
+                        dense
+                        class="pa-md-2"
+                      >
+                        <v-btn
+                          small
+                          outlined
+                          elevation="0"
+                          @click="sendKey('l')"
+                        >
+                          <v-icon left>mdi-lightbulb-on-outline</v-icon>Light
+                        </v-btn>
+                      </v-row>
+                      <v-row
+                        aling="center"
+                        justify="center"
+                        dense
+                        class="pa-md-2"
+                      >
+                        <v-btn
+                          small
+                          outlined
+                          elevation="0"
+                          @click="sendKey('c')"
+                        >
+                          <v-icon left>mdi-eyedropper</v-icon>Colorbar
+                        </v-btn>
+                      </v-row>
+                      <v-row
+                        aling="center"
+                        justify="center"
+                        dense
+                        class="pa-md-2"
+                      >
+                        <v-btn
+                          small
+                          outlined
+                          elevation="0"
+                          @click="sendKey('g')"
+                        >
+                          <v-icon left>mdi-invert-colors</v-icon>Background
+                        </v-btn>
+                      </v-row>
+                    </v-expansion-panel-content>
+                  </v-expansion-panel>
+                </v-expansion-panels>
+                <!-- Position section -->
+                <v-expansion-panels flat dense>
+                  <v-expansion-panel v-for="(item,i) in 1" :key="i">
+                    <v-expansion-panel-header>
+                      Position
+                    </v-expansion-panel-header>
+                    <v-expansion-panel-content>
+                      <v-row
+                        aling="center"
+                        justify="center"
+                        dense
+                        class="pa-md-2"
+                      >
+                        <v-btn
+                          small
+                          outlined
+                          elevation="0"
+                          @click="sendKey('R')"
+                        >
+                          <v-icon left>mdi-square-outline</v-icon>2D
+                        </v-btn>
+                        &nbsp;&nbsp;
+                        <v-btn
+                          small
+                          outlined
+                          elevation="0"
+                          @click="sendKey('r')"
+                        >
+                          <v-icon left>mdi-cube-outline</v-icon>3D
+                        </v-btn>
+                      </v-row>
+                      <v-row
+                        aling="center"
+                        justify="center"
+                        dense
+                        class="pa-md-2"
+                      >
+                        <v-btn
+                          small
+                          outlined
+                          elevation="0"
+                          @click="sendKey('j')"
+                        >
+                          <v-icon left>mdi-perspective-less</v-icon>Perspective
+                        </v-btn>
+                      </v-row>
+                      <v-row
+                        aling="center"
+                        justify="center"
+                        dense
+                        class="pa-md-2"
+                      >
+                        <v-btn small outlined @click="sendKey('*')">Zoom</v-btn>
+                        &nbsp;&nbsp;
+                        <v-btn x-small fab elevation="0" @click="sendKey('*')">
+                          <v-icon center>mdi-magnify-plus-outline</v-icon>
+                        </v-btn>
+                        &nbsp;
+                        <v-btn x-small fab elevation="0" @click="sendKey('/')">
+                          <v-icon center>mdi-magnify-minus-outline</v-icon>
+                        </v-btn>
+                      </v-row>
+                      <v-row
+                        aling="center"
+                        justify="center"
+                        dense
+                        class="pa-md-2"
+                      >
+                        <v-btn small outlined @click="sendKey('+')"
+                          >Stretch</v-btn
+                        >
+                        &nbsp;&nbsp;
+                        <v-btn x-small fab elevation="0" @click="sendKey('+')">
+                          <v-icon center>mdi-arrow-collapse-up</v-icon>
+                        </v-btn>
+                        &nbsp;
+                        <v-btn x-small fab elevation="0" @click="sendKey('-')">
+                          <v-icon center>mdi-arrow-collapse-down</v-icon>
+                        </v-btn>
+                      </v-row>
+                      <v-row
+                        aling="center"
+                        justify="center"
+                        dense
+                        class="pa-md-2"
+                      >
+                        <v-btn small outlined @click="sendKey('.')">Spin</v-btn>
+                        &nbsp;&nbsp;
+                        <v-btn x-small fab elevation="0" @click="sendKey('0')">
+                          <v-icon center>mdi-axis-z-rotate-clockwise</v-icon>
+                        </v-btn>
+                        &nbsp;
+                        <v-btn x-small fab elevation="0" @click="sendKey(13)">
+                          <v-icon center
+                            >mdi-axis-z-rotate-counterclockwise</v-icon
+                          >
+                        </v-btn>
+                      </v-row>
+                      <v-row
+                        aling="center"
+                        justify="center"
+                        dense
+                        class="pa-md-2"
+                      >
+                        <!-- <v-btn small outlined @click="sendKey('5')">Rotate</v-btn> -->
+                        <!-- &nbsp; -->
+                        <v-card elevation="0">
+                          <v-btn
+                            x-small
+                            fab
+                            elevation="0"
+                            @click="sendKey('7')"
+                          >
+                            <v-icon center>mdi-arrow-top-left</v-icon>
+                          </v-btn>
+                          <v-btn
+                            x-small
+                            fab
+                            elevation="0"
+                            @click="sendKey('8')"
+                          >
+                            <v-icon center>mdi-arrow-up</v-icon>
+                          </v-btn>
+                          <v-btn
+                            x-small
+                            fab
+                            elevation="0"
+                            @click="sendKey('9')"
+                          >
+                            <v-icon center>mdi-arrow-top-right</v-icon>
+                          </v-btn>
+                          <br />
+                          <v-btn
+                            x-small
+                            fab
+                            elevation="0"
+                            @click="sendKey('4')"
+                          >
+                            <v-icon center>mdi-arrow-left</v-icon>
+                          </v-btn>
+                          <v-btn
+                            x-small
+                            fab
+                            elevation="0"
+                            @click="sendKey('5')"
+                          >
+                            <v-icon center>mdi-adjust</v-icon>
+                          </v-btn>
+                          <v-btn
+                            x-small
+                            fab
+                            elevation="0"
+                            @click="sendKey('6')"
+                          >
+                            <v-icon center>mdi-arrow-right</v-icon>
+                          </v-btn>
+                          <br />
+                          <v-btn
+                            x-small
+                            fab
+                            elevation="0"
+                            @click="sendKey('1')"
+                          >
+                            <v-icon center>mdi-arrow-bottom-left</v-icon>
+                          </v-btn>
+                          <v-btn
+                            x-small
+                            fab
+                            elevation="0"
+                            @click="sendKey('2')"
+                          >
+                            <v-icon center>mdi-arrow-down</v-icon>
+                          </v-btn>
+                          <v-btn
+                            x-small
+                            fab
+                            elevation="0"
+                            @click="sendKey('3')"
+                          >
+                            <v-icon center>mdi-arrow-bottom-right</v-icon>
+                          </v-btn>
+                        </v-card>
+                      </v-row>
+                    </v-expansion-panel-content>
+                  </v-expansion-panel>
+                </v-expansion-panels>
+                <!-- Animation section -->
+                <v-expansion-panels flat dense>
+                  <v-expansion-panel v-for="(item,i) in 1" :key="i">
+                    <v-expansion-panel-header>
+                      Animation
+                    </v-expansion-panel-header>
+                    <v-expansion-panel-content>
+                      <v-row
+                        aling="center"
+                        justify="center"
+                        dense
+                        class="pa-md-2"
+                      >
+                        <v-slider
+                          prepend-icon="mdi-clock"
+                          min="0"
+                          max="100"
+                          v-model="streamDelay"
+                        ></v-slider>
+                      </v-row>
+                      <v-row
+                        aling="center"
+                        justify="center"
+                        dense
+                        class="pa-md-2"
+                      >
+                        <v-btn
+                          small
+                          outlined
+                          elevation="0"
+                          @click="updateCanvasSize"
+                        >
+                          <v-icon left>mdi-reload</v-icon>Redraw
+                        </v-btn>
+                      </v-row>
+                    </v-expansion-panel-content>
+                  </v-expansion-panel>
+                </v-expansion-panels>
+              </template>
+            </v-card>
+
+            <div v-if="glvIsInitializing" class="glvis-window-loading">
+              <v-progress-circular
+                :size="70"
+                :width="7"
+                color="primary"
+                indeterminate
+              >
+              </v-progress-circular>
+            </div>
+            <div
+              v-show="!glvIsInitializing"
+              id="glvis-window"
+              v-doubletap="(e) => onDoubleTap(e)"
+            ></div>
+          </div>
+        </v-main>
+      </v-app>
     </div>
-
-    <div id="expand-btn">
-      <button
-        id="toggle-fullscreen"
-        class="icon-btn"
-        onclick="pageToggleFullscreen()"
-      >
-        <i class="fas fa-expand-alt"></i>
-      </button>
-    </div>
-
-    <!--https://www.w3schools.com/howto/howto_js_sidenav.asp-->
-    <div id="setup-side-nav" class="sidenav">
-      <a
-        href="javascript:void(0)"
-        class="closebtn"
-        onclick="closeNav('setup-side-nav')"
-        >&times;</a
-      >
-
-      <div align="center" class="full-width">
-        <h3 align="center">Load visualization file</h3>
-        <input
-          type="file"
-          id="load-file"
-          onchange="glv.loadStream(event)"
-          hidden
-        />
-        <label for="load-file" class="menu-button">Load File</label>
-      </div>
-
-      <div align="center" class="full-width">
-        <h3 align="center">Connect to Server</h3>
-        <p align="center">
-          Display streaming content from MFEM. This requires
-          `glvis-browser-server` as an intermediary.
-        </p>
-
-        <div>
-          <input type="text" id="host-text" value="localhost" />
-        </div>
-
-        <div>
-          <input type="text" id="port-text" value="8080" />
-        </div>
-
-        <div>
-          <label
-            class="menu-button"
-            type="button"
-            id="conn-btn"
-            onclick="connect()"
-            >Connect</label
-          >
-        </div>
-
-        <div>
-          <label class="menu-button" type="button" id="pause-btn"></label>
-        </div>
-      </div>
-
-      <!-- delay slider-->
-      <!---
-      <div class="full-width">
-        <h4 align="center">Stream update delay</h4>
-        <input type="range" min="50" max="1000" value="100" step="50" class="slider" id="delay-range">
-        <div align="center" id="delay-value"></div>
-      </div>
-      -->
-    </div>
-
-    <div id="help-side-nav" class="sidenav">
-      <a
-        href="javascript:void(0)"
-        class="closebtn"
-        onclick="closeNav('help-side-nav')"
-        >&times;</a
-      >
-
-      <div
-        style="
-          white-space: pre;
-          display: inline-block;
-          width: 40ch;
-          height: 90%;
-          overflow: auto;
-          font-family: monospace;
-          border: dotted;
-          border-width: thin;
-        "
-        id="keys-div"
-      ></div>
-    </div>
-
-    <div id="ctrl-side-nav" class="sidenav">
-      <a
-        href="javascript:void(0)"
-        class="closebtn"
-        onclick="closeNav('ctrl-side-nav')"
-        >&times;</a
-      >
-
-      <div align="left" style="margin: 15px">
-        <b>Axis</b>&nbsp;
-        <button type="button" onclick="glv.sendKey('a')">&nbsp;>&nbsp;</button>
-      </div>
-      <div align="left" style="margin: 15px">
-        <b>Mesh</b>&nbsp;
-        <button type="button" onclick="glv.sendKey('m')">&nbsp;>&nbsp;</button>
-      </div>
-      <div align="left" style="margin: 15px">
-        <b>Elements</b>&nbsp;
-        <button type="button" onclick="glv.sendKey('e')">&nbsp;>&nbsp;</button>
-      </div>
-      <div align="left" style="margin: 15px">
-        <b>Resolution</b>&nbsp;
-        <button type="button" onclick="glv.sendKey('o')">&nbsp;+&nbsp;</button>
-      </div>
-
-      <hr />
-
-      <div align="left" style="margin: 15px">
-        <b>Colormap</b>&nbsp;
-        <!--&#x21DA-->
-        <button type="button" onclick="glv.sendKey('p')">&nbsp;<&nbsp;</button>
-        <!--&#x21DB-->
-        <button type="button" onclick="glv.sendKey('P')">&nbsp;>&nbsp;</button>
-      </div>
-      <div align="left" style="margin: 15px">
-        <b>Colorbar</b>
-        <input
-          type="radio"
-          id="off"
-          name="colorbar"
-          checked="checked"
-          oninput="glv.sendKey('c')"
-        /><label for="off">Off</label>
-        <input
-          type="radio"
-          id="on"
-          name="colorbar"
-          oninput="glv.sendKey('c')"
-        /><label for="on">On</label>
-      </div>
-      <div align="left" style="margin: 15px">
-        <b>Material</b>&nbsp;
-        <button type="button" onclick="glv.sendKey('T')">&nbsp;>&nbsp;</button>
-      </div>
-      <div align="left" style="margin: 15px">
-        <b>Background</b>
-        <input
-          type="radio"
-          id="off"
-          name="background"
-          checked="checked"
-          oninput="glv.sendKey('g')"
-        /><label for="off">Off</label>
-        <input
-          type="radio"
-          id="on"
-          name="background"
-          oninput="glv.sendKey('g')"
-        /><label for="on">On</label>
-      </div>
-      <div align="left" style="margin: 15px">
-        <b>Light</b>
-        <input
-          type="radio"
-          id="off"
-          name="light"
-          oninput="glv.sendKey('l')"
-        /><label for="off">Off</label>
-        <input
-          type="radio"
-          id="on"
-          name="light"
-          checked="checked"
-          oninput="glv.sendKey('l')"
-        /><label for="on">On</label>
-      </div>
-
-      <hr />
-
-      <div align="left" style="margin: 15px">
-        <b>Viewpoint</b>&nbsp;
-        <button type="button" onclick="glv.sendKey('R')">&nbsp;2D&nbsp;</button>
-        <button type="button" onclick="glv.sendKey('r')">&nbsp;3D&nbsp;</button>
-      </div>
-      <div align="left" style="margin: 15px">
-        <b>Perspective</b>
-        <input
-          type="radio"
-          id="off"
-          name="perspective"
-          oninput="glv.sendKey('j')"
-        /><label for="off">Off</label>
-        <input
-          type="radio"
-          id="on"
-          name="perspective"
-          checked="checked"
-          oninput="glv.sendKey('j')"
-        /><label for="on">On</label>
-      </div>
-      <div align="left" style="margin: 15px">
-        <b>Zoom</b>&nbsp;
-        <button type="button" onclick="glv.sendKey('*')">&nbsp;+&nbsp;</button>
-        <button type="button" onclick="glv.sendKey('/')">&nbsp;-&nbsp;</button>
-      </div>
-      <div align="left" style="margin: 15px">
-        <b>Stretch</b>&nbsp;
-        <button type="button" onclick="glv.sendKey('+')">&nbsp;+&nbsp;</button>
-        <button type="button" onclick="glv.sendKey('-')">&nbsp;-&nbsp;</button>
-      </div>
-      <p></p>
-
-      <hr />
-
-      <div align="center" style="margin: 5px; line-height: 150%">
-        <button type="button" onclick="glv.sendKey('!')">!</button>
-        <button type="button" onclick="glv.sendKey('&#34;')">"</button>
-        <button type="button" onclick="glv.sendKey('#')">#</button>
-        <button type="button" onclick="glv.sendKey('$')">$</button>
-        <button type="button" onclick="glv.sendKey('%')">%</button>
-        <button type="button" onclick="glv.sendKey('&')">&</button>
-        <button type="button" onclick="glv.sendKey(''')">'</button>
-        <button type="button" onclick="glv.sendKey('(')">(</button>
-        <button type="button" onclick="glv.sendKey(')')">)</button>
-        <button type="button" onclick="glv.sendKey('*')">*</button>
-        <button type="button" onclick="glv.sendKey('+')">+</button>
-        <button type="button" onclick="glv.sendKey(',')">,</button>
-        <button type="button" onclick="glv.sendKey('-')">-</button>
-        <button type="button" onclick="glv.sendKey('.')">.</button>
-        <button type="button" onclick="glv.sendKey('/')">/</button>
-        <button type="button" onclick="glv.sendKey(':')">:</button>
-        <button type="button" onclick="glv.sendKey(';')">;</button>
-        <button type="button" onclick="glv.sendKey('<')"><</button>
-        <button type="button" onclick="glv.sendKey('=')">=</button>
-        <button type="button" onclick="glv.sendKey('>')">></button>
-        <button type="button" onclick="glv.sendKey('?')">?</button>
-        <button type="button" onclick="glv.sendKey('@')">@</button>
-        <button type="button" onclick="glv.sendKey('[')">[</button>
-        <button type="button" onclick="glv.sendKey('\')">\</button>
-        <button type="button" onclick="glv.sendKey(']')">]</button>
-        <button type="button" onclick="glv.sendKey('^')">^</button>
-        <button type="button" onclick="glv.sendKey('_')">_</button>
-        <button type="button" onclick="glv.sendKey('`')">`</button>
-        <button type="button" onclick="glv.sendKey('{')">{</button>
-        <button type="button" onclick="glv.sendKey('|')">|</button>
-        <button type="button" onclick="glv.sendKey('}')">}</button>
-        <button type="button" onclick="glv.sendKey('~')">~</button>
-
-        <button type="button" onclick="glv.sendKey('0')">0</button>
-        <button type="button" onclick="glv.sendKey('1')">1</button>
-        <button type="button" onclick="glv.sendKey('2')">2</button>
-        <button type="button" onclick="glv.sendKey('3')">3</button>
-        <button type="button" onclick="glv.sendKey('4')">4</button>
-        <button type="button" onclick="glv.sendKey('5')">5</button>
-        <button type="button" onclick="glv.sendKey('6')">6</button>
-        <button type="button" onclick="glv.sendKey('7')">7</button>
-        <button type="button" onclick="glv.sendKey('8')">8</button>
-        <button type="button" onclick="glv.sendKey('9')">9</button>
-
-        <button type="button" onclick="glv.sendKey('A')">A</button>
-        <button type="button" onclick="glv.sendKey('B')">B</button>
-        <button type="button" onclick="glv.sendKey('C')">C</button>
-        <button type="button" onclick="glv.sendKey('D')">D</button>
-        <button type="button" onclick="glv.sendKey('E')">E</button>
-        <button type="button" onclick="glv.sendKey('F')">F</button>
-        <button type="button" onclick="glv.sendKey('G')">G</button>
-        <button type="button" onclick="glv.sendKey('H')">H</button>
-        <button type="button" onclick="glv.sendKey('I')">I</button>
-        <button type="button" onclick="glv.sendKey('J')">J</button>
-        <button type="button" onclick="glv.sendKey('K')">K</button>
-        <button type="button" onclick="glv.sendKey('L')">L</button>
-        <button type="button" onclick="glv.sendKey('M')">M</button>
-        <button type="button" onclick="glv.sendKey('N')">N</button>
-        <button type="button" onclick="glv.sendKey('O')">O</button>
-        <button type="button" onclick="glv.sendKey('P')">P</button>
-        <button type="button" onclick="glv.sendKey('Q')">Q</button>
-        <button type="button" onclick="glv.sendKey('R')">R</button>
-        <button type="button" onclick="glv.sendKey('S')">S</button>
-        <button type="button" onclick="glv.sendKey('T')">T</button>
-        <button type="button" onclick="glv.sendKey('U')">U</button>
-        <button type="button" onclick="glv.sendKey('V')">V</button>
-        <button type="button" onclick="glv.sendKey('W')">W</button>
-        <button type="button" onclick="glv.sendKey('X')">X</button>
-        <button type="button" onclick="glv.sendKey('Y')">Y</button>
-        <button type="button" onclick="glv.sendKey('Z')">Z</button>
-
-        <button type="button" onclick="glv.sendKey('a')">a</button>
-        <button type="button" onclick="glv.sendKey('b')">b</button>
-        <button type="button" onclick="glv.sendKey('c')">c</button>
-        <button type="button" onclick="glv.sendKey('d')">d</button>
-        <button type="button" onclick="glv.sendKey('e')">e</button>
-        <button type="button" onclick="glv.sendKey('f')">f</button>
-        <button type="button" onclick="glv.sendKey('g')">g</button>
-        <button type="button" onclick="glv.sendKey('h')">h</button>
-        <button type="button" onclick="glv.sendKey('i')">i</button>
-        <button type="button" onclick="glv.sendKey('j')">j</button>
-        <button type="button" onclick="glv.sendKey('k')">k</button>
-        <button type="button" onclick="glv.sendKey('l')">l</button>
-        <button type="button" onclick="glv.sendKey('m')">m</button>
-        <button type="button" onclick="glv.sendKey('n')">n</button>
-        <button type="button" onclick="glv.sendKey('o')">o</button>
-        <button type="button" onclick="glv.sendKey('p')">p</button>
-        <button type="button" onclick="glv.sendKey('q')">q</button>
-        <button type="button" onclick="glv.sendKey('r')">r</button>
-        <button type="button" onclick="glv.sendKey('s')">s</button>
-        <button type="button" onclick="glv.sendKey('t')">t</button>
-        <button type="button" onclick="glv.sendKey('u')">u</button>
-        <button type="button" onclick="glv.sendKey('v')">v</button>
-        <button type="button" onclick="glv.sendKey('w')">w</button>
-        <button type="button" onclick="glv.sendKey('x')">x</button>
-        <button type="button" onclick="glv.sendKey('y')">y</button>
-        <button type="button" onclick="glv.sendKey('z')">z</button>
-      </div>
-    </div>
-
-    <div id="about-side-nav" class="sidenav">
-      <a
-        href="javascript:void(0)"
-        class="closebtn"
-        onclick="closeNav('about-side-nav')"
-        >&times;</a
-      >
-      <a href="https://glvis.org">Homepage</a>
-      <a href="https://github.com/glvis/glvis-js">GitHub</a>
-    </div>
-
-    <div id="examples-side-nav" class="sidenav">
-      <a
-        href="javascript:void(0)"
-        class="closebtn"
-        onclick="closeNav('examples-side-nav')"
-        >&times;</a
-      >
-      <a onclick="glv.loadUrl('../data/ex1.saved')">Example 1</a>
-      <a onclick="glv.loadUrl('../data/ex2.saved')">Example 2</a>
-      <a onclick="glv.loadUrl('../data/ex3.saved')">Example 3</a>
-      <a onclick="glv.loadUrl('../data/ex5.saved')">Example 5</a>
-      <a onclick="glv.loadUrl('../data/ex9.saved')">Example 9</a>
-      <a onclick="glv.loadUrl('../data/ex27.saved')">Example 27</a>
-      <a onclick="glv.loadUrl('../data/capacitor.saved')">Capacitor</a>
-      <a onclick="glv.loadUrl('../data/klein-bottle.saved')">Klein Bottle</a>
-      <a onclick="glv.loadUrl('../data/laghos.saved')">Laghos</a>
-      <a onclick="glv.loadUrl('../data/mesh-explorer.saved')">Mesh Explorer</a>
-      <a onclick="glv.loadUrl('../data/mfem-logo.saved')">MFEM Logo</a>
-      <a onclick="glv.loadUrl('../data/minimal-surface.saved')"
-        >Minimal Surface</a
-      >
-      <a onclick="glv.loadUrl('../data/mobius-strip.saved')">Mobius Strip</a>
-      <a onclick="glv.loadUrl('../data/navier.saved')">Navier</a>
-      <a onclick="glv.loadUrl('../data/quad.saved')">Quad (default)</a>
-      <a onclick="glv.loadUrl('../data/remhos.saved')">Remhos</a>
-      <a onclick="glv.loadUrl('../data/shaper.saved')">Shaper</a>
-      <a onclick="glv.loadUrl('../data/snake.saved')">Snake</a>
-    </div>
-
-    <div id="log-side-nav" class="sidenav">
-      <a
-        href="javascript:void(0)"
-        class="closebtn"
-        onclick="closeNav('log-side-nav')"
-        >&times;</a
-      >
-
-      <div id="log-container">
-        <pre id="log"></pre>
-      </div>
-    </div>
-
-    <div id="side-menu" class="vertical">
-      <span onclick="openNav('about-side-nav')">About</span>
-      <span onclick="updateWindowSize()">Redraw</span>
-      <span onclick="openNav('log-side-nav', '43ch')">Log</span>
-      <span onclick="openNav('ctrl-side-nav')">Control</span>
-      <span onclick="openNav('setup-side-nav')">Setup</span>
-      <span onclick="openNav('help-side-nav', '40ch')">Help</span>
-      <span onclick="openNav('examples-side-nav')">Examples</span>
-    </div>
-
-    <script type="text/javascript">
-      var main_div = document.getElementById("main");
-      var side_menu = document.getElementById("side-menu");
-      var expand_btn = document.getElementById("expand-btn");
-
-      augmentLoggers("log", "log-side-nav");
-
-      function toggleSideMenu(show = true) {
-        if (show) {
-          side_menu.style.display = "block";
-          expand_btn.style.display = "block";
-        } else {
-          side_menu.style.display = "none";
-          expand_btn.style.display = "none";
-        }
-      }
-
-      function pageToggleFullscreen() {
-        if (document.fullscreenEnabled) {
-          var elem = document.documentElement;
-          if (document.fullscreenElement === null) {
-            openFullscreen(elem);
-          } else {
-            closeFullscreen(elem);
-          }
-        } else {
-          console.warn("full screen not allowed");
-        }
-      }
-
-      // delay control
-      // TODO: doesn't work
-      /*
-      var delay_slider = document.getElementById("delay-range");
-      var delay_value_div = document.getElementById("delay-value");
-      function update_delay_value() {
-        delay_slider.value = delay_slider.value;
-        delay_value_div.innerHTML = `${delay_slider.value} ms`;
-      }
-      delay_slider.onchange = update_delay_value;
-      update_delay_value();
-      */
-
-      // nav setup
-      function openNav(id, width = "250px") {
-        document.getElementById(id).style.width = width;
-      }
-      function closeNav(id) {
-        document.getElementById(id).style.width = "0";
-      }
-
-      // pause button for streams
-      var stream_paused = false;
-      var pause_button = document.getElementById("pause-btn");
-      function setToggleStreamPauseText() {
-        if (stream_paused) {
-          pause_button.innerHTML = "Resume";
-        } else {
-          pause_button.innerHTML = "Pause";
-        }
-      }
-
-      setToggleStreamPauseText();
-      pause_button.onclick = function () {
-        stream_paused = !stream_paused;
-        setToggleStreamPauseText();
-      };
-
-      // websocket setup
-      var ws = undefined;
-      var que = async.queue(async function (msg) {
-        while (stream_paused) {
-          await new Promise((r) => setTimeout(r, 500));
-        }
-        await glv.updateStream(msg);
-        if (msg.endsWith("pause\n")) {
-          console.log("pausing");
-          stream_paused = true;
-          setToggleStreamPauseText();
-        }
-        await new Promise((r) => setTimeout(r, 50));
-      });
-
-      function connect() {
-        if (ws !== undefined && ws.readyState == 1) {
-          ws.close();
-          return;
-        }
-
-        const host = document.getElementById("host-text").value;
-        const port = document.getElementById("port-text").value;
-        var btn = document.getElementById("conn-btn");
-
-        const addr = `ws:\/\/${host}:${port}`;
-        console.log(`trying to connect to ${addr}`);
-        ws = new WebSocket(addr);
-
-        ws.addEventListener("open", function (event) {
-          var url = event.target.url;
-          console.log(`connected to ${url}`);
-          btn.innerHTML = "Disconnect";
-        });
-        ws.addEventListener("close", function (event) {
-          console.log("disconnected");
-          btn.innerHTML = "Connect";
-        });
-        ws.addEventListener("message", async function (event) {
-          que.push(event.data);
-        });
-      }
-
-      // glvis-js setup
-      var glv = new glvis.State(main_div, 1, 1);
-
-      glv.registerNewStreamCallback(function (state) {
-        state.getHelpString().then(function (s) {
-          document.getElementById("keys-div").innerHTML = s;
-        });
-      });
-
-      var stream = new URLSearchParams(document.location.search).get("stream");
-      if (stream) {
-        console.log(`loading stream from ${stream}`);
-        glv.loadUrl(stream);
-      }
-      // use the example stream if available
-      else if (typeof example_stream !== "undefined") {
-        console.log("using example stream");
-        glv.displayStream(example_stream);
-      }
-      // try to load ../data/quad.saved
-      else {
-        var default_stream_url = "../data/quad.saved";
-        console.log(
-          `no example_stream defined, trying to use ${default_stream_url}`
-        );
-        glv.loadUrl(default_stream_url);
-      }
-
-      if (is_touch_device()) {
-        glv.setTouchDevice(true);
-      }
-
-      var uws_timeout_handle;
-      function updateWindowSize() {
-        clearTimeout(uws_timeout_handle);
-        // It seems like the page isn't always ready for a resize
-        // right when the event is triggered. Instead wait a little.
-        // TODO: understand this better
-        uws_timeout_handle = setTimeout(function () {
-          glv.setSize(1, 1);
-          setTimeout(function () {
-            const [w, h] = windowDim();
-            glv.setSize(w - 10, h - 10);
-          }, 50);
-        }, 500);
-      }
-
-      window.addEventListener("load", () => {
-        updateWindowSize();
-      });
-      window.addEventListener("resize", () => {
-        updateWindowSize();
-      });
-      // TODO: we may not need this
-      document.addEventListener("fullscreenchange", () => {
-        if (document.fullscreenElement === null) {
-          toggleSideMenu(true);
-        } else {
-          toggleSideMenu(false);
-        }
-      });
-    </script>
   </body>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/async/3.2.0/async.min.js"></script>
+  <script>
+    Vue.config.devtools = true;
+
+    Vue.directive("doubletap", {
+      bind: function (el, binding) {
+        if (typeof binding.value === "function") {
+          const mc = new Hammer.Manager(el);
+          mc.add(
+            new Hammer.Tap({
+              event: "doubletap",
+              taps: 2,
+              interval: 1500,
+              posThresholdL: 50,
+            })
+          );
+          mc.on("doubletap", binding.value);
+        }
+      },
+    });
+
+    var host = window.location.hostname;
+    if (host === "127.0.0.1" || host === "glvis.org") {
+      host = "localhost";
+    }
+    console.log(`host = ${host}`);
+
+    const touch = matchMedia("(hover: none), (pointer: coarse)").matches;
+    console.log(`touch = ${touch}`);
+
+    var app = new Vue({
+      el: "#app",
+      vuetify: new Vuetify(),
+      data: {
+        touchDevice: touch,
+        menuActive: true,
+        examplesDialogActive: false,
+        websocketDialogActive: false,
+        logWindowActive: false,
+        connectWebsocketButtonLabel: "Connect",
+        socketHost: host,
+        socketPort: "8080",
+        controlWindowActive: false,
+        helpWindowActive: false,
+        fullScreenMode: false,
+        glv: null,
+        glvSocket: null,
+        glvSocketQueue: undefined,
+        glvIsLoading: true,
+        glvIsInitializing: true,
+        glvStreamIsPaused: false,
+        glvis_window_div: null,
+        uws_timeout_handle: null,
+        helpString: "",
+        logString: "",
+        experimentalMode: false,
+        logMode: false,
+        streamDelay: 0,
+        defaultExample: 14,
+        examples: [
+          {
+            name: "MFEM Example 1",
+            url: "../data/ex1.saved",
+          },
+          {
+            name: "MFEM Example 2",
+            url: "../data/ex2.saved",
+          },
+          {
+            name: "MFEM Example 3",
+            url: "../data/ex3.saved",
+          },
+          {
+            name: "MFEM Example 5",
+            url: "../data/ex5.saved",
+          },
+          {
+            name: "MFEM Example 9",
+            url: "../data/ex9.saved",
+          },
+          {
+            name: "MFEM Example 27",
+            url: "../data/ex27.saved",
+          },
+          {
+            name: "Capacitor",
+            url: "../data/capacitor.saved",
+          },
+          {
+            name: "Klein Bottle",
+            url: "../data/klein-bottle.saved",
+          },
+          {
+            name: "Laghos",
+            url: "../data/laghos.saved",
+          },
+          {
+            name: "Mesh Explorer",
+            url: "../data/mesh-explorer.saved",
+          },
+          {
+            name: "MFEM Logo",
+            url: "../data/mfem-logo.saved",
+          },
+          {
+            name: "Minimal Surface",
+            url: "../data/minimal-surface.saved",
+          },
+          {
+            name: "Mobius Strip",
+            url: "../data/mobius-strip.saved",
+          },
+          {
+            name: "Navier",
+            url: "../data/navier.saved",
+          },
+          {
+            name: "Quad (default)",
+            url: "../data/quad.saved",
+          },
+          {
+            name: "Remhos",
+            url: "../data/remhos.saved",
+          },
+          {
+            name: "Shaper",
+            url: "../data/shaper.saved",
+          },
+          {
+            name: "Snake",
+            url: "../data/snake.saved",
+          },
+        ],
+      },
+      mounted: function () {
+        var log = new URLSearchParams(document.location.search).get("log");
+        if (log === "true") {
+          this.logMode = true;
+          //var log = document.getElementById("log-window");
+          augmentLoggers((s) => (this.logString += s));
+        }
+
+        this.glvis_window_div = document.getElementById("glvis-window");
+        this.glv = new glvis.State(this.glvis_window_div, 1, 1);
+
+        this.glv.registerNewStreamCallback((state) => {
+          state.getHelpString().then((s) => {
+            this.helpString = s;
+          });
+        });
+
+        var stream = new URLSearchParams(document.location.search).get(
+          "stream"
+        );
+        if (stream) {
+          console.log(`loading stream from ${stream}`);
+          this.glv.loadUrl(stream).then(() => {
+            this.glvIsInitializing = false;
+          });
+        } else if (typeof example_stream !== "undefined") {
+          this.glv.displayStream(example_stream).then(() => {
+            this.glvIsInitializing = false;
+          });
+        } else {
+          this.glv.loadUrl(this.examples[this.defaultExample].url).then(() => {
+            this.glvIsInitializing = false;
+          });
+        }
+
+        var experimental = new URLSearchParams(document.location.search).get(
+          "experimental"
+        );
+        if (experimental) {
+          this.experimentalMode = true;
+        }
+
+        this.updateCanvasSize();
+
+        window.addEventListener("resize", () => {
+          this.updateCanvasSize();
+        });
+
+        window.addEventListener("orientationchange", () => {
+          this.updateCanvasSize();
+        });
+
+        window.addEventListener("fullscreenchange", () => {
+          this.updateCanvasSize();
+        });
+
+        // Event sentinel variable
+        window.addEventListener("keypress", (event) => {
+          if (event.keyCode === 32) {
+            this.glvStreamIsPaused = !this.glvStreamIsPaused;
+          } else if (event.keyCode === 72 || event.keyCode === 104) {
+            this.helpWindowActive = !this.helpWindowActive;
+          } else {
+            this.glv.sendKey(
+              event.keyCode,
+              event.ctrlKey,
+              event.shiftKey,
+              event.altKey
+            );
+          }
+        });
+
+        window.addEventListener("keydown", (event) => {
+          const code = event.keyCode;
+          // just function keys
+          if (code >= 112 && code <= 123) {
+            const fn_key_offset = 112;
+            const fn_key_sdl_offset = 1073741882;
+            const offset = fn_key_sdl_offset - fn_key_offset;
+            this.glv.sendKey(
+              event.keyCode + offset,
+              event.ctrlKey,
+              event.shiftKey,
+              event.altKey
+            );
+          }
+        });
+
+        this.glvSocketQueue = async.queue(async (msg) => {
+          while (this.glvStreamIsPaused) {
+            await new Promise((r) => setTimeout(r, 500));
+          }
+          await this.glv.updateStream(msg);
+          if (msg.endsWith("pause\n")) {
+            this.glvStreamIsPaused = true;
+            console.log("pausing");
+          }
+          await new Promise((r) => setTimeout(r, 50 + this.streamDelay * 10));
+        });
+
+        this.glvIsLoading = false;
+      },
+      watch: {
+        examplesDialogActive: function (v) {
+          if (v && !this.touchDevice) {
+            this.menuActive = false;
+          }
+        },
+        websocketDialogActive: function (v) {
+          if (v && !this.touchDevice) {
+            this.menuActive = false;
+          }
+        },
+      },
+      methods: {
+        updateCanvasSize: function () {
+          [w, h] = windowDim();
+          this.glv.setSize(w, h);
+        },
+        loadUrl: async function (url, keys) {
+          this.glvIsLoading = true;
+          this.glv.loadUrl(url).then(() => {
+            this.examplesDialogActive = false;
+            setTimeout(() => {
+              this.glvIsLoading = false;
+            }, 500);
+          });
+
+          if (keys) {
+            [...keys].forEach((key) => this.sendKey(key));
+          }
+        },
+        connectWebsocket: function () {
+          if (this.glvSocket !== null && this.glvSocket.readyState == 1) {
+            this.glvSocket.close();
+            return;
+          }
+
+          const host = this.socketHost;
+          const port = this.socketPort;
+          const addr = `ws:\/\/${host}:${port}`;
+
+          console.log(`trying to connect websocket to ${addr}`);
+          this.glvSocket = new WebSocket(addr);
+
+          this.glvSocket.addEventListener("open", (event) => {
+            const url = event.target.url;
+            this.connectWebsocketButtonLabel = "Disconnect";
+            console.log(`connected websocket to ${url}`);
+          });
+
+          this.glvSocket.addEventListener("close", (event) => {
+            this.connectWebsocketButtonLabel = "Connect";
+            console.log("disconnected");
+          });
+
+          var q = this.glvSocketQueue;
+          this.glvSocket.addEventListener("message", async (event) => {
+            this.glvSocketQueue.push(event.data);
+          });
+        },
+        sendKey: function (k) {
+          this.glv.sendKey(k);
+        },
+        toggleFullscreen: function () {
+          if (!this.fullScreenMode) {
+            const elem = document.getElementById("app");
+            if (elem.requestFullscreen) {
+              elem.requestFullscreen();
+              this.fullScreenMode = true;
+            }
+          } else {
+            document.exitFullscreen();
+            this.fullScreenMode = false;
+          }
+        },
+        selectLocalFile: function () {
+          this.$refs.fileUpload.click();
+          if (!this.touchDevice) {
+            this.menuActive = false;
+          }
+        },
+        openLocalFile: async function (event) {
+          this.glvIsLoading = true;
+          await this.glv.loadStream(event);
+          this.glvIsLoading = false;
+        },
+        onDoubleTap: function (event) {
+          this.glvStreamIsPaused = !this.glvStreamIsPaused;
+        },
+      },
+    });
+  </script>
+
+  <script></script>
 </html>
