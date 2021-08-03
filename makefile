@@ -30,7 +30,7 @@ $(LIB_MFEM):
 		AR=$(EMAR) ARFLAGS=rcs RANLIB=echo
 
 $(LIB_GLVIS_JS): $(LIB_MFEM)
-	@$(MAKE) -C $(GLVIS_DIR) GLM_DIR=$(GLM_ROOT) MFEM_DIR=$(MFEM_BUILD_DIR) js
+	@$(MAKE) -C $(GLVIS_DIR) GLM_DIR=$(GLM_ROOT) MFEM_DIR=$(MFEM_BUILD_DIR) GLVIS_USE_LOGO=NO js
 
 libmfem: $(LIB_MFEM)
 
@@ -62,6 +62,8 @@ serve:
 servelocal:
 	python3 -m http.server 8000 --bind 127.0.0.1
 
-clean:
+realclean: clean
 	@test -d $(MFEM_BUILD_DUR) && rm -rf $(MFEM_BUILD_DIR)
+
+clean:
 	@$(MAKE) -C $(GLVIS_DIR) clean
