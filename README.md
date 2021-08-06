@@ -27,7 +27,23 @@ open basic.html
 
 1. Install [Emscripten](https://emscripten.org/docs/getting_started/downloads.html)
 
-2. Clone included submodules
+   ```
+   [git clone https://github.com/emscripten-core/emsdk.git]
+   cd emsdk
+   git pull
+   ./emsdk install latest
+   ./emsdk activate latest
+   source "/path/to/emsdk/emsdk_env.sh"
+   ```
+
+2. Get copies of glvis and mfem
+
+   ```
+   git clone git@github.com:mfem/mfem.git
+   git clone git@github.com:GLVis/glvis.git
+   ```
+
+3. Clone included submodules
 
     ```
     git clone --recurse-submodules git@github.com:GLVis/glvis-js.git
@@ -39,20 +55,29 @@ open basic.html
    git submodule update --init --recursive
    ```
 
-3. Get a copy of _OpenSans.ttf_ and put it in the GLVis root directory. For example
+4. Get a copy of _OpenSans.ttf_ and put it in the GLVis root directory. For example
 
    ```
    cd glvis-js
    curl -s -o ../glvis/OpenSans.ttf https://raw.githubusercontent.com/google/fonts/master/apache/opensans/OpenSans-Regular.ttf
    ```
 
-4. Build:
+5. Patch glvis/makefile (temporary):
+
+   Add `--minify 0` to `EMCC_LIBS`
+
+6. Build:
 
    ```
-   rm ../glvis/lib/libglvis.js
-   make -j
-   cp ../glvis/lib/libglvis.js src/glvis.js
+   make realclean # or just clean if you don't want to rebuild mfem
+   make install -j
    ```
+
+7. Patch glvis.js (temporary):
+
+   Edit src/glvis.js and add `return 0;` to the top of `_JSEvents_requestFullscreen` (see Known
+   Issues)
+
 
 NOTE: Emscripten handles SDL2 and GLEW but if you have another installation in your path the link
 might fail.
@@ -136,4 +161,4 @@ More info [here](https://docs.npmjs.com/updating-your-published-package-version-
 - Browser differences
   - Fullscreen in Safari
   - Help menu overflow in Safari and Firefox
-- Secure websockets 
+- Secure websockets
