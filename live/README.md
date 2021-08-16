@@ -29,9 +29,9 @@ of the desktop version and can be used as an  for `./glvis –m mesh –g gf`.
 The web version of GLVis can also load local or remote streams by directly parsing the `stream` HTML argument
 in the format: `<site>/live?stream=<url>`, which can be used for hosting and presenting simulation data on the web.
 
-For example, https://glvis.org/live?stream=https://glvis.org/data/ex9.saved will fetch _ex9.saved_
+For example, https://glvis.org/live?stream=https://glvis.org/data/streams/ex9.saved will fetch _ex9.saved_
 from glvis.org and render it instead of the normal _quad.saved_ on startup. The same can be done with
-data from an external site or if you're hosting locally after running [`make serve`](../README.md#serving-to-a-device-on-your-local-network): https://localhost:8000/live?stream=https://glvis.org/data/ex9.saved.
+data from an external site or if you're hosting locally after running [`make serve`](../README.md#serving-to-a-device-on-your-local-network): https://localhost:8000/live?stream=https://glvis.org/data/streams/ex9.saved.
 
 ## Loading streams from MFEM
 
