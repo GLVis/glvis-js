@@ -130,8 +130,8 @@
       g.startVisualization(
         data_str,
         data_type,
-        this.canvas_.width,
-        this.canvas_.height
+        parseInt(this.canvas_.style.width),
+        parseInt(this.canvas_.style.height)
       );
       this.new_stream_callbacks.forEach((f) => f(this));
       this._startVis(g);
