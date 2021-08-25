@@ -399,7 +399,7 @@
             </template>
           </v-card>
 
-            <!-- Visualization Vontrol window -->
+            <!-- Visualization control window -->
             <v-card
               id="control-window"
               v-if="controlWindowActive"
@@ -1022,6 +1022,8 @@
             this.glvStreamIsPaused = !this.glvStreamIsPaused;
           } else if (event.keyCode === 72 || event.keyCode === 104) {
             this.helpWindowActive = !this.helpWindowActive;
+          } else if (event.keyCode === 83) {
+            this.glv.saveScreenshot();
           } else {
             this.glv.sendKey(
               event.keyCode,
@@ -1146,6 +1148,9 @@
           this.glvIsLoading = true;
           await this.glv.loadStream(event);
           this.glvIsLoading = false;
+        },
+        saveScreenshot: async function (e) {
+          await this.glv.saveScreenshot(e);
         },
         onDoubleTap: function (event) {
           this.glvStreamIsPaused = !this.glvStreamIsPaused;

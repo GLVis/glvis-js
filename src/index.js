@@ -214,6 +214,41 @@
       return g.getHelpString();
     }
 
+    async getScreenBuffer(flip_y=false) {
+      var g = await this.emglv_;
+      return g.getScreenBuffer(flip_y);
+    }
+
+    async screenshotAsCanvas() {
+      let data = await this.getScreenBuffer(true);
+      // idk why we need this but the `ImageData` ctor complains
+      // when a Uint8Array is passed
+      let clamped_data = new Uint8ClampedArray(data);
+      const w = this.canvas_.width;
+      const h = this.canvas_.height;
+      let imdata = new ImageData(clamped_data, w, h);
+      let can = document.createElement('canvas');
+      can.width = w;
+      can.height = h;
+      can.getContext('2d').putImageData(imdata, 0, 0);
+      return can
+    }
+
+    async openScreenshotInTab() {
+      let can = await this.screenshotAsCanvas();
+      const url = can.toDataURL("image/png");
+      let tab = window.open('about:blank');
+      tab.location.href = url;
+    }
+
+    async saveScreenshot(name="glvis.png") {
+      let link = document.createElement('a');
+      link.download = name;
+      let can = await this.screenshotAsCanvas();
+      link.href = can.toDataURL("image/png");
+      link.click();
+    }
+
     // callbacks: f(State) -> void
     registerNewStreamCallback(f) {
       this.new_stream_callbacks.push(f);
