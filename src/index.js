@@ -58,6 +58,8 @@
 
     setCanvasSize(width, height) {
       const pixel_ratio = window.devicePixelRatio || 1;
+      this.logical_width = width;
+      this.logical_height = height;
       this.canvas_.style.width = `${width}px`;
       this.canvas_.style.height = `${height}px`;
       this.canvas_.width = Math.floor(width * pixel_ratio);
@@ -130,8 +132,8 @@
       g.startVisualization(
         data_str,
         data_type,
-        this.canvas_.width,
-        this.canvas_.height
+        this.logical_width,
+        this.logical_height
       );
       this.new_stream_callbacks.forEach((f) => f(this));
       this._startVis(g);
