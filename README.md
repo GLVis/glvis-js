@@ -62,18 +62,14 @@ open basic.html
    curl -s -o ../glvis/OpenSans.ttf https://raw.githubusercontent.com/google/fonts/master/apache/opensans/OpenSans-Regular.ttf
    ```
 
-5. Patch glvis/makefile (temporary):
-
-   Add `--minify 0` to `EMCC_LIBS`
-
-6. Build:
+5. Build:
 
    ```
    make realclean # or just clean if you don't want to rebuild mfem
    make install -j
    ```
 
-7. Patch glvis.js (temporary):
+6. Patch glvis.js (temporary):
 
    Edit src/glvis.js and add `return 0;` to the top of `_JSEvents_requestFullscreen` (see Known
    Issues)

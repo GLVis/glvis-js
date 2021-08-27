@@ -57,15 +57,15 @@
     }
 
     setCanvasSize(width, height) {
-      const pixel_ratio = window.devicePixelRatio || 1;
-      this.logical_width = width;
-      this.logical_height = height;
+      this.pixel_ratio_ = window.devicePixelRatio || 1;
+      this.logical_width_ = width;
+      this.logical_height_ = height;
       this.canvas_.style.width = `${width}px`;
       this.canvas_.style.height = `${height}px`;
-      this.canvas_.width = Math.floor(width * pixel_ratio);
-      this.canvas_.height = Math.floor(height * pixel_ratio);
+      this.canvas_.width = Math.floor(width * this.pixel_ratio_);
+      this.canvas_.height = Math.floor(height * this.pixel_ratio_);
       console.log(
-        `dpr=${pixel_ratio} new canvas sizes: ` +
+        `dpr=${this.pixel_ratio_} new canvas sizes: ` +
           `style.width=${this.canvas_.style.width}, ` +
           `style.height=${this.canvas_.style.height}, ` +
           `width=${this.canvas_.width}, ` +
@@ -132,8 +132,8 @@
       g.startVisualization(
         data_str,
         data_type,
-        this.logical_width,
-        this.logical_height
+        this.logical_width_,
+        this.logical_height_
       );
       this.new_stream_callbacks.forEach((f) => f(this));
       this._startVis(g);
@@ -214,6 +214,57 @@
     async getHelpString() {
       var g = await this.emglv_;
       return g.getHelpString();
+    }
+
+    // NOTE: the resulting data is just a view and the view will be invalid
+    // after subsequent aclls to `getScreenBuffer` or `getPNGURL` since they
+    // all use the same underlying buffer
+    async getScreenBuffer(flip_y = false) {
+      var g = await this.emglv_;
+      return g.getScreenBuffer(flip_y);
+    }
+
+    async getScreenBufferAsCanvas() {
+      let data = await this.getScreenBuffer(true);
+      // idk why we need this but the `ImageData` ctor complains
+      // when a Uint8Array is passed
+      let clamped_data = new Uint8ClampedArray(data);
+      const w = this.canvas_.width;
+      const h = this.canvas_.height;
+      let imdata = new ImageData(clamped_data, w, h);
+      let can = document.createElement("canvas");
+      can.width = w;
+      can.height = h;
+      let ctx = can.getContext("2d");
+      ctx.putImageData(imdata, 0, 0);
+      return can;
+    }
+
+    async getPNGURL() {
+      let g = await this.emglv_;
+      const data = g.getPNGByteArray();
+      if (data === null) {
+        throw "png data is null";
+      }
+      // NOTE: the internet said `String.fronCharCode' could fail with large
+      // buffers but I haven't seen that happen
+      return (
+        "data:image/png;base64," + btoa(String.fromCharCode.apply(null, data))
+      );
+    }
+
+    async openScreenshotInTab() {
+      const url = await this.getPNGURL();
+      let tab = window.open("about:blank");
+      tab.location.href = url;
+    }
+
+    async saveScreenshot(name = "glvis.png") {
+      const url = await this.getPNGURL();
+      let link = document.createElement("a");
+      link.download = name;
+      link.href = url;
+      link.click();
     }
 
     // callbacks: f(State) -> void

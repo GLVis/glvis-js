@@ -26,11 +26,12 @@ all: $(LIB_GLVIS_JS)
 
 $(LIB_MFEM):
 	# ranlib causes problems
-	@$(MAKE) -C $(MFEM_DIR) CXX=$(EMCXX) MFEM_TIMER_TYPE=0 BUILD_DIR=$(MFEM_BUILD_DIR) serial \
-		AR=$(EMAR) ARFLAGS=rcs RANLIB=echo
+	@$(MAKE) -C $(MFEM_DIR) CXX=$(EMCXX) MFEM_TIMER_TYPE=0 \
+		BUILD_DIR=$(MFEM_BUILD_DIR) serial AR=$(EMAR) ARFLAGS=rcs RANLIB=echo
 
 $(LIB_GLVIS_JS): $(LIB_MFEM)
-	@$(MAKE) -C $(GLVIS_DIR) GLM_DIR=$(GLM_ROOT) MFEM_DIR=$(MFEM_BUILD_DIR) GLVIS_USE_LOGO=NO js
+	@$(MAKE) -C $(GLVIS_DIR) GLM_DIR=$(GLM_ROOT) MFEM_DIR=$(MFEM_BUILD_DIR) \
+		GLVIS_USE_LOGO=NO GLVIS_USE_LIBPNG=YES js
 
 libmfem: $(LIB_MFEM)
 
@@ -54,7 +55,8 @@ versions:
 	@echo "const versions = {\n  emscripten: \"$(em)\",\n  mfem: \"$(mfem)\",\n  glvis: \"$(glvis)\",\n};" > $(js_target)
 
 style:
-	@which $(NPX) > /dev/null && { $(NPX) prettier -w src/ live/ examples/ || exit 1; } || echo "fatal: $(NPX) isn't available, please install npm."
+	@which $(NPX) > /dev/null && { $(NPX) prettier -w src/ live/ examples/ || exit 1; } \
+		|| echo "fatal: $(NPX) isn't available, please install npm."
 
 serve:
 	python3 -m http.server 8000 --bind 0.0.0.0
