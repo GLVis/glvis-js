@@ -246,13 +246,15 @@
       if (data === null) {
         throw "png data is null";
       }
-      // NOTE: the internet said `String.fronCharCode' could fail with large
-      // buffers but I haven't seen that happen
-      return btoa(String.fromCharCode.apply(null, data));
+      return btoa(
+        data.reduce(function (data, byte) {
+          return data + String.fromCharCode(byte);
+        }, "")
+      );
     }
 
     async getPNGURL() {
-      return "data:image/png;base64," + await this.getPNGAsB64();
+      return "data:image/png;base64," + (await this.getPNGAsB64());
     }
 
     async openScreenshotInTab() {
