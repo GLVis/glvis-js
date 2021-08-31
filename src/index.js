@@ -246,12 +246,11 @@
       if (data === null) {
         throw "png data is null";
       }
-      let s = btoa(
+      return btoa(
         data.reduce(function (data, byte) {
           return data + String.fromCharCode(byte);
         }, "")
       );
-      return s;
     }
 
     async getPNGURL() {
