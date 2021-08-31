@@ -240,7 +240,7 @@
       return can;
     }
 
-    async getPNGURL() {
+    async getPNGAsB64() {
       let g = await this.emglv_;
       const data = g.getPNGByteArray();
       if (data === null) {
@@ -248,9 +248,11 @@
       }
       // NOTE: the internet said `String.fronCharCode' could fail with large
       // buffers but I haven't seen that happen
-      return (
-        "data:image/png;base64," + btoa(String.fromCharCode.apply(null, data))
-      );
+      return btoa(String.fromCharCode.apply(null, data));
+    }
+
+    async getPNGURL() {
+      return "data:image/png;base64," + await this.getPNGAsB64();
     }
 
     async openScreenshotInTab() {
