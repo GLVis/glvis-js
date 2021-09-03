@@ -126,7 +126,9 @@ be installed for you when running `make style` if you don't already have it.
 1. Update the version: `npm version <update_type>`
    - `<update_type>` is one of `patch`, `minor`, or `major`
 
-2. `npm publish`
+2. `npm login`
+
+3. `npm publish`
 
 More info [here](https://docs.npmjs.com/updating-your-published-package-version-number).
 
