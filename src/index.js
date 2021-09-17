@@ -90,6 +90,10 @@
 
       this.canvas_.oncontextmenu = function (e) {
         e.preventDefault();
+        // prevent right-click from bubbling up to stuff like Jupyter Lab that
+        // have a custom JS-based right-click menu we don't want opening when
+        // someone is trying to zoom
+        e.stopPropagation();
       };
       var that = this;
       this.canvas_.addEventListener("click", function () {
