@@ -173,6 +173,8 @@
       if ((await this._display(data, true)) != 0) {
         console.log("unable to update stream, starting a new one");
         this.display(data);
+      } else {
+        console.log("updated stream");
       }
     }
 
