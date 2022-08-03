@@ -133,29 +133,33 @@
     async _display(data, is_update, ...args) {
       var g = await this.emglv_;
       if (Array.isArray(data)) {
-        const f = is_update ? g.updateParallelStreams : g.displayParallelStreams;
+        const f = is_update
+          ? g.updateParallelStreams
+          : g.displayParallelStreams;
         // TODO: this seems expensive, there must be a better way..
         var streams = new g.StringArray();
-        data.forEach(s => streams.push_back(s));
+        data.forEach((s) => streams.push_back(s));
         const stat = f(streams, ...args);
         streams.delete();
         return stat;
-      }
-      else if (typeof(data) == "string") {
+      } else if (typeof data == "string") {
         const f = is_update ? g.updateStream : g.displayStream;
         return f(data, ...args);
-      }
-      else {
-        throw `unsupported data type ${typeof(data)}`;
+      } else {
+        throw `unsupported data type ${typeof data}`;
       }
     }
-
 
     async display(data) {
       var g = await this.emglv_;
       this._setupEmGlvis(g);
 
-      await this._display(data, false, this.logical_width_, this.logical_height_);
+      await this._display(
+        data,
+        false,
+        this.logical_width_,
+        this.logical_height_
+      );
 
       this.new_stream_callbacks.forEach((f) => f(this));
       this._startVis(g);
@@ -166,7 +170,7 @@
         this.display(data);
         return;
       }
-      if (await this._display(data, true) != 0) {
+      if ((await this._display(data, true)) != 0) {
         console.log("unable to update stream, starting a new one");
         this.display(data);
       }

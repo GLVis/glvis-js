@@ -1055,9 +1055,14 @@
             await new Promise((r) => setTimeout(r, 500));
           }
           // msg might be json, if it starts with `[' we know it's a json list...
-          if (msg[0] == '[') { msg = JSON.parse(msg); }
+          if (msg[0] == "[") {
+            msg = JSON.parse(msg);
+          }
           await this.glv.update(msg);
-          if (typeof(msg) == "string" && msg.endsWith("pause\n") || Array.isArray(msg) && msg[0].endsWith("pause\n")) {
+          if (
+            (typeof msg == "string" && msg.endsWith("pause\n")) ||
+            (Array.isArray(msg) && msg[0].endsWith("pause\n"))
+          ) {
             this.glvStreamIsPaused = true;
             console.log("pausing");
           }
