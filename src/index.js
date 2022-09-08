@@ -130,43 +130,52 @@
       window.requestAnimationFrame(iterVis);
     }
 
-    async display(data_type, data_str) {
+    async _display(data, is_update, ...args) {
+      var g = await this.emglv_;
+      if (Array.isArray(data)) {
+        const f = is_update
+          ? g.updateParallelStreams
+          : g.displayParallelStreams;
+        // TODO: this seems expensive, there must be a better way..
+        var streams = new g.StringArray();
+        data.forEach((s) => streams.push_back(s));
+        const stat = f(streams, ...args);
+        streams.delete();
+        return stat;
+      } else if (typeof data == "string") {
+        const f = is_update ? g.updateStream : g.displayStream;
+        return f(data, ...args);
+      } else {
+        throw `unsupported data type ${typeof data}`;
+      }
+    }
+
+    async display(data) {
       var g = await this.emglv_;
       this._setupEmGlvis(g);
-      g.startVisualization(
-        data_str,
-        data_type,
+
+      await this._display(
+        data,
+        false,
         this.logical_width_,
         this.logical_height_
       );
+
       this.new_stream_callbacks.forEach((f) => f(this));
       this._startVis(g);
     }
 
-    async displayStream(stream) {
-      const index = stream.indexOf("\n");
-      const data_type = stream.substr(0, index);
-      const data_str = stream.substr(index + 1);
-      await this.display(data_type, data_str);
-    }
-
-    async update(data_type, data_str) {
+    async update(data) {
       if (!this.emsetup_) {
-        this.display(data_type, data_str);
+        this.display(data);
         return;
       }
-      var g = await this.emglv_;
-      if (g.updateVisualization(data_type, data_str) != 0) {
+      if ((await this._display(data, true)) != 0) {
         console.log("unable to update stream, starting a new one");
-        this.display(data_type, data_str);
+        this.display(data);
+      } else {
+        console.log("updated stream");
       }
-    }
-
-    async updateStream(stream) {
-      const index = stream.indexOf("\n");
-      const data_type = stream.substr(0, index);
-      const data_str = stream.substr(index + 1);
-      await this.update(data_type, data_str);
     }
 
     async sendKey(key, ctrl = false, shift = false, alt = false) {
@@ -201,13 +210,13 @@
         return;
       }
       console.log(`loading ${url}`);
-      await this.displayStream(text);
+      await this.display(text);
     }
 
     async loadStream(e) {
       const filename = e.target.files[0];
       const data = await new Response(filename).text();
-      await this.displayStream(data);
+      await this.display(data);
     }
 
     setTouchDevice(status) {

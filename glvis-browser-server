@@ -25,6 +25,7 @@ import argparse
 import asyncio
 import logging
 import websockets
+import json
 
 logger = logging.getLogger("websockets.server")
 logger.setLevel(logging.ERROR)
@@ -38,9 +39,12 @@ args = parser.parse_args()
 
 
 async def ws_handler(queue, websocket, path):
+    """Write serial stream messages or encode and write stream-list messages"""
     print("websocket client connected")
     while True:
         msg = await queue.get()
+        if type(msg) == list:
+            msg = json.dumps(msg)
         print(f"sending {msg[0:min(len(msg), 20)]}...")
         try:
             await websocket.send(msg)
@@ -56,6 +60,7 @@ async def ws_handler(queue, websocket, path):
 
 
 async def mfem_handler(queue, reader, writer, timeout=1, block_size=1024):
+    """Read and queue streams from mfem"""
     peername = writer.get_extra_info("peername")
     if peername is not None:
         client, port = peername
@@ -69,7 +74,8 @@ async def mfem_handler(queue, reader, writer, timeout=1, block_size=1024):
             block = await asyncio.wait_for(reader.read(block_size), timeout)
             if not block:
                 break
-            idx = block.rfind(b"solution")
+            idx = block.rfind(b"parallel")
+            if idx == -1: idx = block.rfind(b"solution")
             if (idx != -1 and msg) or idx > 0:
                 msg += block[:idx]
                 queue.put_nowait(msg.decode())
@@ -87,29 +93,67 @@ async def mfem_handler(queue, reader, writer, timeout=1, block_size=1024):
 
 
 async def create_mfem_server(queue):
+    """Helper method: start mfem_handler server"""
     print("mfem server: starting")
 
     async def handler_wrap(reader, writer):
         await mfem_handler(queue, reader, writer)
 
     server = await asyncio.create_task(
-        asyncio.start_server(handler_wrap, host="localhost", port=args.port)
+        asyncio.start_server(handler_wrap, host="0.0.0.0", port=args.port)
     )
     await server.serve_forever()
     print("mfem server: complete")
 
 
+async def parallel_message_builder(pqueues, ws_queue):
+    """Process queued parallel streams and build/queue stream-list messages"""
+    print("parallel_message_builder: starting")
+    try:
+        while True:
+            stream_list = []
+            for q in pqueues:
+                stream_list.append(await q.get())
+            ws_queue.put_nowait(stream_list)
+    except asyncio.CancelledError:
+        print("parallel_message_builder: stopping")
+
+
+async def message_handler(mfem_queue, ws_queue):
+    """Forward serial stream messages and queue parallel streams"""
+    print("message handler: starting")
+    pqueues = ptask = None
+    while True:
+        msg = await mfem_queue.get()
+        if msg.startswith("parallel"):
+            info = msg[:msg.find("\n")].split(" ")
+            nproc = int(info[1])
+            rank = int(info[2])
+            if pqueues is None or len(pqueues) != nproc:
+                print(f"message_handler: now handling parallel nproc={nproc} messages")
+                pqueues = [asyncio.Queue() for i in range(nproc)]
+                if ptask is not None: ptask.cancel()
+                ptask = asyncio.create_task(parallel_message_builder(pqueues, ws_queue))
+            pqueues[rank].put_nowait(msg)
+        else:
+            ws_queue.put_nowait(msg)
+    await ptask
+
+
 async def main():
-    queue = asyncio.Queue()
+    mfem_queue = asyncio.Queue()
+    ws_queue = asyncio.Queue()
 
     async def ws_handler_wrap(websocket, path):
-        await ws_handler(queue, websocket, path)
+        await ws_handler(ws_queue, websocket, path)
 
     ws_server = websockets.serve(ws_handler_wrap, "0.0.0.0", args.ws_port)
-    mfem_server = asyncio.create_task(create_mfem_server(queue))
+    mfem_server = asyncio.create_task(create_mfem_server(mfem_queue))
+    msg_handler = asyncio.create_task(message_handler(mfem_queue, ws_queue))
 
     await ws_server
     await mfem_server
+    await msg_handler
 
 
 asyncio.run(main())
