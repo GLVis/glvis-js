@@ -3,6 +3,7 @@
 name: Build
 
 on:
+  pull_request:
   workflow_call:
     inputs:
       mfem-ref:
