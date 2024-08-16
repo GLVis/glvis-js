@@ -68,9 +68,12 @@ jobs:
         git checkout ${{ inputs.glvis-ref }}
         make -j 4
 
-    - name: Install glvis-js
+    - name: Checkout glvis-js
       uses: actions/checkout@v4
+
+    - name: Install glvis-js
       run: | 
+        cd glvis-js
         git submodule update --init --recursive
         curl -s -o ../glvis/OpenSans.ttf https://raw.githubusercontent.com/google/fonts/master/apache/opensans/OpenSans-Regular.ttf
         make install -j 4
