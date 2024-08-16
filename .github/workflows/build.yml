@@ -65,7 +65,7 @@ jobs:
         git clone https://github.com/mfem/mfem.git
         cd mfem
         git checkout ${{ env.mfem-ref }}
-        make -j 4
+        make serial -j 4
 
     - name: Install glvis
       run: |
