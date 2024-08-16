@@ -1,0 +1,85 @@
+# build.yml
+
+name: Build
+
+on:
+  workflow_call:
+    inputs:
+      mfem-ref:
+        type: string
+        default: 'master'
+      glvis-ref:
+        type: string
+        default: 'master'
+      emscripten-version:
+        type: string
+        default: 'latest'
+  workflow_dispatch:
+    inputs:
+      mfem-ref:
+        type: string
+        default: 'master'
+      glvis-ref:
+        type: string
+        default: 'master'
+      emscripten-version:
+        type: string
+        default: 'latest'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    name: >-
+      mfem=${{ inputs.mfem-ref }} | 
+      glvis=${{ inputs.glvis-ref }} | 
+      emcc=${{ inputs.emscripten-version }}
+
+    steps:
+    # ---------------------------------------------------------------------------------
+    # Install glvis-js and dependencies
+    # ---------------------------------------------------------------------------------
+    - name: Install glvis dependencies
+      run: |
+        apt-get install libfontconfig1-dev libfreetype-dev libsdl2-dev \
+        libglew-dev libglm-dev libpng-dev
+
+    - name: Install emscripten
+      run: |
+        git clone https://github.com/emscripten-core/emsdk.git
+        cd emsdk
+        git pull
+        ./emsdk install ${{ inputs.emscripten-version }}
+        ./emsdk activate ${{ inputs.emscripten-version }}
+        source emsdk_env.sh
+
+    - name: Install mfem
+      run: |
+        git clone https://github.com/mfem/mfem.git
+        cd mfem
+        git checkout ${{ inputs.mfem-ref }}
+        make -j 4
+
+    - name: Install glvis
+      run: |
+        git clone https://github.com/glvis/glvis.git
+        cd glvis
+        git checkout ${{ inputs.glvis-ref }}
+        make -j 4
+
+    - name: Install glvis-js
+      uses: actions/checkout@v4
+      run: | 
+        git submodule update --init --recursive
+        curl -s -o ../glvis/OpenSans.ttf https://raw.githubusercontent.com/google/fonts/master/apache/opensans/OpenSans-Regular.ttf
+        make install -j 4
+
+    # ---------------------------------------------------------------------------------
+    # Generate an artifact
+    # ---------------------------------------------------------------------------------
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+          name: glvis-js
+          path: glvis-js/src
+          retention-days: 1
