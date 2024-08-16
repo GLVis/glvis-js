@@ -31,10 +31,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    name: >-
-      mfem=${{ inputs.mfem-ref }} | 
-      glvis=${{ inputs.glvis-ref }} | 
-      emcc=${{ inputs.emscripten-version }}
+    name: testing
+    #>-
+        #      mfem=${{ inputs.mfem-ref }} | 
+        #      glvis=${{ inputs.glvis-ref }} | 
+        #      emcc=${{ inputs.emscripten-version }}
+
+    env:
+      mfem-ref: 'master'
+      glvis-ref: 'master'
+      emscripten-version: 'latest'
 
     steps:
     # ---------------------------------------------------------------------------------
@@ -50,22 +56,22 @@ jobs:
         git clone https://github.com/emscripten-core/emsdk.git
         cd emsdk
         git pull
-        ./emsdk install ${{ inputs.emscripten-version }}
-        ./emsdk activate ${{ inputs.emscripten-version }}
+        ./emsdk install ${{ env.emscripten-version }}
+        ./emsdk activate ${{ env.emscripten-version }}
         source emsdk_env.sh
 
     - name: Install mfem
       run: |
         git clone https://github.com/mfem/mfem.git
         cd mfem
-        git checkout ${{ inputs.mfem-ref }}
+        git checkout ${{ env.mfem-ref }}
         make -j 4
 
     - name: Install glvis
       run: |
         git clone https://github.com/glvis/glvis.git
         cd glvis
-        git checkout ${{ inputs.glvis-ref }}
+        git checkout ${{ env.glvis-ref }}
         make -j 4
 
     - name: Checkout glvis-js
