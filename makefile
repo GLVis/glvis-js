@@ -64,6 +64,11 @@ serve:
 servelocal:
 	python3 -m http.server 8000 --bind 127.0.0.1
 
+get_opensans:
+	curl -s "https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" |\
+	grep -o "https://fonts.gstatic.com/[^)]*" |\
+	xargs -n 1 curl -s -o ../glvis/OpenSans.ttf
+
 realclean: clean
 	@test -d $(MFEM_BUILD_DUR) && rm -rf $(MFEM_BUILD_DIR)
 
