@@ -59,7 +59,7 @@ open basic.html
 
    ```
    cd glvis-js
-   curl -s -o ../glvis/OpenSans.ttf https://github.com/googlefonts/opensans/blob/main/fonts/ttf/OpenSans-Regular.ttf
+   curl -s -o ../glvis/OpenSans.ttf https://github.com/googlefonts/opensans/raw/main/fonts/ttf/OpenSans-Regular.ttf
    ```
 
 5. Build:
