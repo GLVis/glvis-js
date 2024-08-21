@@ -84,7 +84,12 @@ jobs:
     # ---------------------------------------------------------------------------------
     # Generate an artifact
     # ---------------------------------------------------------------------------------
-    - name: Upload Artifact
+    - name: Print artifact info
+      run: | 
+        cat glvis-js/src/versions.js
+        sha256sum glvis-js/src/*
+
+    - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
           name: glvis-js
