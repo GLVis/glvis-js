@@ -3,18 +3,6 @@
 name: Build
 
 on:
-  pull_request:
-  workflow_call:
-    inputs:
-      mfem-ref:
-        type: string
-        default: 'master'
-      glvis-ref:
-        type: string
-        default: 'master'
-      emscripten-version:
-        type: string
-        default: 'latest'
   workflow_dispatch:
     inputs:
       mfem-ref:
@@ -25,22 +13,17 @@ on:
         default: 'master'
       emscripten-version:
         type: string
-        default: 'latest'
+        default: '3.1.51'
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
-    name: testing
-    #>-
-        #      mfem=${{ inputs.mfem-ref }} | 
-        #      glvis=${{ inputs.glvis-ref }} | 
-        #      emcc=${{ inputs.emscripten-version }}
-
-    env:
-      mfem-ref: 'master'
-      glvis-ref: 'master'
-      emscripten-version: '3.1.51'
+    name: >-
+        build glvis-js |
+        mfem=${{ inputs.mfem-ref }} | 
+        glvis=${{ inputs.glvis-ref }} | 
+        emcc=${{ inputs.emscripten-version }}
 
     steps:
     # ---------------------------------------------------------------------------------
@@ -66,8 +49,8 @@ jobs:
     - name: Install emscripten
       run: |
         cd emsdk
-        ./emsdk install ${{ env.emscripten-version }}
-        ./emsdk activate ${{ env.emscripten-version }}
+        ./emsdk install ${{ inputs.emscripten-version }}
+        ./emsdk activate ${{ inputs.emscripten-version }}
         echo "${GITHUB_WORKSPACE}/emsdk" >> $GITHUB_PATH
         echo "${GITHUB_WORKSPACE}/emsdk/upstream/emscripten" >> $GITHUB_PATH
 
@@ -75,14 +58,14 @@ jobs:
       uses: actions/checkout@v4
       with:
         repository: mfem/mfem
-        ref: ${{ env.mfem-ref }}
+        ref: ${{ inputs.mfem-ref }}
         path: mfem
 
     - name: Checkout glvis
       uses: actions/checkout@v4
       with:
         repository: glvis/glvis
-        ref: ${{ env.glvis-ref }}
+        ref: ${{ inputs.glvis-ref }}
         path: glvis
 
     - name: Install glvis-js (also installs mfem + glvis)
