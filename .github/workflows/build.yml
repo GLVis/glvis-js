@@ -68,7 +68,8 @@ jobs:
         cd emsdk
         ./emsdk install ${{ env.emscripten-version }}
         ./emsdk activate ${{ env.emscripten-version }}
-        source emsdk_env.sh
+        echo "${GITHUB_WORKSPACE}/emsdk" >> $GITHUB_PATH
+        echo "${GITHUB_WORKSPACE}/emsdk/upstream/emscripten" >> $GITHUB_PATH
 
     - name: Checkout mfem
       uses: actions/checkout@v4
