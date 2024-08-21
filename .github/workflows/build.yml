@@ -80,7 +80,6 @@ jobs:
     - name: Install glvis-js
       run: | 
         git submodule update --init --recursive
-        curl -s -o ../glvis/OpenSans.ttf https://github.com/googlefonts/opensans/raw/main/fonts/ttf/OpenSans-Regular.ttf
         make install -j 4
 
     # ---------------------------------------------------------------------------------
