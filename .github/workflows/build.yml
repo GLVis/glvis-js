@@ -59,6 +59,7 @@ jobs:
 
     - name: Install emscripten
       run: |
+        cd emsdk
         ./emsdk install ${{ env.emscripten-version }}
         ./emsdk activate ${{ env.emscripten-version }}
         source emsdk_env.sh
@@ -82,9 +83,11 @@ jobs:
       with:
         repository: glvis/glvis-js
         submodules: recursive
+        path: glvis-js
 
     - name: Install glvis-js (also installs mfem + glvis)
       run: | 
+        cd glvis-js
         make install -j 4
 
     # ---------------------------------------------------------------------------------
