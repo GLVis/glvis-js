@@ -52,34 +52,28 @@ jobs:
         libglew-dev libglm-dev libpng-dev
 
     - name: Install emscripten
+      uses: actions/checkout@v4
+      with:
+        repository: 'https://github.com/emscripten-core/emsdk.git'
+        ref: ${{ env.emscripten-version }}
       run: |
-        git clone https://github.com/emscripten-core/emsdk.git
-        cd emsdk
-        git pull
         ./emsdk install ${{ env.emscripten-version }}
         ./emsdk activate ${{ env.emscripten-version }}
         source emsdk_env.sh
 
-    - name: Install mfem
-      run: |
-        git clone https://github.com/mfem/mfem.git
-        cd mfem
-        git checkout ${{ env.mfem-ref }}
-        make serial -j 4
-
-    - name: Install glvis
-      run: |
-        git clone https://github.com/glvis/glvis.git
-        cd glvis
-        git checkout ${{ env.glvis-ref }}
-        make -j 4
-
-    - name: Checkout glvis-js
+    - name: Checkout mfem
       uses: actions/checkout@v4
+      with:
+        repository: 'https://github.com/mfem/mfem.git'
+        ref: ${{ env.mfem-ref }}
 
-    - name: Install glvis-js
+    - name: Install glvis (also installs mfem + glvis)
+      uses: actions/checkout@v4
+      with:
+        repository: https://github.com/glvis/glvis.git
+        ref: ${{ env.glvis-ref }}
+        submodules: true
       run: | 
-        git submodule update --init --recursive
         make install -j 4
 
     # ---------------------------------------------------------------------------------
