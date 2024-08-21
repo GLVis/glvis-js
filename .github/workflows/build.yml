@@ -51,11 +51,13 @@ jobs:
         sudo apt-get install libfontconfig1-dev libfreetype-dev libsdl2-dev \
         libglew-dev libglm-dev libpng-dev
 
-    - name: Install emscripten
+    - name: Checkout emscripten
       uses: actions/checkout@v4
       with:
         repository: emscripten-core/emsdk
         path: emsdk
+
+    - name: Install emscripten
       run: |
         ./emsdk install ${{ env.emscripten-version }}
         ./emsdk activate ${{ env.emscripten-version }}
