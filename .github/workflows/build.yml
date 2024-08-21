@@ -75,11 +75,13 @@ jobs:
         ref: ${{ env.glvis-ref }}
         path: glvis
 
-    - name: Install glvis-js (also installs mfem + glvis)
+    - name: Checkout glvis-js
       uses: actions/checkout@v4
       with:
         repository: glvis/glvis-js
         submodules: recursive
+
+    - name: Install glvis-js (also installs mfem + glvis)
       run: | 
         make install -j 4
 
