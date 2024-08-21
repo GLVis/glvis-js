@@ -40,7 +40,7 @@ jobs:
     env:
       mfem-ref: 'master'
       glvis-ref: 'master'
-      emscripten-version: 'latest'
+      emscripten-version: '3.1.51'
 
     steps:
     # ---------------------------------------------------------------------------------
