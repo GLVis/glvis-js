@@ -29,9 +29,9 @@ jobs:
 
     name: >-
         build glvis-js |
-        mfem=${{ env.mfem-ref }} | 
-        glvis=${{ env.glvis-ref }} | 
-        emcc=${{ env.emscripten-version }}
+        mfem=${{ github.event_name == 'pull_request' && 'master' || inputs.mfem-ref }} | 
+        glvis=${{ github.event_name == 'pull_request' && 'master' || inputs.glvis-ref }} | 
+        emcc=${{ github.event_name == 'pull_request' && '3.1.51' || inputs.emscripten-version }}
 
     steps:
     # ---------------------------------------------------------------------------------
