@@ -54,7 +54,7 @@ jobs:
     - name: Install emscripten
       uses: actions/checkout@v4
       with:
-        repository: 'https://github.com/emscripten-core/emsdk.git'
+        repository: 'emscripten-core/emsdk'
         ref: ${{ env.emscripten-version }}
       run: |
         ./emsdk install ${{ env.emscripten-version }}
@@ -64,14 +64,19 @@ jobs:
     - name: Checkout mfem
       uses: actions/checkout@v4
       with:
-        repository: 'https://github.com/mfem/mfem.git'
+        repository: 'mfem/mfem'
         ref: ${{ env.mfem-ref }}
 
-    - name: Install glvis (also installs mfem + glvis)
+    - name: Checkout glvis
       uses: actions/checkout@v4
       with:
-        repository: https://github.com/glvis/glvis.git
+        repository: 'glvis/glvis'
         ref: ${{ env.glvis-ref }}
+
+    - name: Install glvis-js (also installs mfem + glvis)
+      uses: actions/checkout@v4
+      with:
+        repository: 'glvis/glvis-js'
         submodules: true
       run: | 
         make install -j 4
