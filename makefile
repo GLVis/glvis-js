@@ -26,8 +26,9 @@ all: $(LIB_GLVIS_JS)
 
 $(LIB_MFEM):
 	# ranlib causes problems
-	@$(MAKE) -C $(MFEM_DIR) CXX=$(EMCXX) MFEM_TIMER_TYPE=0 \
-		BUILD_DIR=$(MFEM_BUILD_DIR) serial AR=$(EMAR) ARFLAGS=rcs RANLIB=echo
+	@$(MAKE) -C $(MFEM_DIR) BUILD_DIR=$(MFEM_BUILD_DIR) config CXX=$(EMCXX) \
+		MFEM_TIMER_TYPE=0 AR=$(EMAR) ARFLAGS=rcs RANLIB=echo 
+	$(MAKE) -C $(MFEM_BUILD_DIR) -j 4
 
 $(LIB_GLVIS_JS): $(LIB_MFEM)
 	@$(MAKE) get_opensans
