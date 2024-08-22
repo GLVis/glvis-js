@@ -1,0 +1,97 @@
+# build.yml
+
+name: Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      mfem-ref:
+        type: string
+        default: 'master'
+      glvis-ref:
+        type: string
+        default: 'master'
+      emscripten-version:
+        type: string
+        # We use 3.1.51 because later versions give compiler errors
+        # (possibly related to https://github.com/emscripten-core/emscripten/issues/21128)
+        default: '3.1.51'
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    env:
+      mfem-ref: ${{ github.event_name == 'pull_request' && 'master' || inputs.mfem-ref }}
+      glvis-ref: ${{ github.event_name == 'pull_request' && 'master' || inputs.glvis-ref }}
+      emscripten-version: ${{ github.event_name == 'pull_request' && '3.1.51' || inputs.emscripten-version }}
+
+    name: >-
+        build glvis-js |
+        mfem=${{ github.event_name == 'pull_request' && 'master' || inputs.mfem-ref }} | 
+        glvis=${{ github.event_name == 'pull_request' && 'master' || inputs.glvis-ref }} | 
+        emcc=${{ github.event_name == 'pull_request' && '3.1.51' || inputs.emscripten-version }}
+
+    steps:
+    # ---------------------------------------------------------------------------------
+    # Install glvis-js and dependencies
+    # ---------------------------------------------------------------------------------
+    - name: Checkout glvis-js
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+        path: glvis-js
+
+    - name: Install glvis dependencies
+      run: |
+        sudo apt-get install libfontconfig1-dev libfreetype-dev libsdl2-dev \
+        libglew-dev libglm-dev libpng-dev
+
+    - name: Checkout emscripten
+      uses: actions/checkout@v4
+      with:
+        repository: emscripten-core/emsdk
+        path: emsdk
+
+    - name: Install emscripten
+      run: |
+        cd emsdk
+        ./emsdk install ${{ env.emscripten-version }}
+        ./emsdk activate ${{ env.emscripten-version }}
+        echo "${GITHUB_WORKSPACE}/emsdk" >> $GITHUB_PATH
+        echo "${GITHUB_WORKSPACE}/emsdk/upstream/emscripten" >> $GITHUB_PATH
+
+    - name: Checkout mfem
+      uses: actions/checkout@v4
+      with:
+        repository: mfem/mfem
+        ref: ${{ env.mfem-ref }}
+        path: mfem
+
+    - name: Checkout glvis
+      uses: actions/checkout@v4
+      with:
+        repository: glvis/glvis
+        ref: ${{ env.glvis-ref }}
+        path: glvis
+
+    - name: Install glvis-js (also installs mfem + glvis)
+      run: | 
+        cd glvis-js
+        make install -j 4
+
+    # ---------------------------------------------------------------------------------
+    # Generate an artifact
+    # ---------------------------------------------------------------------------------
+    - name: Print artifact info
+      run: | 
+        cat glvis-js/src/versions.js
+        sha256sum glvis-js/src/*
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+          name: glvis-js
+          path: glvis-js/src
+          retention-days: 1

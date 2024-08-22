@@ -55,21 +55,14 @@ open basic.html
    git submodule update --init --recursive
    ```
 
-4. Get a copy of _OpenSans.ttf_ and put it in the GLVis root directory. For example
-
-   ```
-   cd glvis-js
-   curl -s -o ../glvis/OpenSans.ttf https://raw.githubusercontent.com/google/fonts/master/apache/opensans/OpenSans-Regular.ttf
-   ```
-
-5. Build:
+4. Build:
 
    ```
    make realclean # or just clean if you don't want to rebuild mfem
    make install -j
    ```
 
-6. Patch glvis.js (temporary):
+5. Patch glvis.js (temporary):
 
    Edit src/glvis.js and add `return 0;` to the top of `_JSEvents_requestFullscreen` (see Known
    Issues)

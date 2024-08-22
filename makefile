@@ -26,10 +26,12 @@ all: $(LIB_GLVIS_JS)
 
 $(LIB_MFEM):
 	# ranlib causes problems
-	@$(MAKE) -C $(MFEM_DIR) CXX=$(EMCXX) MFEM_TIMER_TYPE=0 \
-		BUILD_DIR=$(MFEM_BUILD_DIR) serial AR=$(EMAR) ARFLAGS=rcs RANLIB=echo
+	@$(MAKE) -C $(MFEM_DIR) BUILD_DIR=$(MFEM_BUILD_DIR) config CXX=$(EMCXX) \
+		MFEM_TIMER_TYPE=0 AR=$(EMAR) ARFLAGS=rcs RANLIB=echo 
+	$(MAKE) -C $(MFEM_BUILD_DIR) -j 4
 
 $(LIB_GLVIS_JS): $(LIB_MFEM)
+	@$(MAKE) get_opensans
 	@$(MAKE) -C $(GLVIS_DIR) GLM_DIR=$(GLM_ROOT) MFEM_DIR=$(MFEM_BUILD_DIR) \
 		GLVIS_USE_LOGO=NO GLVIS_USE_LIBPNG=YES js
 
@@ -63,6 +65,16 @@ serve:
 
 servelocal:
 	python3 -m http.server 8000 --bind 127.0.0.1
+
+get_opensans:
+	@if [ ! -f "$(GLVIS_DIR)/OpenSans.ttf" ]; then \
+		curl -s "https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" | \
+		grep -o "https://fonts.gstatic.com/[^)]*" | \
+		xargs -n 1 curl -s -o $(GLVIS_DIR)/OpenSans.ttf; \
+		echo "Downloaded OpenSans.ttf to $(GLVIS_DIR)"; \
+	else \
+		echo "GLVis already has OpenSans.ttf. Skipping download."; \
+	fi
 
 realclean: clean
 	@test -d $(MFEM_BUILD_DUR) && rm -rf $(MFEM_BUILD_DIR)
