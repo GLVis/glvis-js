@@ -130,14 +130,6 @@ More info [here](https://docs.npmjs.com/updating-your-published-package-version-
 
 - Opening new examples results in memory growth
 
-- Fullscreen events captured by the Emscripten Module are difficult to control
-
-  - `_JSEvents_requestFullscreen` in _glvis.js_ takes over the whole screen
-    - For now we patch this to be a noop
-    - Setting a noop with `emscripten_set_fullscreenchange_callback` doesn't seem to do it
-  - `_emscripten_set_canvas_element_size` and `__set_canvas_element_size` print
-  errors and duplicate some existing behavior
-
 - Lots of console warnings
 
 
