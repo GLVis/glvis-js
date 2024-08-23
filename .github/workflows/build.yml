@@ -111,4 +111,4 @@ jobs:
         git switch -c "ci-build-${{ github.run_id }}"
         git add .
         git commit -m "Updating glvis-js build"
-        git push
+        git push --set-upstream origin "ci-build-${{ github.run_id }}"
