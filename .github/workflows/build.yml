@@ -116,7 +116,7 @@ jobs:
           retention-days: 1
 
     - name: Push changes to a new branch
-      # if : env.make-branch
+      if: env.make-branch
       run: |
         cd glvis-js
         git config user.name "github-actions[bot]"
