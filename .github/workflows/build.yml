@@ -63,6 +63,8 @@ jobs:
     - name: Checkout glvis-js
       uses: actions/checkout@v4
       with:
+        fetch-depth: 0
+        fetch-tags: true
         submodules: recursive
         path: glvis-js
         lfs: true
@@ -84,6 +86,8 @@ jobs:
     - name: Checkout mfem
       uses: actions/checkout@v4
       with:
+        fetch-depth: 0
+        fetch-tags: true
         repository: mfem/mfem
         ref: ${{ env.mfem-ref }}
         path: mfem
@@ -91,6 +95,8 @@ jobs:
     - name: Checkout glvis
       uses: actions/checkout@v4
       with:
+        fetch-depth: 0
+        fetch-tags: true
         repository: glvis/glvis
         ref: ${{ env.glvis-ref }}
         path: glvis
@@ -99,7 +105,6 @@ jobs:
       run: |
         cd glvis-js
         make install -j 4
-        make versions
 
     # ---------------------------------------------------------------------------------
     # Generate an artifact
