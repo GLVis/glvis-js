@@ -43,7 +43,6 @@ jobs:
       mfem-ref: ${{ github.event_name == 'pull_request' && 'master' || inputs.mfem-ref }}
       glvis-ref: ${{ github.event_name == 'pull_request' && 'master' || inputs.glvis-ref }}
       emscripten-version: ${{ github.event_name == 'pull_request' && '3.1.51' || inputs.emscripten-version }}
-      make-branch: ${{ github.event_name == 'workflow_dispatch' && inputs.make-branch }}
 
     name: >-
         build glvis-js |
@@ -63,6 +62,8 @@ jobs:
     - name: Checkout glvis-js
       uses: actions/checkout@v4
       with:
+        fetch-depth: 0
+        fetch-tags: true
         submodules: recursive
         path: glvis-js
         lfs: true
@@ -84,6 +85,8 @@ jobs:
     - name: Checkout mfem
       uses: actions/checkout@v4
       with:
+        fetch-depth: 0
+        fetch-tags: true
         repository: mfem/mfem
         ref: ${{ env.mfem-ref }}
         path: mfem
@@ -91,6 +94,8 @@ jobs:
     - name: Checkout glvis
       uses: actions/checkout@v4
       with:
+        fetch-depth: 0
+        fetch-tags: true
         repository: glvis/glvis
         ref: ${{ env.glvis-ref }}
         path: glvis
@@ -99,7 +104,6 @@ jobs:
       run: |
         cd glvis-js
         make install -j 4
-        make versions
 
     # ---------------------------------------------------------------------------------
     # Generate an artifact
@@ -117,7 +121,7 @@ jobs:
           retention-days: 1
 
     - name: Push changes to a new branch
-      if: env.make-branch
+      if: ${{ github.event_name == 'workflow_dispatch' && inputs.make-branch }}
       run: |
         cd glvis-js
         git config user.name "github-actions[bot]"
