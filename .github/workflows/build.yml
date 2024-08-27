@@ -99,6 +99,7 @@ jobs:
       run: |
         cd glvis-js
         make install -j 4
+        make versions
 
     # ---------------------------------------------------------------------------------
     # Generate an artifact
