@@ -118,7 +118,7 @@ jobs:
       with:
           name: glvis-js
           path: glvis-js/src
-          retention-days: 1
+          retention-days: 14
 
     - name: Push changes to a new branch
       if: ${{ github.event_name == 'workflow_dispatch' && inputs.make-branch }}
