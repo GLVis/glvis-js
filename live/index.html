@@ -25,6 +25,7 @@
     <script src="./src/glvis.js"></script>
     <script src="./src/index.js"></script>
     <script src="./src/helpers.js"></script>
+    <script src="./src/versions.js"></script>
     <script src="../examples/example_stream.js"></script>
     <style>
       html {
@@ -392,7 +393,7 @@
             <!-- -->
             <template>
               <v-footer padless outlined elevation=0 rounded>
-                <v-col class="text-center">Powered by <a href="https://glvis.org">GLVis</a><br>Contact us on <a
+                  <v-col class="text-center">Powered by <a href="https://glvis.org">GLVis</a> {{ versions.glvis }}<br>Contact us on <a
                     href="https://github.com/glvis/glvis-js">GitHub</a>
                 </v-col>
               </v-footer>
