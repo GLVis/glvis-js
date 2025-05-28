@@ -56,7 +56,8 @@ jobs:
     # ---------------------------------------------------------------------------------
     - name: Install glvis dependencies
       run: |
-        sudo apt-get install libfontconfig1-dev libfreetype-dev libsdl2-dev \
+        sudo apt-get update && sudo apt-get install \
+        libfontconfig1-dev libfreetype-dev libsdl2-dev \
         libglew-dev libglm-dev libpng-dev git-lfs
 
     - name: Checkout glvis-js
