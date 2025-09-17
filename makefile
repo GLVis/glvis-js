@@ -9,8 +9,8 @@
 # terms of the BSD-3 license. We welcome feedback and contributions, see file
 # CONTRIBUTING.md for details.
 
-MFEM_DIR  ?= ../mfem-shm
-GLVIS_DIR ?= ../glvis-shm
+MFEM_DIR  ?= ../mfem
+GLVIS_DIR ?= ../glvis
 GLM_ROOT  ?= $(abspath ./glm)
 EMCXX     ?= em++
 EMAR      ?= emar
@@ -25,13 +25,14 @@ LIB_GLVIS_JS   = $(GLVIS_DIR)/lib/libglvis.js
 all: $(LIB_GLVIS_JS)
 
 $(LIB_MFEM):
-	$(MAKE) -C $(MFEM_DIR) BUILD_DIR=$(MFEM_BUILD_DIR) config CXX=$(EMCXX) \
-		MFEM_TIMER_TYPE=0 MFEM_PRECISION=double
-	$(MAKE) -C $(MFEM_BUILD_DIR) -j $(shell nproc) AR=$(EMAR) ARFLAGS=rcs RANLIB=echo 
+	# ranlib causes problems
+	@$(MAKE) -C $(MFEM_DIR) BUILD_DIR=$(MFEM_BUILD_DIR) config CXX=$(EMCXX) \
+		MFEM_TIMER_TYPE=0 AR=$(EMAR) ARFLAGS=rcs RANLIB=echo 
+	$(MAKE) -C $(MFEM_BUILD_DIR) -j 4
 
 $(LIB_GLVIS_JS): $(LIB_MFEM)
 	@$(MAKE) get_opensans
-	$(MAKE) -C $(GLVIS_DIR) -j $(shell nproc) GLM_DIR=$(GLM_ROOT) MFEM_DIR=$(MFEM_BUILD_DIR) \
+	@$(MAKE) -C $(GLVIS_DIR) GLM_DIR=$(GLM_ROOT) MFEM_DIR=$(MFEM_BUILD_DIR) \
 		GLVIS_USE_LOGO=NO GLVIS_USE_LIBPNG=YES js
 
 libmfem: $(LIB_MFEM)
