@@ -25,15 +25,14 @@ LIB_GLVIS_JS   = $(GLVIS_DIR)/lib/libglvis.js
 all: $(LIB_GLVIS_JS)
 
 $(LIB_MFEM):
-	# ranlib causes problems
 	@$(MAKE) -C $(MFEM_DIR) BUILD_DIR=$(MFEM_BUILD_DIR) config CXX=$(EMCXX) \
-		MFEM_TIMER_TYPE=0 AR=$(EMAR) ARFLAGS=rcs RANLIB=echo 
-	$(MAKE) -C $(MFEM_BUILD_DIR) -j 4
+		MFEM_TIMER_TYPE=0 MFEM_PRECISION=double
+	$(MAKE) -C $(MFEM_BUILD_DIR) -j $(shell nproc) AR=$(EMAR) ARFLAGS=rcs RANLIB=echo 
 
 $(LIB_GLVIS_JS): $(LIB_MFEM)
 	@$(MAKE) get_opensans
-	@$(MAKE) -C $(GLVIS_DIR) GLM_DIR=$(GLM_ROOT) MFEM_DIR=$(MFEM_BUILD_DIR) \
-		GLVIS_USE_LOGO=NO GLVIS_USE_LIBPNG=YES js
+	@$(MAKE) -C $(GLVIS_DIR) -j $(shell nproc) GLM_DIR=$(GLM_ROOT) MFEM_DIR=$(MFEM_BUILD_DIR) \
+		GLVIS_USE_LOGO=NO GLVIS_USE_LIBPNG=YES GLVIS_USE_CGL=NO js
 
 libmfem: $(LIB_MFEM)
 
@@ -76,8 +75,8 @@ get_opensans:
 		echo "GLVis already has OpenSans.ttf. Skipping download."; \
 	fi
 
-realclean: clean
-	@test -d $(MFEM_BUILD_DUR) && rm -rf $(MFEM_BUILD_DIR)
+distclean realclean: clean
+	@test -d $(MFEM_BUILD_DIR) && rm -rf $(MFEM_BUILD_DIR)
 
 clean:
 	@$(MAKE) -C $(GLVIS_DIR) clean
