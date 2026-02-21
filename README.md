@@ -120,7 +120,7 @@ be installed for you when running `make style` if you don't already have it.
 
 If you just want to update `glvis-js` to use the latest `MFEM` or `glvis`,
 there is a [workflow script](https://github.com/GLVis/glvis-js/blob/master/.github/workflows/build.yml) setup that can be used to automatically build and create a new branch.
-Upon a successful build, simply merge this new branch into `master`: ((example)[https://github.com/GLVis/glvis-js/pull/35]).
+Upon a successful build, simply merge this new branch into `master`: [example](https://github.com/GLVis/glvis-js/pull/35).
 
 Copy the new files in `src/` into [GLVis/releases-js](https://github.com/GLVis/releases-js) for use in `pyglvis`.
 
