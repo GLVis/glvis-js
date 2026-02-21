@@ -1,6 +1,6 @@
 # GLVis JavaScript Library
 
-Using [Emscripten](https://emscripten.org/index.html) GLVis can be built as a JavaScript & WebAssembly library.
+Using [Emscripten](https://emscripten.org/index.html), GLVis can be built as a JavaScript & WebAssembly library.
 
 A fully-featured web version of GLVis is available at https://glvis.org/live with documentation in [live/README.md](live/README.md).
 
@@ -79,17 +79,17 @@ network.
 
 For example, on a Mac:
 
-1. First, get `your IP address`:
+1. First, get your IP address:
 
    ```shell
    ipconfig getifaddr en0
    ```
 
-   or alternatively your `hostname`:
+   or alternatively your hostname:
 
    ```shell
    hostname -s
-   ````
+   ```
 
 2. Then, serve `glvis-js` to all devices in your local network:
 
@@ -120,7 +120,7 @@ be installed for you when running `make style` if you don't already have it.
 
 If you just want to update `glvis-js` to use the latest `MFEM` or `glvis`,
 there is a [workflow script](https://github.com/GLVis/glvis-js/blob/master/.github/workflows/build.yml) setup that can be used to automatically build and create a new branch.
-Upon a successful build, simply merge this new branch into `master`: ((example)[https://github.com/GLVis/glvis-js/pull/35]).
+Upon a successful build, simply merge this new branch into `master`: ([example](https://github.com/GLVis/glvis-js/pull/35)).
 
 Copy the new files in `src/` into [GLVis/releases-js](https://github.com/GLVis/releases-js) for use in `pyglvis`.
 
