@@ -131,7 +131,7 @@ Copy the new files in `src/` into [GLVis/releases-js](https://github.com/GLVis/r
 `pyglvis` uses `esm.sh` to pull a specific version of `glvis-js`.
 To update `pyglvis` to use a newer version edit this line in [pyglvis/glvis/widget.js](https://github.com/GLVis/pyglvis/blob/main/glvis/widget.js)
 
-```python
+```javascript
 import glvis from "https://esm.sh/gh/glvis/releases-js@gh-pages/glvis-js-0.3";
 ```
 
