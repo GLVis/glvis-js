@@ -116,14 +116,27 @@ be installed for you when running `make style` if you don't already have it.
 
 ## Releasing
 
-1. Update the version: `npm version <update_type>`
-   - `<update_type>` is one of `patch`, `minor`, or `major`
+`glvis-js` releases are used by `pyglvis` directly through the repo [GLVis/releases-js](https://github.com/GLVis/releases-js) -- see [Updating pyglvis](#pyglvis) for more info.
 
-2. `npm login`
+If you just want to update `glvis-js` to use the latest `MFEM` or `glvis`,
+there is a [workflow script](https://github.com/GLVis/glvis-js/blob/master/.github/workflows/build.yml) setup that can be used to automatically build and create a new branch.
+Upon a successful build, simply merge this new branch into `master`: ((example)[https://github.com/GLVis/glvis-js/pull/35]).
 
-3. `npm publish`
+Copy the new files in `src/` into [GLVis/releases-js](https://github.com/GLVis/releases-js) for use in `pyglvis`.
 
-More info [here](https://docs.npmjs.com/updating-your-published-package-version-number).
+
+<a name="pyglvis"></a>
+## Updating `pyglvis`
+
+`pyglvis` uses `esm.sh` to pull a specific version of `glvis-js`.
+To update `pyglvis` to use a newer version edit this line in [pyglvis/glvis/widget.js](https://github.com/GLVis/pyglvis/blob/main/glvis/widget.js)
+
+```python
+import glvis from "https://esm.sh/gh/glvis/releases-js@gh-pages/glvis-js-0.3";
+```
+
+`pyglvis` depends on `pymfem` so please consider the `MFEM` version that `glvis-js` was built with before updating.
+See the [dependency graph](https://github.com/GLVis/pyglvis?tab=readme-ov-file#pyglvis-dependencies).
 
 
 ## Known issues and limitations
