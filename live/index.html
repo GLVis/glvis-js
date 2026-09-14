@@ -240,11 +240,6 @@
                             label="Port (optional)"
                           ></v-text-field>
                           <v-text-field
-                            v-if="socketConnectionMode === 'address'"
-                            v-model="socketPath"
-                            label="Path (optional)"
-                          ></v-text-field>
-                          <v-text-field
                             v-if="socketConnectionMode === 'url'"
                             v-model="socketUrl"
                             label="WebSocket URL"
@@ -882,18 +877,20 @@
       host = "localhost";
     }
     const socket = new URLSearchParams(window.location.search).get("socket");
-    const socketIsPath = socket && socket.startsWith("/");
-    const socketHost = socketIsPath ? window.location.host : host;
-    const socketPort = socketIsPath ? "" : "8080";
-    const socketPath = socketIsPath ? socket : "/";
-    const socketUrl = socket && !socket.startsWith("/") ? socket : "";
+    const socketHost = host;
+    const socketPort = "8080";
+    const socketUrl = socket
+      ? socket.startsWith("/")
+        ? `${window.location.protocol === "https:" ? "wss" : "ws"}://${
+            window.location.host
+          }${socket}`
+        : socket
+      : "";
     console.log("socket settings:", {
       host,
       socket,
-      socketIsPath,
       socketHost,
       socketPort,
-      socketPath,
       socketUrl,
     });
 
@@ -913,7 +910,6 @@
         socketConnectionMode: socketUrl ? "url" : "address",
         socketHost: socketHost,
         socketPort: socketPort,
-        socketPath: socketPath,
         socketUrl: socketUrl,
         controlWindowActive: false,
         helpWindowActive: false,
@@ -1150,10 +1146,7 @@
           const proto =
             (window.location.protocol === "https:" && !isLoopback) ? "wss" : "ws";
           const port = this.socketPort ? `:${this.socketPort}` : "";
-          const path = this.socketPath.startsWith("/")
-            ? this.socketPath
-            : `/${this.socketPath}`;
-          return `${proto}://${this.socketHost}${port}${path}`;
+          return `${proto}://${this.socketHost}${port}`;
         },
         updateCanvasSize: function () {
           [w, h] = windowDim();
