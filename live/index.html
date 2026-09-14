@@ -887,7 +887,15 @@
     const socketPort = socketIsPath ? "" : "8080";
     const socketPath = socketIsPath ? socket : "/";
     const socketUrl = socket && !socket.startsWith("/") ? socket : "";
-    console.log(`host = ${host}`);
+    console.log("socket settings:", {
+      host,
+      socket,
+      socketIsPath,
+      socketHost,
+      socketPort,
+      socketPath,
+      socketUrl,
+    });
 
     const touch = matchMedia("(hover: none), (pointer: coarse)").matches;
     console.log(`touch = ${touch}`);
