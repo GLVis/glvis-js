@@ -1144,7 +1144,7 @@
             this.socketHost
           );
           const proto =
-            (window.location.protocol === "https:" && !isLoopback) ? "wss" : "ws";
+            window.location.protocol === "https:" && !isLoopback ? "wss" : "ws";
           const port = this.socketPort ? `:${this.socketPort}` : "";
           return `${proto}://${this.socketHost}${port}`;
         },
