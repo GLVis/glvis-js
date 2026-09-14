@@ -1150,11 +1150,9 @@
           const proto =
             (window.location.protocol === "https:" && !isLoopback) ? "wss" : "ws";
           const port = this.socketPort ? `:${this.socketPort}` : "";
-          const path = this.socketPath
-            ? this.socketPath.startsWith("/")
-              ? this.socketPath
-              : `/${this.socketPath}`
-            : "/";
+          const path = this.socketPath.startsWith("/")
+            ? this.socketPath
+            : `/${this.socketPath}`;
           return `${proto}://${this.socketHost}${port}${path}`;
         },
         updateCanvasSize: function () {
