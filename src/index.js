@@ -37,7 +37,7 @@
     window.crypto.getRandomValues(arr);
     return arr.reduce(
       (cur, next) => cur + next.toString(36).padStart(2, "0"),
-      ""
+      "",
     );
   }
 
@@ -69,7 +69,7 @@
           `style.width=${this.canvas_.style.width}, ` +
           `style.height=${this.canvas_.style.height}, ` +
           `width=${this.canvas_.width}, ` +
-          `height=${this.canvas_.height}`
+          `height=${this.canvas_.height}`,
       );
     }
 
@@ -158,7 +158,7 @@
         data,
         false,
         this.logical_width_,
-        this.logical_height_
+        this.logical_height_,
       );
 
       this.new_stream_callbacks.forEach((f) => f(this));
@@ -216,7 +216,7 @@
     async loadStream(e) {
       const file = e.target.files[0];
       const data = await new Response(file).text();
-      const extension = file.name.split('.').pop();
+      const extension = file.name.split(".").pop();
       if (["mesh", "vtk", "msh"].includes(extension)) {
         await this.display("mesh\n" + data);
       } else {
@@ -267,7 +267,7 @@
       return btoa(
         data.reduce(function (data, byte) {
           return data + String.fromCharCode(byte);
-        }, "")
+        }, ""),
       );
     }
 

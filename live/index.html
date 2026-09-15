@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
     <meta charset="utf-8" />
@@ -865,7 +865,7 @@
               taps: 2,
               interval: 1500,
               posThresholdL: 50,
-            })
+            }),
           );
           mc.on("doubletap", binding.value);
         }
@@ -1025,7 +1025,7 @@
         });
 
         var stream = new URLSearchParams(document.location.search).get(
-          "stream"
+          "stream",
         );
         if (stream) {
           console.log(`loading stream from ${stream}`);
@@ -1043,7 +1043,7 @@
         }
 
         var experimental = new URLSearchParams(document.location.search).get(
-          "experimental"
+          "experimental",
         );
         if (experimental) {
           this.experimentalMode = true;
@@ -1076,7 +1076,7 @@
               event.keyCode,
               event.ctrlKey,
               event.shiftKey,
-              event.altKey
+              event.altKey,
             );
           }
         });
@@ -1092,7 +1092,7 @@
               event.keyCode + offset,
               event.ctrlKey,
               event.shiftKey,
-              event.altKey
+              event.altKey,
             );
           }
         });
