@@ -214,16 +214,40 @@
                       <v-spacer></v-spacer>
                       <v-card-text>
                         <v-form ref="socketForm" lazy-validation>
+                          <v-radio-group
+                            v-model="socketConnectionMode"
+                            row
+                            hide-details
+                          >
+                            <v-radio
+                              label="Server address"
+                              value="address"
+                            ></v-radio>
+                            <v-radio
+                              label="WebSocket URL"
+                              value="url"
+                            ></v-radio>
+                          </v-radio-group>
                           <v-text-field
+                            v-if="socketConnectionMode === 'address'"
                             v-model="socketHost"
                             label="Host"
                             required
                           ></v-text-field>
                           <v-text-field
+                            v-if="socketConnectionMode === 'address'"
                             v-model="socketPort"
-                            label="Port"
+                            label="Port (optional)"
+                          ></v-text-field>
+                          <v-text-field
+                            v-if="socketConnectionMode === 'url'"
+                            v-model="socketUrl"
+                            label="WebSocket URL"
                             required
                           ></v-text-field>
+                          <div class="text-caption mb-2">
+                            {{ websocketAddress() }}
+                          </div>
                           <v-btn @click="connectWebsocket">
                             {{ connectWebsocketButtonLabel }}
                           </v-btn>
@@ -852,7 +876,23 @@
     if (host === "127.0.0.1" || host === "glvis.org") {
       host = "localhost";
     }
-    console.log(`host = ${host}`);
+    const socket = new URLSearchParams(window.location.search).get("socket");
+    const socketHost = host;
+    const socketPort = "8080";
+    const socketUrl = socket
+      ? socket.startsWith("/")
+        ? `${window.location.protocol === "https:" ? "wss" : "ws"}://${
+            window.location.host
+          }${socket}`
+        : socket
+      : "";
+    console.log("socket settings:", {
+      host,
+      socket,
+      socketHost,
+      socketPort,
+      socketUrl,
+    });
 
     const touch = matchMedia("(hover: none), (pointer: coarse)").matches;
     console.log(`touch = ${touch}`);
@@ -867,8 +907,10 @@
         websocketDialogActive: false,
         logWindowActive: false,
         connectWebsocketButtonLabel: "Connect",
-        socketHost: host,
-        socketPort: "8080",
+        socketConnectionMode: socketUrl ? "url" : "address",
+        socketHost: socketHost,
+        socketPort: socketPort,
+        socketUrl: socketUrl,
         controlWindowActive: false,
         helpWindowActive: false,
         fullScreenMode: false,
@@ -1074,6 +1116,10 @@
           await new Promise((r) => setTimeout(r, 50 + this.streamDelay * 10));
         });
 
+        if (socket) {
+          this.connectWebsocket();
+        }
+
         this.glvIsLoading = false;
       },
       watch: {
@@ -1089,6 +1135,19 @@
         },
       },
       methods: {
+        websocketAddress: function () {
+          if (this.socketConnectionMode === "url") {
+            return this.socketUrl;
+          }
+
+          const isLoopback = ["localhost", "127.0.0.1"].includes(
+            this.socketHost
+          );
+          const proto =
+            window.location.protocol === "https:" && !isLoopback ? "wss" : "ws";
+          const port = this.socketPort ? `:${this.socketPort}` : "";
+          return `${proto}://${this.socketHost}${port}`;
+        },
         updateCanvasSize: function () {
           [w, h] = windowDim();
           this.glv.setSize(w, h);
@@ -1112,9 +1171,7 @@
             return;
           }
 
-          const host = this.socketHost;
-          const port = this.socketPort;
-          const addr = `ws:\/\/${host}:${port}`;
+          const addr = this.websocketAddress();
 
           console.log(`trying to connect websocket to ${addr}`);
           this.glvSocket = new WebSocket(addr);
