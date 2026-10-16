@@ -161,6 +161,13 @@
         this.logical_height_
       );
 
+      // make sure the renderer has the desired size even when some data
+      // streams command it to change it, which is overriden here
+      await this.setSize(
+        this.logical_width_,
+        this.logical_height_
+      );
+
       this.new_stream_callbacks.forEach((f) => f(this));
       this._startVis(g);
     }
