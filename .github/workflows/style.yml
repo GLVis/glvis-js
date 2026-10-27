@@ -1,0 +1,18 @@
+name: Style
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  style:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 26
+          cache: npm
+      - run: make style
+      - run: git diff --exit-code
