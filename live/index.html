@@ -305,7 +305,7 @@
                   <v-dialog
                     v-model="examplesDialogActive"
                     scrollable
-                    width="275px"
+                    width="300px"
                   >
                     <template v-slot:activator="{ on: dialog, attrs }">
                       <v-tooltip transition="fade" bottom>
@@ -927,7 +927,7 @@
         experimentalMode: false,
         logMode: false,
         streamDelay: 0,
-        defaultExample: 14,
+        defaultExample: 18,
         examples: [
           {
             name: "MFEM Example 1",
@@ -946,8 +946,20 @@
             url: "../data/streams/ex5.saved",
           },
           {
+            name: "MFEM Example 6",
+            url: "../data/streams/ex6-dofs-numbering.saved",
+          },
+          {
             name: "MFEM Example 9",
             url: "../data/streams/ex9.saved",
+          },
+          {
+            name: "MFEM Example 22 (scalar)",
+            url: "../data/streams/ex22-scalar.saved",
+          },
+          {
+            name: "MFEM Example 22 (vector)",
+            url: "../data/streams/ex22-vector.saved",
           },
           {
             name: "MFEM Example 27",
@@ -956,6 +968,10 @@
           {
             name: "Capacitor",
             url: "../data/streams/capacitor.saved",
+          },
+          {
+            name: "Distance",
+            url: "../data/streams/distance.saved",
           },
           {
             name: "Klein Bottle",
@@ -1000,6 +1016,10 @@
           {
             name: "Shaper",
             url: "../data/streams/shaper.saved",
+          },
+          {
+            name: "Shifted BC",
+            url: "../data/streams/shifted.saved",
           },
           {
             name: "Snake",
