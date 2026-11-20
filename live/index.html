@@ -897,6 +897,13 @@
     const touch = matchMedia("(hover: none), (pointer: coarse)").matches;
     console.log(`touch = ${touch}`);
 
+    // stops keys typed into text fields from being sent to the scene
+    function isTextEntry(target) {
+      if (!(target instanceof HTMLElement)) return false;
+      if (target.isContentEditable) return true;
+      return ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName);
+    }
+
     var app = new Vue({
       el: "#app",
       vuetify: new Vuetify(),
@@ -1085,6 +1092,7 @@
 
         // Event sentinel variable
         window.addEventListener("keypress", (event) => {
+          if (isTextEntry(event.target)) return;
           if (event.keyCode === 32) {
             this.glvStreamIsPaused = !this.glvStreamIsPaused;
           } else if (event.keyCode === 72 || event.keyCode === 104) {
@@ -1102,6 +1110,7 @@
         });
 
         window.addEventListener("keydown", (event) => {
+          if (isTextEntry(event.target)) return;
           const code = event.keyCode;
           // just function keys
           if (code >= 112 && code <= 123) {
